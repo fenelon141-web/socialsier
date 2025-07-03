@@ -115,6 +115,11 @@ Changelog:
   - Added fitness badges (Workout Warrior, Barre Babe, Hot Girl Summer)
   - Added "Hot Girl Workouts" section on home page with trending gym classes
   - Added new API endpoint /api/spots/gym for gym class discovery
+- July 03, 2025. Added PostgreSQL database with Drizzle ORM
+  - Replaced in-memory storage with DatabaseStorage class
+  - Created database schema with proper relations
+  - Seeded database with initial data (users, spots, badges, challenges, rewards)
+  - Database now persists all user data and spot information
 ```
 
 ## User Preferences

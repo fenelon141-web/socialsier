@@ -109,6 +109,69 @@ export const insertRewardSchema = createInsertSchema(rewards).omit({
 });
 
 // Types
+// Relations
+import { relations } from "drizzle-orm";
+
+export const usersRelations = relations(users, ({ many }) => ({
+  badges: many(userBadges),
+  spotHunts: many(spotHunts),
+  challengeProgress: many(userChallengeProgress),
+}));
+
+export const spotsRelations = relations(spots, ({ many }) => ({
+  hunts: many(spotHunts),
+  rewards: many(rewards),
+}));
+
+export const badgesRelations = relations(badges, ({ many }) => ({
+  userBadges: many(userBadges),
+}));
+
+export const userBadgesRelations = relations(userBadges, ({ one }) => ({
+  user: one(users, {
+    fields: [userBadges.userId],
+    references: [users.id],
+  }),
+  badge: one(badges, {
+    fields: [userBadges.badgeId],
+    references: [badges.id],
+  }),
+}));
+
+export const spotHuntsRelations = relations(spotHunts, ({ one }) => ({
+  user: one(users, {
+    fields: [spotHunts.userId],
+    references: [users.id],
+  }),
+  spot: one(spots, {
+    fields: [spotHunts.spotId],
+    references: [spots.id],
+  }),
+}));
+
+export const dailyChallengesRelations = relations(dailyChallenges, ({ many }) => ({
+  userProgress: many(userChallengeProgress),
+}));
+
+export const userChallengeProgressRelations = relations(userChallengeProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [userChallengeProgress.userId],
+    references: [users.id],
+  }),
+  challenge: one(dailyChallenges, {
+    fields: [userChallengeProgress.challengeId],
+    references: [dailyChallenges.id],
+  }),
+}));
+
+export const rewardsRelations = relations(rewards, ({ one }) => ({
+  spot: one(spots, {
+    fields: [rewards.spotId],
+    references: [spots.id],
+  }),
+}));
+
+// Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Spot = typeof spots.$inferSelect;

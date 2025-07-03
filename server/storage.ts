@@ -6,6 +6,8 @@ import {
   type InsertSpotHunt, type DailyChallenge, type UserChallengeProgress,
   type Reward, type InsertReward
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -453,4 +455,203 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async getAllSpots(): Promise<Spot[]> {
+    return await db.select().from(spots);
+  }
+
+  async getTrendingSpots(): Promise<Spot[]> {
+    return await db.select().from(spots).where(eq(spots.trending, true));
+  }
+
+  async getGymClasses(): Promise<Spot[]> {
+    return await db.select().from(spots).where(eq(spots.category, 'gym'));
+  }
+
+  async getSpot(id: number): Promise<Spot | undefined> {
+    const [spot] = await db.select().from(spots).where(eq(spots.id, id));
+    return spot || undefined;
+  }
+
+  async createSpot(spot: InsertSpot): Promise<Spot> {
+    const [newSpot] = await db
+      .insert(spots)
+      .values(spot)
+      .returning();
+    return newSpot;
+  }
+
+  async huntSpot(userId: number, spotId: number): Promise<SpotHunt> {
+    const [spotHunt] = await db
+      .insert(spotHunts)
+      .values({
+        userId,
+        spotId,
+        pointsEarned: 50,
+      })
+      .returning();
+
+    // Update user stats
+    await db
+      .update(users)
+      .set({
+        totalPoints: sql`${users.totalPoints} + 50`,
+        spotsHunted: sql`${users.spotsHunted} + 1`,
+      })
+      .where(eq(users.id, userId));
+
+    // Update spot hunt count
+    await db
+      .update(spots)
+      .set({
+        huntCount: sql`${spots.huntCount} + 1`,
+      })
+      .where(eq(spots.id, spotId));
+
+    return spotHunt;
+  }
+
+  async getAllBadges(): Promise<Badge[]> {
+    return await db.select().from(badges);
+  }
+
+  async getUserBadges(userId: number): Promise<(UserBadge & { badge: Badge })[]> {
+    const results = await db
+      .select({
+        id: userBadges.id,
+        userId: userBadges.userId,
+        badgeId: userBadges.badgeId,
+        earnedAt: userBadges.earnedAt,
+        badge: badges,
+      })
+      .from(userBadges)
+      .innerJoin(badges, eq(userBadges.badgeId, badges.id))
+      .where(eq(userBadges.userId, userId));
+    return results;
+  }
+
+  async awardBadge(userId: number, badgeId: number): Promise<UserBadge> {
+    const [userBadge] = await db
+      .insert(userBadges)
+      .values({
+        userId,
+        badgeId,
+      })
+      .returning();
+    return userBadge;
+  }
+
+  async getActiveChallenges(): Promise<DailyChallenge[]> {
+    return await db.select().from(dailyChallenges).where(eq(dailyChallenges.active, true));
+  }
+
+  async getUserChallengeProgress(userId: number): Promise<(UserChallengeProgress & { challenge: DailyChallenge })[]> {
+    const results = await db
+      .select({
+        id: userChallengeProgress.id,
+        userId: userChallengeProgress.userId,
+        challengeId: userChallengeProgress.challengeId,
+        progress: userChallengeProgress.progress,
+        completed: userChallengeProgress.completed,
+        completedAt: userChallengeProgress.completedAt,
+        challenge: dailyChallenges,
+      })
+      .from(userChallengeProgress)
+      .innerJoin(dailyChallenges, eq(userChallengeProgress.challengeId, dailyChallenges.id))
+      .where(eq(userChallengeProgress.userId, userId));
+    return results;
+  }
+
+  async updateChallengeProgress(userId: number, challengeId: number, progress: number): Promise<UserChallengeProgress> {
+    // Try to update existing progress
+    const [existing] = await db
+      .select()
+      .from(userChallengeProgress)
+      .where(eq(userChallengeProgress.userId, userId))
+      .where(eq(userChallengeProgress.challengeId, challengeId));
+
+    if (existing) {
+      const [updated] = await db
+        .update(userChallengeProgress)
+        .set({
+          progress,
+          completed: progress >= 3,
+          completedAt: progress >= 3 ? new Date() : null,
+        })
+        .where(eq(userChallengeProgress.id, existing.id))
+        .returning();
+      return updated;
+    }
+
+    // Create new progress
+    const [newProgress] = await db
+      .insert(userChallengeProgress)
+      .values({
+        userId,
+        challengeId,
+        progress,
+        completed: progress >= 3,
+        completedAt: progress >= 3 ? new Date() : null,
+      })
+      .returning();
+    return newProgress;
+  }
+
+  async getAvailableRewards(userId: number): Promise<Reward[]> {
+    return await db.select().from(rewards).where(eq(rewards.active, true));
+  }
+
+  async claimReward(userId: number, rewardId: number): Promise<boolean> {
+    const [reward] = await db.select().from(rewards).where(eq(rewards.id, rewardId));
+    return reward && reward.active;
+  }
+
+  async getRecentActivity(): Promise<any[]> {
+    // Mock friends activity for now
+    return [
+      {
+        id: 1,
+        friend: { name: "Madison", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" },
+        action: "hunted a new spot!",
+        timestamp: "2 mins ago",
+        points: 50
+      },
+      {
+        id: 2,
+        friend: { name: "Chloe", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" },
+        action: 'earned the "Kombucha Queen" badge!',
+        timestamp: "15 mins ago",
+        badge: true
+      }
+    ];
+  }
+}
+
+export const storage = new DatabaseStorage();
