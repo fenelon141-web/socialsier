@@ -8,6 +8,7 @@ import MapView from "@/pages/map";
 import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
+import { useCapacitor } from "./hooks/use-capacitor";
 
 function Router() {
   return (
@@ -22,6 +23,8 @@ function Router() {
 }
 
 function App() {
+  const { isNative, deviceInfo } = useCapacitor();
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -29,6 +32,11 @@ function App() {
           <div className="max-w-md mx-auto bg-white shadow-2xl min-h-screen relative overflow-hidden">
             <Toaster />
             <Router />
+            {isNative && (
+              <div className="hidden">
+                Mobile app mode: {deviceInfo?.platform}
+              </div>
+            )}
           </div>
         </div>
       </TooltipProvider>

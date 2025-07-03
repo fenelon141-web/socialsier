@@ -1,0 +1,26 @@
+{
+  "name": "Hot Girl Hunt",
+  "short_name": "HGH",
+  "description": "Location-based discovery app for trendy spots and workouts",
+  "theme_color": "#ff69b4",
+  "background_color": "#ff69b4",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "categories": ["lifestyle", "social", "food"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

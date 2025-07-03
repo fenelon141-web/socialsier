@@ -120,6 +120,12 @@ Changelog:
   - Created database schema with proper relations
   - Seeded database with initial data (users, spots, badges, challenges, rewards)
   - Database now persists all user data and spot information
+- July 03, 2025. Mobile app conversion with Capacitor
+  - Added Capacitor for iOS and Android native app deployment
+  - Integrated location services with geolocation hooks
+  - Added PWA manifest for installable web app
+  - Mobile-optimized with status bar, splash screen, and native features
+  - Ready for Apple App Store and Google Play Store deployment
 ```
 
 ## User Preferences
