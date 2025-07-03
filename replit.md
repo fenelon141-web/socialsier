@@ -126,6 +126,12 @@ Changelog:
   - Added PWA manifest for installable web app
   - Mobile-optimized with status bar, splash screen, and native features
   - Ready for Apple App Store and Google Play Store deployment
+- July 03, 2025. Pokémon Go-style location verification
+  - Check-ins now require physical proximity (100m range)
+  - Real GPS distance calculations using Haversine formula
+  - Visual indicators for in-range vs out-of-range spots
+  - Nearby spots API shows spots within 1km radius
+  - Location-based error handling and user feedback
 ```
 
 ## User Preferences

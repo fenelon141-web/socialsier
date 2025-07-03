@@ -6,13 +6,27 @@ import BadgeCard from "@/components/badge-card";
 import BottomNavigation from "@/components/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Camera } from "lucide-react";
+import { MapPin, Camera, Navigation } from "lucide-react";
 import { Link } from "wouter";
+import { useGeolocation } from "@/hooks/use-geolocation";
+import { apiRequest } from "@/lib/queryClient";
 import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
 
 export default function Home() {
+  const { latitude, longitude, loading: locationLoading } = useGeolocation();
+  
   const { data: trendingSpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"]
+  });
+
+  // Get nearby spots when location is available
+  const { data: nearbySpots, isLoading: nearbyLoading } = useQuery({
+    queryKey: ["/api/spots/nearby", latitude, longitude],
+    queryFn: async () => {
+      const response = await fetch(`/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=1000`);
+      return response.json();
+    },
+    enabled: !!(latitude && longitude),
   });
 
   const { data: userBadges, isLoading: badgesLoading } = useQuery<(UserBadge & { badge: Badge })[]>({
@@ -52,6 +66,39 @@ export default function Home() {
             📸 Check In
           </Button>
         </div>
+
+        {/* Nearby Spots */}
+        {nearbySpots && nearbySpots.length > 0 && (
+          <Card className="card-gradient rounded-2xl shadow-lg border-0">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-bold text-gray-800">Nearby Spots 📍</h2>
+                <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">
+                  {nearbySpots.length} found
+                </span>
+              </div>
+              
+              <div className="space-y-3">
+                {nearbySpots.slice(0, 5).map(spot => (
+                  <SpotCard key={spot.id} spot={spot} />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Location Loading State */}
+        {locationLoading && (
+          <Card className="card-gradient rounded-2xl shadow-lg border-0">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-bold text-gray-800">Finding Nearby Spots 🔍</h2>
+                <Navigation className="w-4 h-4 animate-spin" />
+              </div>
+              <p className="text-sm text-gray-600">Getting your location to find spots near you...</p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Trending Spots */}
         <Card className="card-gradient rounded-2xl shadow-lg border-0">
