@@ -26,13 +26,17 @@ function calculateDistance(
 
 async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
   try {
-    // Use Overpass API (OpenStreetMap) to find nearby restaurants, cafes, etc.
+    // Use Overpass API to find trendy, aesthetic spots (exclude fast food)
     const query = `
       [out:json][timeout:25];
       (
-        node["amenity"~"^(restaurant|cafe|fast_food|bar|pub)$"](around:${radius},${lat},${lng});
-        way["amenity"~"^(restaurant|cafe|fast_food|bar|pub)$"](around:${radius},${lat},${lng});
-        relation["amenity"~"^(restaurant|cafe|fast_food|bar|pub)$"](around:${radius},${lat},${lng});
+        node["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
+        way["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
+        relation["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
+        node["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
+        way["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
+        node["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy)$"](around:${radius},${lat},${lng});
+        way["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy)$"](around:${radius},${lat},${lng});
       );
       out geom;
     `;
@@ -106,28 +110,46 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
 function getOSMDescription(tags: any): string {
   const amenity = tags.amenity || '';
   const cuisine = tags.cuisine || '';
+  const shop = tags.shop || '';
+  const name = (tags.name || '').toLowerCase();
   
   let description = '';
   
-  if (amenity === 'cafe' || amenity === 'coffee_shop') {
-    description = '☕ Cozy local coffee spot';
-  } else if (amenity === 'restaurant') {
-    if (cuisine) {
-      description = `🍽️ ${cuisine.charAt(0).toUpperCase() + cuisine.slice(1)} cuisine`;
+  // Specific trendy drink spots
+  if (name.includes('matcha') || cuisine === 'bubble_tea' || shop === 'tea') {
+    description = '🍵 Aesthetic matcha lattes & boba tea';
+  } else if (name.includes('juice') || amenity === 'juice_bar') {
+    description = '🥤 Cold-pressed juices & smoothie bowls';
+  } else if (name.includes('coffee') || amenity === 'cafe') {
+    description = '☕ Iced lattes with oat milk & aesthetic vibes';
+  } else if (shop === 'bakery' || name.includes('bakery')) {
+    description = '🥐 Artisan pastries & Instagram-worthy treats';
+  } else if (cuisine === 'vegan' || name.includes('vegan')) {
+    description = '🌱 Plant-based açaí bowls & avocado toast';
+  } else if (cuisine === 'healthy' || name.includes('bowl')) {
+    description = '🥗 Poke bowls, quinoa salads & buddha bowls';
+  } else if (amenity === 'restaurant' && cuisine) {
+    // Specific cuisine types
+    if (cuisine === 'japanese') {
+      description = '🍣 Aesthetic sushi & poke bowls';
+    } else if (cuisine === 'italian') {
+      description = '🍝 Cauliflower crust pizza & fresh pasta';
+    } else if (cuisine === 'mexican') {
+      description = '🌮 Fresh guac & colorful veggie bowls';
     } else {
-      description = '🍽️ Local dining experience';
+      description = `🍽️ Trendy ${cuisine} with Instagram appeal`;
     }
-  } else if (amenity === 'fast_food') {
-    description = '🍔 Quick & tasty bites';
-  } else if (amenity === 'bar' || amenity === 'pub') {
-    description = '🍷 Trendy drinks & vibes';
+  } else if (amenity === 'restaurant') {
+    description = '🍽️ Aesthetic dining & photogenic plates';
   } else {
-    description = '✨ Local hotspot';
+    description = '✨ Trendy spot perfect for your feed';
   }
   
+  // Add special tags
   if (tags.organic === 'yes') description += ' • Organic';
   if (tags.fair_trade === 'yes') description += ' • Fair Trade';
   if (tags.vegan === 'yes' || tags.diet_vegan === 'yes') description += ' • Vegan';
+  if (tags.gluten_free === 'yes') description += ' • Gluten Free';
   
   return description;
 }
@@ -135,19 +157,49 @@ function getOSMDescription(tags: any): string {
 function getAestheticImageUrl(tags: any): string {
   const amenity = tags.amenity || '';
   const cuisine = tags.cuisine || '';
+  const shop = tags.shop || '';
+  const name = (tags.name || '').toLowerCase();
   
+  // Specific trendy aesthetic images
+  if (name.includes('matcha') || shop === 'tea') {
+    return 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Matcha latte
+  }
+  if (name.includes('boba') || name.includes('bubble') || cuisine === 'bubble_tea') {
+    return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Boba tea
+  }
+  if (name.includes('juice') || amenity === 'juice_bar') {
+    return 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Smoothie bowls
+  }
+  if (name.includes('acai') || name.includes('bowl')) {
+    return 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Açaí bowl
+  }
+  if (name.includes('avocado') || name.includes('toast')) {
+    return 'https://images.unsplash.com/photo-1541519869999-d5348ee78465?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Avocado toast
+  }
+  if (name.includes('poke')) {
+    return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Poke bowl
+  }
+  if (shop === 'bakery' || name.includes('bakery')) {
+    return 'https://images.unsplash.com/photo-1558618666-f87056e94e83?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Pastries
+  }
+  
+  // Cuisine-specific trendy images
+  if (cuisine === 'vegan') {
+    return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Vegan salad
+  }
+  if (cuisine === 'japanese') {
+    return 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Aesthetic sushi
+  }
+  if (cuisine === 'healthy') {
+    return 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Healthy bowl
+  }
+  
+  // Default aesthetic images by type
   const imageMap: { [key: string]: string } = {
-    'cafe': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'restaurant': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'fast_food': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'bar': 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'pub': 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
+    'cafe': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300', // Coffee shop
+    'restaurant': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300', // Restaurant
+    'juice_bar': 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300' // Juice bar
   };
-  
-  // Cuisine-specific images
-  if (cuisine === 'italian') return 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
-  if (cuisine === 'asian' || cuisine === 'japanese') return 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
-  if (cuisine === 'mexican') return 'https://images.unsplash.com/photo-1565299585323-38174c58d2ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
   
   return imageMap[amenity] || 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
 }
@@ -166,29 +218,58 @@ function getOSMCategory(amenity: string): string {
 
 function isTrendyPlace(place: any): boolean {
   const name = place.name?.toLowerCase() || '';
-  const types = (place.types || []).join(' ').toLowerCase();
+  const amenity = place.amenity?.toLowerCase() || '';
+  const shop = place.shop?.toLowerCase() || '';
+  const cuisine = place.cuisine?.toLowerCase() || '';
   
+  // Exclude fast food chains and non-aesthetic places
+  const excludeKeywords = [
+    'mcdonald', 'burger king', 'kfc', 'subway', 'domino', 'pizza hut',
+    'taco bell', 'wendy', 'arby', 'popeye', 'dairy queen', 'sonic',
+    'fast food', 'drive thru', 'drive-thru', 'chain', 'franchise'
+  ];
+
+  const shouldExclude = excludeKeywords.some(keyword => 
+    name.includes(keyword)
+  );
+
+  if (shouldExclude) return false;
+
+  // Prioritize trendy, aesthetic keywords
   const trendyKeywords = [
-    'artisan', 'craft', 'organic', 'local', 'farm', 'fresh',
-    'boutique', 'specialty', 'gourmet', 'matcha', 'acai',
-    'juice', 'smoothie', 'avocado', 'toast', 'bowl',
-    'brunch', 'aesthetic', 'instagrammable', 'cute',
-    'cozy', 'chic', 'modern', 'contemporary'
+    // Drinks
+    'matcha', 'latte', 'boba', 'bubble tea', 'chai', 'kombucha',
+    'juice', 'smoothie', 'refresher', 'oat milk', 'coconut',
+    'lavender', 'rose', 'detox', 'cold brew', 'nitro',
+    // Food
+    'avocado', 'toast', 'acai', 'bowl', 'poke', 'quinoa',
+    'vegan', 'plant based', 'organic', 'healthy', 'superfood',
+    'charcuterie', 'overnight oats', 'buddha bowl', 'cauliflower',
+    // Sweets & Aesthetic
+    'macaron', 'cupcake', 'artisan', 'craft', 'local', 'farm',
+    'boutique', 'specialty', 'gourmet', 'aesthetic', 'instagram',
+    'cute', 'cozy', 'chic', 'modern', 'minimalist', 'rustic'
   ];
 
   const trendyTypes = [
-    'juice_bar', 'health_food', 'organic_food',
-    'coffee_shop', 'cafe', 'bakery'
+    'cafe', 'coffee', 'juice_bar', 'health_food', 'organic',
+    'bakery', 'tea', 'bubble_tea', 'vegan', 'vegetarian'
   ];
 
   const hasTrendyKeyword = trendyKeywords.some(keyword => 
-    name.includes(keyword) || types.includes(keyword)
+    name.includes(keyword)
   );
 
-  const hasTrendyType = trendyTypes.some(type => types.includes(type));
-  const hasHighRating = place.rating && place.rating >= 4.2;
+  const hasTrendyAmenity = amenity === 'cafe' || amenity === 'juice_bar';
+  const hasTrendyShop = trendyTypes.includes(shop);
+  const hasTrendyCuisine = ['vegan', 'vegetarian', 'healthy', 'bubble_tea', 'coffee_shop'].includes(cuisine);
+  
+  // For restaurants, be more selective
+  if (amenity === 'restaurant') {
+    return hasTrendyKeyword || hasTrendyCuisine;
+  }
 
-  return hasTrendyKeyword || hasTrendyType || hasHighRating;
+  return hasTrendyKeyword || hasTrendyAmenity || hasTrendyShop || hasTrendyCuisine;
 }
 
 function removeDuplicates(places: any[]): any[] {

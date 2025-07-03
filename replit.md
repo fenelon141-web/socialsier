@@ -133,6 +133,14 @@ Changelog:
   - Visual indicators for in-range vs out-of-range spots
   - Nearby spots API shows spots within 1km radius
   - Location-based error handling and user feedback
+- July 03, 2025. Free OpenStreetMap integration and directions functionality
+  - Replaced Google Maps with free OpenStreetMap and Leaflet integration
+  - Real nearby spots from OpenStreetMap data via Overpass API
+  - Enhanced filtering to exclude fast food and focus on trendy, aesthetic spots
+  - Updated spot descriptions to highlight trendy drinks (matcha lattes, boba tea, oat milk lattes)
+  - Updated spot descriptions to highlight aesthetic foods (açaí bowls, avocado toast, poke bowls)
+  - Added directions functionality with native mobile app integration
+  - One-tap navigation to Google Maps, Apple Maps, or OpenStreetMap
 ```
 
 ## User Preferences
