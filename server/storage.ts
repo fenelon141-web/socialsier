@@ -12,6 +12,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, updates: Partial<User>): Promise<User | undefined>;
+  searchUsers(query: string): Promise<User[]>;
 
   // Spots
   getAllSpots(): Promise<Spot[]>;
@@ -83,20 +84,51 @@ class MemStorage implements IStorage {
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    // Create default user if none exists yet
-    if (this.users.length === 0 && id === 1) {
-      const defaultUser: User = {
-        id: 1,
-        username: "Guest User",
-        email: "guest@example.com",
-        level: 1,
-        totalPoints: 0,
-        spotsHunted: 0,
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
-        createdAt: new Date()
-      };
-      this.users.push(defaultUser);
-      return defaultUser;
+    // Create default users if none exist yet
+    if (this.users.length === 0) {
+      const defaultUsers: User[] = [
+        {
+          id: 1,
+          username: "Guest User",
+          email: "guest@example.com",
+          level: 1,
+          totalPoints: 0,
+          spotsHunted: 0,
+          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
+          createdAt: new Date()
+        },
+        {
+          id: 2,
+          username: "sophie_cafes",
+          email: "sophie@example.com",
+          level: 3,
+          totalPoints: 450,
+          spotsHunted: 12,
+          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+          createdAt: new Date()
+        },
+        {
+          id: 3,
+          username: "matcha_lover",
+          email: "emma@example.com",
+          level: 2,
+          totalPoints: 280,
+          spotsHunted: 8,
+          avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+          createdAt: new Date()
+        },
+        {
+          id: 4,
+          username: "fitness_queen",
+          email: "maya@example.com",
+          level: 4,
+          totalPoints: 620,
+          spotsHunted: 18,
+          avatar: "https://images.unsplash.com/photo-1491349174775-aaafddd81942?w=150&h=150&fit=crop&crop=face",
+          createdAt: new Date()
+        }
+      ];
+      this.users.push(...defaultUsers);
     }
     return this.users.find(user => user.id === id);
   }
@@ -126,6 +158,24 @@ class MemStorage implements IStorage {
     
     this.users[userIndex] = { ...this.users[userIndex], ...updates };
     return this.users[userIndex];
+  }
+
+  async searchUsers(query: string): Promise<User[]> {
+    const searchTerm = query.toLowerCase();
+    return this.users.filter(user => {
+      // Search by username (with or without @)
+      const username = user.username.toLowerCase();
+      if (username.includes(searchTerm) || username.includes(searchTerm.replace('@', ''))) {
+        return true;
+      }
+      
+      // Search by email
+      if (user.email && user.email.toLowerCase().includes(searchTerm)) {
+        return true;
+      }
+      
+      return false;
+    }).slice(0, 10); // Limit to 10 results
   }
 
   // Spot operations

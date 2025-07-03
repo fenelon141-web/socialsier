@@ -7,10 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Camera, UserPlus, Users, Star, ImageIcon } from "lucide-react";
+import { Heart, MessageCircle, Share2, Camera, UserPlus, Users, Star, ImageIcon, UserSearch } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useCamera } from "@/hooks/use-camera";
 import { useToast } from "@/hooks/use-toast";
+import AddFriendDialog from "@/components/add-friend-dialog";
+import InviteFriendsDialog from "@/components/invite-friends-dialog";
 import type { Post, User, Spot } from "@shared/schema";
 
 interface FeedPost extends Post {
@@ -42,6 +44,11 @@ export default function Social() {
   // Get friend requests
   const { data: friendRequests } = useQuery<any[]>({
     queryKey: ["/api/user/1/friend-requests"]
+  });
+
+  // Get current user
+  const { data: user } = useQuery<User>({
+    queryKey: ["/api/user/1"]
   });
 
   // Create post mutation
@@ -241,6 +248,65 @@ export default function Social() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Friends Section */}
+        <Card className="bg-gradient-to-r from-pink-50 to-purple-50 border-0 rounded-xl">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-2">
+                <Users className="w-5 h-5 text-pink-500" />
+                <h2 className="font-semibold text-gray-800">Your Squad</h2>
+              </div>
+              <div className="flex space-x-2">
+                <AddFriendDialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-pink-300 text-pink-600 hover:bg-pink-50"
+                  >
+                    <UserSearch className="w-4 h-4 mr-1" />
+                    Find Friends
+                  </Button>
+                </AddFriendDialog>
+                
+                <InviteFriendsDialog user={user || { id: 1, username: "Guest User", email: "guest@example.com", level: 1, totalPoints: 0, spotsHunted: 0, avatar: null, createdAt: new Date() }}>
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-pink-400 to-purple-500 text-white"
+                  >
+                    <Share2 className="w-4 h-4 mr-1" />
+                    Invite
+                  </Button>
+                </InviteFriendsDialog>
+              </div>
+            </div>
+            
+            {(!friends || friends.length === 0) ? (
+              <div className="text-center py-4">
+                <Users className="w-12 h-12 mx-auto text-gray-300 mb-2" />
+                <p className="text-sm text-gray-500 mb-3">No friends yet! Start building your squad</p>
+                <div className="text-xs text-gray-400">
+                  Find friends by username or invite them to join IYKYK
+                </div>
+              </div>
+            ) : (
+              <div className="flex space-x-3 overflow-x-auto pb-2">
+                {friends.map((friend) => (
+                  <div key={friend.id} className="flex flex-col items-center space-y-1 min-w-[70px]">
+                    <img
+                      src={friend.avatar || "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face"}
+                      alt={friend.username}
+                      className="w-12 h-12 rounded-full border-2 border-pink-300"
+                    />
+                    <span className="text-xs text-gray-700 truncate w-full text-center">
+                      {friend.username}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Social Feed */}
         <div className="space-y-4">

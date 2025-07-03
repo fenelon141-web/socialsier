@@ -649,6 +649,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/users/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query) {
+        return res.status(400).json({ message: "Search query required" });
+      }
+
+      const users = await storage.searchUsers(query);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to search users" });
+    }
+  });
+
   app.get("/api/user/:id/friends", async (req, res) => {
     try {
       const friends = await storage.getFriends(req.params.id);
