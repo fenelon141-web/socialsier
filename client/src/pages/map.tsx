@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/bottom-navigation";
 import SpotCard from "@/components/spot-card";
-import GoogleMap from "@/components/google-map";
+import LeafletMap from "@/components/leaflet-map";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { ArrowLeft, MapPin, Star, Target, Navigation } from "lucide-react";
 import { Link } from "wouter";
@@ -70,7 +70,7 @@ export default function MapView() {
             </div>
           </div>
         ) : latitude && longitude ? (
-          <GoogleMap 
+          <LeafletMap 
             center={{ lat: latitude, lng: longitude }}
             spots={spots}
             onSpotClick={(spot) => {

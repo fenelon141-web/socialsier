@@ -24,42 +24,144 @@ function calculateDistance(
   return R * c; // Distance in meters
 }
 
-async function findNearbyTrendySpots(lat: number, lng: number, radius: number, apiKey: string) {
-  const trendyTypes = ['restaurant', 'cafe', 'coffee_shop', 'bakery', 'meal_takeaway'];
-  const allResults: any[] = [];
-
-  for (const type of trendyTypes) {
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?` +
-        `location=${lat},${lng}&radius=${radius}&type=${type}&` +
-        `key=${apiKey}&fields=place_id,name,geometry,rating,price_level,types,photos,vicinity,business_status`
+async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
+  try {
+    // Use Overpass API (OpenStreetMap) to find nearby restaurants, cafes, etc.
+    const query = `
+      [out:json][timeout:25];
+      (
+        node["amenity"~"^(restaurant|cafe|fast_food|bar|pub)$"](around:${radius},${lat},${lng});
+        way["amenity"~"^(restaurant|cafe|fast_food|bar|pub)$"](around:${radius},${lat},${lng});
+        relation["amenity"~"^(restaurant|cafe|fast_food|bar|pub)$"](around:${radius},${lat},${lng});
       );
-      
-      if (!response.ok) continue;
-      
-      const data = await response.json();
-      
-      if (data.results) {
-        const trendyResults = data.results.filter((place: any) => {
-          const isTrendy = isTrendyPlace(place);
-          const hasGoodRating = !place.rating || place.rating >= 4.0;
-          const isOpen = place.business_status === 'OPERATIONAL' || !place.business_status;
-          
-          return isTrendy && hasGoodRating && isOpen;
-        });
+      out geom;
+    `;
 
-        allResults.push(...trendyResults);
-      }
-    } catch (error) {
-      console.warn(`Failed to search for ${type}:`, error);
+    const response = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `data=${encodeURIComponent(query)}`
+    });
+
+    if (!response.ok) {
+      console.warn('Overpass API request failed:', response.status);
+      return [];
     }
-  }
 
-  const uniqueResults = removeDuplicates(allResults);
-  const spots = uniqueResults.map(place => convertGooglePlaceToSpot(place, lat, lng));
+    const data = await response.json();
+    
+    if (!data.elements || data.elements.length === 0) {
+      return [];
+    }
+
+    // Convert OSM data to our spot format
+    const spots = data.elements
+      .filter((element: any) => element.lat && element.lon && element.tags && element.tags.name)
+      .map((element: any) => convertOSMToSpot(element, lat, lng))
+      .filter((spot: any) => spot && isTrendyPlace(spot));
+
+    const uniqueResults = removeDuplicates(spots);
+    return sortByTrendiness(uniqueResults).slice(0, 25);
+
+  } catch (error) {
+    console.warn('Failed to fetch nearby spots from OSM:', error);
+    return [];
+  }
+}
+
+function convertOSMToSpot(element: any, userLat: number, userLng: number) {
+  const tags = element.tags || {};
+  const placeLat = element.lat || (element.center ? element.center.lat : 0);
+  const placeLng = element.lon || (element.center ? element.center.lon : 0);
   
-  return sortByTrendiness(spots).slice(0, 25);
+  if (!placeLat || !placeLng) return null;
+  
+  const distance = calculateDistance(userLat, userLng, placeLat, placeLng);
+  
+  // Generate a consistent but varied rating based on name and type
+  const nameHash = (tags.name || '').split('').reduce((hash, char) => hash + char.charCodeAt(0), 0);
+  const rating = 3.5 + ((nameHash % 20) / 40); // Range: 3.5 - 4.0
+  
+  return {
+    id: element.id || Math.random().toString(),
+    name: tags.name || 'Local Spot',
+    description: getOSMDescription(tags),
+    latitude: placeLat,
+    longitude: placeLng,
+    rating: Math.round(rating * 10) / 10,
+    imageUrl: getAestheticImageUrl(tags),
+    category: getOSMCategory(tags.amenity),
+    trending: rating >= 3.8,
+    huntCount: Math.floor(Math.random() * 30) + 5,
+    distance: Math.round(distance),
+    amenity: tags.amenity,
+    cuisine: tags.cuisine,
+    website: tags.website,
+    phone: tags.phone
+  };
+}
+
+function getOSMDescription(tags: any): string {
+  const amenity = tags.amenity || '';
+  const cuisine = tags.cuisine || '';
+  
+  let description = '';
+  
+  if (amenity === 'cafe' || amenity === 'coffee_shop') {
+    description = '☕ Cozy local coffee spot';
+  } else if (amenity === 'restaurant') {
+    if (cuisine) {
+      description = `🍽️ ${cuisine.charAt(0).toUpperCase() + cuisine.slice(1)} cuisine`;
+    } else {
+      description = '🍽️ Local dining experience';
+    }
+  } else if (amenity === 'fast_food') {
+    description = '🍔 Quick & tasty bites';
+  } else if (amenity === 'bar' || amenity === 'pub') {
+    description = '🍷 Trendy drinks & vibes';
+  } else {
+    description = '✨ Local hotspot';
+  }
+  
+  if (tags.organic === 'yes') description += ' • Organic';
+  if (tags.fair_trade === 'yes') description += ' • Fair Trade';
+  if (tags.vegan === 'yes' || tags.diet_vegan === 'yes') description += ' • Vegan';
+  
+  return description;
+}
+
+function getAestheticImageUrl(tags: any): string {
+  const amenity = tags.amenity || '';
+  const cuisine = tags.cuisine || '';
+  
+  const imageMap: { [key: string]: string } = {
+    'cafe': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'restaurant': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'fast_food': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'bar': 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'pub': 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
+  };
+  
+  // Cuisine-specific images
+  if (cuisine === 'italian') return 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
+  if (cuisine === 'asian' || cuisine === 'japanese') return 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
+  if (cuisine === 'mexican') return 'https://images.unsplash.com/photo-1565299585323-38174c58d2ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
+  
+  return imageMap[amenity] || 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
+}
+
+function getOSMCategory(amenity: string): string {
+  const categoryMap: { [key: string]: string } = {
+    'cafe': 'coffee',
+    'restaurant': 'restaurant',
+    'fast_food': 'fast_food',
+    'bar': 'bar',
+    'pub': 'bar'
+  };
+  
+  return categoryMap[amenity] || 'food';
 }
 
 function isTrendyPlace(place: any): boolean {
@@ -243,7 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(spots);
   });
 
-  // Get nearby spots based on user location using Google Places API
+  // Get nearby spots based on user location using OpenStreetMap
   app.get("/api/spots/nearby", async (req, res) => {
     try {
       const { lat, lng, radius = 2000 } = req.query;
@@ -256,12 +358,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userLng = parseFloat(lng as string);
       const searchRadius = parseInt(radius as string);
       
-      // Get Google Places API key
-      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        // Fallback to stored spots
+      // Use OpenStreetMap to find nearby trendy spots (completely free)
+      const nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
+      
+      if (nearbySpots.length === 0) {
+        // Fallback to stored spots if OSM returns no results
         const allSpots = await storage.getAllSpots();
-        const nearbySpots = allSpots
+        const fallbackSpots = allSpots
           .map(spot => ({
             ...spot,
             distance: calculateDistance(userLat, userLng, spot.latitude, spot.longitude)
@@ -269,11 +372,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .filter(spot => spot.distance <= searchRadius)
           .sort((a, b) => a.distance - b.distance);
         
-        return res.json(nearbySpots);
+        return res.json(fallbackSpots);
       }
-
-      // Use Google Places API to find trendy spots
-      const nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius, apiKey);
+      
       res.json(nearbySpots);
       
     } catch (error) {
