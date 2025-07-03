@@ -302,12 +302,25 @@ function isTrendyPlace(place: any): boolean {
     // Sweets & Aesthetic
     'macaron', 'cupcake', 'artisan', 'craft', 'local', 'farm',
     'boutique', 'specialty', 'gourmet', 'aesthetic', 'instagram',
-    'cute', 'cozy', 'chic', 'modern', 'minimalist', 'rustic'
+    'cute', 'cozy', 'chic', 'modern', 'minimalist', 'rustic',
+    // Fitness & Wellness
+    'yoga', 'pilates', 'barre', 'soul', 'pure', 'fitness',
+    'studio', 'wellness', 'reformer', 'hot', 'cycle', 'spin',
+    'boxing', 'kickboxing', 'crossfit', 'bootcamp', 'hiit',
+    'dance', 'sculpt', 'stretch', 'meditation', 'mindful'
   ];
 
   const trendyTypes = [
     'cafe', 'coffee', 'juice_bar', 'health_food', 'organic',
     'bakery', 'tea', 'bubble_tea', 'vegan', 'vegetarian'
+  ];
+
+  const fitnessTypes = [
+    'sports_centre', 'fitness_centre', 'fitness_station'
+  ];
+
+  const fitnessSports = [
+    'yoga', 'pilates', 'fitness', 'aerobics', 'gymnastics'
   ];
 
   const hasTrendyKeyword = trendyKeywords.some(keyword => 
@@ -317,10 +330,17 @@ function isTrendyPlace(place: any): boolean {
   const hasTrendyAmenity = amenity === 'cafe' || amenity === 'juice_bar';
   const hasTrendyShop = trendyTypes.includes(shop);
   const hasTrendyCuisine = ['vegan', 'vegetarian', 'healthy', 'bubble_tea', 'coffee_shop'].includes(cuisine);
+  const hasFitnessLeisure = fitnessTypes.includes(leisure);
+  const hasFitnessSport = fitnessSports.includes(sport);
   
   // For restaurants, be more selective
   if (amenity === 'restaurant') {
     return hasTrendyKeyword || hasTrendyCuisine;
+  }
+
+  // Always include fitness places if they match our fitness criteria
+  if (hasFitnessLeisure || hasFitnessSport) {
+    return true;
   }
 
   return hasTrendyKeyword || hasTrendyAmenity || hasTrendyShop || hasTrendyCuisine;
