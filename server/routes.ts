@@ -38,6 +38,15 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
         way["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
         node["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy)$"](around:${radius},${lat},${lng});
         way["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy)$"](around:${radius},${lat},${lng});
+        node["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
+        way["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
+        relation["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
+        node["sport"~"^(yoga|pilates|fitness|aerobics|gymnastics)$"](around:${radius},${lat},${lng});
+        way["sport"~"^(yoga|pilates|fitness|aerobics|gymnastics)$"](around:${radius},${lat},${lng});
+        relation["sport"~"^(yoga|pilates|fitness|aerobics|gymnastics)$"](around:${radius},${lat},${lng});
+        node["shop"="sports"](around:${radius},${lat},${lng});
+        way["shop"="sports"](around:${radius},${lat},${lng});
+        relation["shop"="sports"](around:${radius},${lat},${lng});
       );
       out geom;
     `;
@@ -97,7 +106,7 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
     longitude: placeLng,
     rating: Math.round(rating * 10) / 10,
     imageUrl: getAestheticImageUrl(tags),
-    category: getOSMCategory(tags.amenity),
+    category: getOSMCategory(tags),
     trending: rating >= 3.8,
     huntCount: Math.floor(Math.random() * 30) + 5,
     distance: Math.round(distance),
@@ -112,12 +121,28 @@ function getOSMDescription(tags: any): string {
   const amenity = tags.amenity || '';
   const cuisine = tags.cuisine || '';
   const shop = tags.shop || '';
+  const leisure = tags.leisure || '';
+  const sport = tags.sport || '';
   const name = (tags.name || '').toLowerCase();
   
   let description = '';
   
+  // Fitness and workout classes
+  if (leisure === 'fitness_centre' || leisure === 'sports_centre' || sport === 'fitness') {
+    description = '💪 Trendy fitness studio with Instagram-worthy vibes';
+  } else if (sport === 'yoga' || name.includes('yoga')) {
+    description = '🧘‍♀️ Aesthetic yoga classes & mindful movement';
+  } else if (sport === 'pilates' || name.includes('pilates')) {
+    description = '🤸‍♀️ Hot girl pilates & core strengthening';
+  } else if (sport === 'aerobics' || name.includes('barre')) {
+    description = '💃 Barre classes & dance fitness vibes';
+  } else if (sport === 'gymnastics' || name.includes('gymnastic')) {
+    description = '🤸‍♀️ Aesthetic movement & flexibility training';
+  } else if (shop === 'sports' || name.includes('gym')) {
+    description = '🏋️‍♀️ Boutique fitness with trendy equipment';
+  } 
   // Specific trendy drink spots
-  if (name.includes('matcha') || cuisine === 'bubble_tea' || shop === 'tea') {
+  else if (name.includes('matcha') || cuisine === 'bubble_tea' || shop === 'tea') {
     description = '🍵 Aesthetic matcha lattes & boba tea';
   } else if (name.includes('juice') || amenity === 'juice_bar') {
     description = '🥤 Cold-pressed juices & smoothie bowls';
@@ -159,7 +184,26 @@ function getAestheticImageUrl(tags: any): string {
   const amenity = tags.amenity || '';
   const cuisine = tags.cuisine || '';
   const shop = tags.shop || '';
+  const leisure = tags.leisure || '';
+  const sport = tags.sport || '';
   const name = (tags.name || '').toLowerCase();
+  
+  // Fitness and workout images
+  if (leisure === 'fitness_centre' || leisure === 'sports_centre' || sport === 'fitness') {
+    return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Modern gym
+  }
+  if (sport === 'yoga' || name.includes('yoga')) {
+    return 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Yoga studio
+  }
+  if (sport === 'pilates' || name.includes('pilates')) {
+    return 'https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Pilates studio
+  }
+  if (sport === 'aerobics' || name.includes('barre')) {
+    return 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Barre class
+  }
+  if (shop === 'sports' || name.includes('gym')) {
+    return 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Modern fitness
+  }
   
   // Specific trendy aesthetic images
   if (name.includes('matcha') || shop === 'tea') {
@@ -205,16 +249,25 @@ function getAestheticImageUrl(tags: any): string {
   return imageMap[amenity] || 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
 }
 
-function getOSMCategory(amenity: string): string {
+function getOSMCategory(tags: any): string {
+  const amenity = tags.amenity || '';
+  const leisure = tags.leisure || '';
+  const sport = tags.sport || '';
+  const shop = tags.shop || '';
+  
+  // Fitness categories
+  if (leisure === 'fitness_centre' || leisure === 'sports_centre' || sport === 'fitness' || sport === 'yoga' || sport === 'pilates' || sport === 'aerobics' || sport === 'gymnastics' || shop === 'sports') {
+    return 'gym';
+  }
+  
   const categoryMap: { [key: string]: string } = {
-    'cafe': 'coffee',
+    'cafe': 'café',
     'restaurant': 'restaurant',
-    'fast_food': 'fast_food',
-    'bar': 'bar',
-    'pub': 'bar'
+    'juice_bar': 'café',
+    'bar': 'restaurant'
   };
   
-  return categoryMap[amenity] || 'food';
+  return categoryMap[amenity] || 'trendy';
 }
 
 function isTrendyPlace(place: any): boolean {

@@ -38,125 +38,32 @@ export interface IStorage {
 }
 
 class MemStorage implements IStorage {
-  private users: User[] = [
-    {
-      id: 1,
-      username: "valley_girl",
-      email: "test@example.com",
-      level: 1,
-      totalPoints: 0,
-      spotsHunted: 0,
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
-      createdAt: new Date()
-    }
-  ];
-
-  private spots: Spot[] = [
-    {
-      id: 1,
-      name: "Zen Garden Café",
-      createdAt: new Date(),
-      description: "Aesthetic minimalist café serving iced matcha lattes with oat milk foam art and fresh açaí bowls topped with edible flowers",
-      category: "café",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      address: "123 Trendy Street, San Francisco, CA",
-      rating: 4.8,
-      huntCount: 45,
-      imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop",
-      trending: true
-    },
-    {
-      id: 2,
-      name: "Pure Barre Paradise",
-      createdAt: new Date(),
-      description: "Boutique fitness studio with Instagram-worthy pink walls and motivational neon signs",
-      category: "gym",
-      latitude: 37.7849,
-      longitude: -122.4094,
-      address: "456 Wellness Way, San Francisco, CA",
-      rating: 4.9,
-      huntCount: 78,
-      imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-      trending: true
-    },
-    {
-      id: 3,
-      name: "Boba Bliss",
-      createdAt: new Date(),
-      description: "Trendy boba tea shop with aesthetic pastel colors and Instagrammable drink presentations",
-      category: "café",
-      latitude: 37.7649,
-      longitude: -122.4294,
-      address: "789 Aesthetic Ave, San Francisco, CA",
-      rating: 4.7,
-      huntCount: 32,
-      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
-      trending: true
-    }
-  ];
-
-  private badges: Badge[] = [
-    {
-      id: 1,
-      name: "Matcha Maven",
-      description: "Hunt 5 matcha spots",
-      category: "food",
-      emoji: "🍵",
-      requirement: "Visit 5 different matcha-serving locations",
-      rarity: "common"
-    },
-    {
-      id: 2,
-      name: "Workout Warrior",
-      description: "Complete 10 gym check-ins",
-      category: "fitness",
-      emoji: "💪",
-      requirement: "Check in to 10 different fitness studios",
-      rarity: "rare"
-    },
-    {
-      id: 3,
-      name: "Boba Babe",
-      description: "Try boba at 3 different spots",
-      category: "drinks",
-      emoji: "🧋",
-      requirement: "Visit 3 different boba tea locations",
-      rarity: "common"
-    }
-  ];
-
+  private users: User[] = [];
+  private spots: Spot[] = [];
+  private badges: Badge[] = [];
   private userBadges: UserBadge[] = [];
   private spotHunts: SpotHunt[] = [];
-
-  private dailyChallenges: DailyChallenge[] = [
-    {
-      id: 1,
-      title: "Matcha Monday",
-      description: "Hunt 3 matcha spots today",
-      targetCount: 3,
-      pointsReward: 50,
-      badgeReward: null,
-      active: true,
-      date: new Date()
-    }
-  ];
-
+  private dailyChallenges: DailyChallenge[] = [];
   private userChallengeProgress: UserChallengeProgress[] = [];
-
-  private rewards: Reward[] = [
-    {
-      id: 1,
-      title: "Free Matcha Latte",
-      description: "Redeem at partner cafés",
-      pointsCost: 100,
-      type: "discount",
-      active: true
-    }
-  ];
+  private rewards: Reward[] = [];
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
+    // Create default user if none exists yet
+    if (this.users.length === 0 && id === 1) {
+      const defaultUser: User = {
+        id: 1,
+        username: "Guest User",
+        email: "guest@example.com",
+        level: 1,
+        totalPoints: 0,
+        spotsHunted: 0,
+        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
+        createdAt: new Date()
+      };
+      this.users.push(defaultUser);
+      return defaultUser;
+    }
     return this.users.find(user => user.id === id);
   }
 
@@ -307,27 +214,54 @@ class MemStorage implements IStorage {
 
   // Activity feed
   async getRecentActivity(): Promise<any[]> {
-    return [
-      {
-        id: 1,
-        friend: {
-          name: "Madison",
-          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face"
-        },
-        action: "Found a new matcha spot",
-        spot: "Zen Garden Café",
-        timeAgo: "2 hours ago"
-      },
-      {
-        id: 2,
-        friend: {
-          name: "Taylor",
-          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
-        },
-        action: "Earned Matcha Maven badge",
-        timeAgo: "4 hours ago"
+    // Generate activity based on actual spot hunts and badge awards
+    const activities: any[] = [];
+    
+    // Add recent spot hunts as activity
+    this.spotHunts.slice(-5).forEach((hunt, index) => {
+      const spot = this.spots.find(s => s.id === hunt.spotId);
+      if (spot) {
+        activities.push({
+          id: activities.length + 1,
+          type: 'spot_hunt',
+          action: `discovered ${spot.name}`,
+          spot: spot.name,
+          timeAgo: this.getTimeAgo(hunt.huntedAt),
+          points: hunt.pointsEarned
+        });
       }
-    ];
+    });
+    
+    // Add recent badge awards as activity
+    this.userBadges.slice(-3).forEach(userBadge => {
+      const badge = this.badges.find(b => b.id === userBadge.badgeId);
+      if (badge) {
+        activities.push({
+          id: activities.length + 1,
+          type: 'badge_earned',
+          action: `earned ${badge.name} badge`,
+          badge: badge.name,
+          timeAgo: this.getTimeAgo(userBadge.earnedAt),
+          emoji: badge.emoji
+        });
+      }
+    });
+    
+    return activities.sort((a, b) => 
+      new Date(b.timeAgo).getTime() - new Date(a.timeAgo).getTime()
+    ).slice(0, 10);
+  }
+  
+  private getTimeAgo(date: Date | null): string {
+    if (!date) return 'just now';
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+    
+    if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    if (diffHours > 0) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return 'just now';
   }
 }
 

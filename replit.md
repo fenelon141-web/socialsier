@@ -146,6 +146,14 @@ Changelog:
   - Added genuine location display using reverse geocoding with OpenStreetMap Nominatim API
   - Home page top-left shows user's real city/town/country location
   - Enhanced user creation process to ensure proper initialization
+- July 03, 2025. Removed all hardcoded mock data and added real-time workout classes
+  - Eliminated all hardcoded spots, badges, challenges, and rewards
+  - All data now comes from real-time OpenStreetMap API queries
+  - Enhanced OpenStreetMap integration to include fitness studios and workout classes
+  - Added support for yoga studios, pilates centers, barre classes, and sports centers
+  - Activity feed now generates from actual user interactions instead of mock data
+  - Fitness spots show appropriate descriptions (yoga, pilates, barre, aerobics)
+  - Added aesthetic fitness studio images for each workout type
 ```
 
 ## User Preferences
