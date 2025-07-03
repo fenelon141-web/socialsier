@@ -27,9 +27,11 @@ export default function TopNavigation() {
         <div className="flex items-center space-x-3">
           <div className="relative">
             <Trophy className="text-yellow-300 text-xl" />
-            <span className="absolute -top-2 -right-2 bg-red-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-              3
-            </span>
+            {user && user.spotsHunted > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {Math.min(user.spotsHunted, 99)}
+              </span>
+            )}
           </div>
           <img 
             src={user?.avatar || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"} 
@@ -42,13 +44,13 @@ export default function TopNavigation() {
       {/* Stats Bar */}
       <div className="flex justify-between mt-3 text-center">
         <div className="bg-white bg-opacity-20 rounded-full px-3 py-1">
-          <span className="text-xs font-semibold">💎 {user?.spotsHunted || 127} Spots</span>
+          <span className="text-xs font-semibold">💎 {user?.spotsHunted || 0} Spots</span>
         </div>
         <div className="bg-white bg-opacity-20 rounded-full px-3 py-1">
-          <span className="text-xs font-semibold">🏆 Level {user?.level || 8}</span>
+          <span className="text-xs font-semibold">🏆 Level {user?.level || 1}</span>
         </div>
         <div className="bg-white bg-opacity-20 rounded-full px-3 py-1">
-          <span className="text-xs font-semibold">✨ {(user?.totalPoints || 2300).toLocaleString()} Points</span>
+          <span className="text-xs font-semibold">✨ {(user?.totalPoints || 0).toLocaleString()} Points</span>
         </div>
       </div>
     </div>

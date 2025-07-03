@@ -167,92 +167,98 @@ export default function Home() {
         </Card>
 
         {/* Recent Badges */}
-        <Card className="card-gradient rounded-2xl shadow-lg border-0">
-          <CardContent className="p-4">
-            <h2 className="text-lg font-bold text-gray-800 mb-3">Latest Badges 🏆</h2>
-            <div className="flex space-x-3 overflow-x-auto pb-2">
-              {badgesLoading ? (
-                [1, 2, 3, 4].map(i => (
-                  <div key={i} className="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px] animate-pulse">
-                    <div className="w-8 h-8 bg-gray-200 rounded mx-auto mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded mb-1"></div>
-                    <div className="h-2 bg-gray-200 rounded"></div>
-                  </div>
-                ))
-              ) : (
-                recentBadges.map(userBadge => (
-                  <BadgeCard key={userBadge.id} userBadge={userBadge} />
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {recentBadges.length > 0 && (
+          <Card className="card-gradient rounded-2xl shadow-lg border-0">
+            <CardContent className="p-4">
+              <h2 className="text-lg font-bold text-gray-800 mb-3">Latest Badges 🏆</h2>
+              <div className="flex space-x-3 overflow-x-auto pb-2">
+                {badgesLoading ? (
+                  [1, 2, 3, 4].map(i => (
+                    <div key={i} className="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px] animate-pulse">
+                      <div className="w-8 h-8 bg-gray-200 rounded mx-auto mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded mb-1"></div>
+                      <div className="h-2 bg-gray-200 rounded"></div>
+                    </div>
+                  ))
+                ) : (
+                  recentBadges.map(userBadge => (
+                    <BadgeCard key={userBadge.id} userBadge={userBadge} />
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Rewards Section */}
-        <Card className="card-gradient rounded-2xl shadow-lg border-0">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-800">Rewards 🎁</h2>
-              <span className="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full font-semibold">
-                {rewards?.length || 0} Available
-              </span>
-            </div>
-            
-            <div className="space-y-2">
-              {rewards?.map(reward => (
-                <div key={reward.id} className="bg-white rounded-xl p-3 border border-yellow-300 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-valley-gold rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">
-                          {reward.discountPercent ? `${reward.discountPercent}%` : 'BOGO'}
-                        </span>
+        {rewards && rewards.length > 0 && (
+          <Card className="card-gradient rounded-2xl shadow-lg border-0">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-bold text-gray-800">Rewards 🎁</h2>
+                <span className="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full font-semibold">
+                  {rewards?.length || 0} Available
+                </span>
+              </div>
+              
+              <div className="space-y-2">
+                {rewards?.map(reward => (
+                  <div key={reward.id} className="bg-white rounded-xl p-3 border border-yellow-300 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-valley-gold rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-xs">
+                            {reward.discountPercent ? `${reward.discountPercent}%` : 'BOGO'}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm text-gray-800">{reward.title}</p>
+                          <p className="text-xs text-gray-600">{reward.description}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-sm text-gray-800">{reward.title}</p>
-                        <p className="text-xs text-gray-600">{reward.description}</p>
-                      </div>
+                      <Button className="bg-valley-pink text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        Claim
+                      </Button>
                     </div>
-                    <Button className="bg-valley-pink text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      Claim
-                    </Button>
                   </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Friends Activity */}
-        <Card className="card-gradient rounded-2xl shadow-lg border-0">
-          <CardContent className="p-4">
-            <h2 className="text-lg font-bold text-gray-800 mb-3">Squad Activity 👯‍♀️</h2>
-            <div className="space-y-3">
-              {activity?.map(item => (
-                <div key={item.id} className="flex items-center space-x-3">
-                  <img 
-                    src={item.friend.avatar} 
-                    alt={item.friend.name}
-                    className="w-10 h-10 rounded-full border-2 border-pink-400"
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-800">
-                      <span className="font-semibold">{item.friend.name}</span> {item.action}
-                    </p>
-                    <p className="text-xs text-gray-600">{item.timestamp}</p>
+        {activity && activity.length > 0 && (
+          <Card className="card-gradient rounded-2xl shadow-lg border-0">
+            <CardContent className="p-4">
+              <h2 className="text-lg font-bold text-gray-800 mb-3">Squad Activity 👯‍♀️</h2>
+              <div className="space-y-3">
+                {activity?.map(item => (
+                  <div key={item.id} className="flex items-center space-x-3">
+                    <img 
+                      src={item.friend.avatar} 
+                      alt={item.friend.name}
+                      className="w-10 h-10 rounded-full border-2 border-pink-400"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-800">
+                        <span className="font-semibold">{item.friend.name}</span> {item.action}
+                      </p>
+                      <p className="text-xs text-gray-600">{item.timestamp}</p>
+                    </div>
+                    <div className="text-right">
+                      {item.badge ? (
+                        <div className="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full">🏆 Badge</div>
+                      ) : (
+                        <div className="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">+{item.points} XP</div>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    {item.badge ? (
-                      <div className="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full">🏆 Badge</div>
-                    ) : (
-                      <div className="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">+{item.points} XP</div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <BottomNavigation />
