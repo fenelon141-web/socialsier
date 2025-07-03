@@ -2,14 +2,34 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/bottom-navigation";
-import { ArrowLeft, MapPin, Star, Target } from "lucide-react";
+import SpotCard from "@/components/spot-card";
+import { useGeolocation } from "@/hooks/use-geolocation";
+import { ArrowLeft, MapPin, Star, Target, Navigation } from "lucide-react";
 import { Link } from "wouter";
 import type { Spot } from "@shared/schema";
 
 export default function MapView() {
-  const { data: spots, isLoading } = useQuery<Spot[]>({
-    queryKey: ["/api/spots"]
+  const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
+  
+  // Get nearby spots based on current location
+  const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({
+    queryKey: ["/api/spots/nearby", latitude, longitude],
+    queryFn: async () => {
+      if (!latitude || !longitude) return [];
+      const response = await fetch(`/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=5000`);
+      return response.json();
+    },
+    enabled: !!latitude && !!longitude
   });
+
+  // Fallback to all spots if location is not available
+  const { data: allSpots, isLoading: allSpotsLoading } = useQuery<Spot[]>({
+    queryKey: ["/api/spots"],
+    enabled: !latitude || !longitude
+  });
+
+  const spots = nearbySpots || allSpots || [];
+  const isLoading = spotsLoading || allSpotsLoading;
 
   return (
     <div className="min-h-screen bg-white">
@@ -28,42 +48,74 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* Mock Map Area */}
+      {/* Map Area with Location Status */}
       <div className="relative h-64 bg-gradient-to-br from-green-100 to-blue-100 border-b">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <MapPin className="w-12 h-12 text-pink-400 mx-auto mb-2" />
-            <p className="text-gray-600 text-sm">Interactive map would go here</p>
-            <p className="text-xs text-gray-500">Beverly Hills, CA 📍</p>
+            {locationLoading ? (
+              <>
+                <Navigation className="w-12 h-12 text-pink-400 mx-auto mb-2 animate-spin" />
+                <p className="text-gray-600 text-sm">Finding your location...</p>
+              </>
+            ) : locationError ? (
+              <>
+                <MapPin className="w-12 h-12 text-red-400 mx-auto mb-2" />
+                <p className="text-gray-600 text-sm">Location unavailable</p>
+                <p className="text-xs text-gray-500">Showing all spots</p>
+              </>
+            ) : (
+              <>
+                <MapPin className="w-12 h-12 text-pink-400 mx-auto mb-2" />
+                <p className="text-gray-600 text-sm">Interactive map would go here</p>
+                <p className="text-xs text-gray-500">
+                  {latitude && longitude ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` : "Location found"}
+                </p>
+              </>
+            )}
           </div>
         </div>
         
-        {/* Mock spot markers */}
-        <div className="absolute top-16 left-12">
-          <div className="w-6 h-6 bg-pink-400 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg animate-bounce-slow">
-            1
+        {/* Dynamic spot markers based on nearby spots */}
+        {spots.slice(0, 3).map((spot, index) => (
+          <div 
+            key={spot.id}
+            className={`absolute ${
+              index === 0 ? "top-16 left-12" : 
+              index === 1 ? "top-32 right-16" : 
+              "bottom-16 left-1/2 transform -translate-x-1/2"
+            }`}
+          >
+            <div className={`w-6 h-6 ${
+              index === 0 ? "bg-pink-400" : 
+              index === 1 ? "bg-purple-400" : 
+              "bg-yellow-400"
+            } rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg ${
+              index === 0 ? "animate-bounce-slow" : ""
+            }`}>
+              {index + 1}
+            </div>
           </div>
-        </div>
-        <div className="absolute top-32 right-16">
-          <div className="w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg">
-            2
-          </div>
-        </div>
-        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
-          <div className="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg">
-            3
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Spots List */}
       <div className="p-4 space-y-4 pb-20">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-800">Nearby Spots 📍</h2>
+          <h2 className="text-lg font-bold text-gray-800">
+            {latitude && longitude ? "Nearby Spots 📍" : "All Spots 🗺️"}
+          </h2>
           <span className="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
             {spots?.length || 0} spots found
           </span>
         </div>
+
+        {locationError && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <p className="text-sm text-yellow-800">
+              📍 Location permission needed for nearby spots and check-ins
+            </p>
+          </div>
+        )}
 
         <div className="space-y-3">
           {isLoading ? (
@@ -81,39 +133,15 @@ export default function MapView() {
                 </CardContent>
               </Card>
             ))
+          ) : spots?.length === 0 ? (
+            <div className="text-center py-8">
+              <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500">No spots found nearby</p>
+              <p className="text-xs text-gray-400">Try expanding your search radius</p>
+            </div>
           ) : (
-            spots?.map((spot, index) => (
-              <Card key={spot.id} className="spot-card border border-purple-100 shadow-md">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-3">
-                    <img 
-                      src={spot.imageUrl} 
-                      alt={spot.name}
-                      className="w-16 h-16 rounded-xl object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-1">
-                        <h3 className="font-semibold text-gray-800 text-sm">{spot.name}</h3>
-                        {spot.trending && <span className="text-xs">🔥</span>}
-                      </div>
-                      <p className="text-xs text-gray-600">{spot.description}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">
-                          {(0.2 + index * 0.3).toFixed(1)} mi
-                        </span>
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-xs text-gray-600">{spot.rating}</span>
-                        </div>
-                        <span className="text-xs text-gray-500">{spot.huntCount} hunts</span>
-                      </div>
-                    </div>
-                    <Button className="bg-pink-400 text-white p-2 rounded-full shadow-lg hover:bg-pink-500">
-                      <Target className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+            spots?.map((spot) => (
+              <SpotCard key={spot.id} spot={spot} />
             ))
           )}
         </div>

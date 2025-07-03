@@ -35,6 +35,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.patch("/api/user/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      // Validate user exists
+      const existingUser = await storage.getUser(userId);
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update user profile
+      const updatedUser = await storage.updateUser(userId, updates);
+      if (!updatedUser) {
+        return res.status(400).json({ message: "Failed to update user" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
+  app.patch("/api/user/:id", async (req, res) => {
     const updatedUser = await storage.updateUser(parseInt(req.params.id), req.body);
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });

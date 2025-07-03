@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import BottomNavigation from "@/components/bottom-navigation";
+import EditProfileDialog from "@/components/edit-profile-dialog";
 import { ArrowLeft, Settings, Share, Trophy, MapPin, Star } from "lucide-react";
 import { Link } from "wouter";
 import type { User, UserBadge, Badge } from "@shared/schema";
@@ -90,9 +91,13 @@ export default function Profile() {
                     <Share className="w-4 h-4 mr-2" />
                     Share Profile
                   </Button>
-                  <Button variant="outline" className="flex-1 rounded-xl">
-                    Edit Profile
-                  </Button>
+                  {user && (
+                    <EditProfileDialog user={user}>
+                      <Button variant="outline" className="flex-1 rounded-xl">
+                        Edit Profile
+                      </Button>
+                    </EditProfileDialog>
+                  )}
                 </div>
               </>
             )}

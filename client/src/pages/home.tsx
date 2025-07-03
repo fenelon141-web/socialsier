@@ -79,7 +79,7 @@ export default function Home() {
               </div>
               
               <div className="space-y-3">
-                {nearbySpots.slice(0, 5).map(spot => (
+                {nearbySpots.slice(0, 5).map((spot: any) => (
                   <SpotCard key={spot.id} spot={spot} />
                 ))}
               </div>
