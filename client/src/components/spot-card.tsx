@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Target, Star, Navigation, MapPin } from "lucide-react";
+import { Target, Star, Navigation, MapPin, Route } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useGeolocation } from "@/hooks/use-geolocation";
@@ -79,6 +79,44 @@ export default function SpotCard({ spot }: SpotCardProps) {
     return "Unknown distance";
   };
 
+  const openDirections = () => {
+    const destination = `${spot.latitude},${spot.longitude}`;
+    const spotName = encodeURIComponent(spot.name);
+
+    // Detect if user is on mobile and prefer native apps
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Try Google Maps app first (works on both iOS and Android)
+      const googleMapsUrl = `https://maps.google.com/maps?q=${destination}&navigate=yes`;
+      window.open(googleMapsUrl, '_blank');
+    } else {
+      // For desktop, open multiple options in new tabs
+      const options = [
+        {
+          name: 'Google Maps',
+          url: `https://maps.google.com/maps?q=${destination}&navigate=yes`
+        },
+        {
+          name: 'Apple Maps',
+          url: `https://maps.apple.com/?q=${spotName}&ll=${destination}&dirflg=d`
+        },
+        {
+          name: 'OpenStreetMap',
+          url: `https://www.openstreetmap.org/directions?from=${latitude},${longitude}&to=${destination}`
+        }
+      ];
+
+      // Open Google Maps by default
+      window.open(options[0].url, '_blank');
+      
+      toast({
+        title: "Navigation opened! 🗺️",
+        description: "Directions opened in your default maps app",
+      });
+    }
+  };
+
   return (
     <div className="spot-card bg-white rounded-xl p-3 shadow-md border border-purple-100">
       <div className="flex items-center space-x-3">
@@ -112,32 +150,45 @@ export default function SpotCard({ spot }: SpotCardProps) {
             <span className="text-xs text-gray-500">{spot.huntCount} hunts</span>
           </div>
         </div>
-        <Button 
-          className={`${
-            withinRange 
-              ? "bg-green-500 hover:bg-green-600" 
-              : !latitude || !longitude
-              ? "bg-gray-400"
-              : "bg-red-400 hover:bg-red-500"
-          } text-white p-2 rounded-full shadow-lg disabled:opacity-50`}
-          onClick={() => huntMutation.mutate()}
-          disabled={huntMutation.isPending || !withinRange || !latitude || !longitude}
-          title={
-            !latitude || !longitude 
-              ? "Location needed" 
-              : withinRange 
-              ? "In range - tap to hunt!" 
-              : `Too far away (${distance ? Math.round(distance) : '?'}m)`
-          }
-        >
-          {!latitude || !longitude ? (
-            <MapPin className="w-4 h-4" />
-          ) : withinRange ? (
-            <Target className="w-4 h-4" />
-          ) : (
-            <Navigation className="w-4 h-4" />
-          )}
-        </Button>
+        <div className="flex space-x-2">
+          {/* Directions Button */}
+          <Button 
+            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full shadow-lg"
+            onClick={openDirections}
+            disabled={!latitude || !longitude}
+            title="Get directions"
+          >
+            <Route className="w-4 h-4" />
+          </Button>
+          
+          {/* Hunt Button */}
+          <Button 
+            className={`${
+              withinRange 
+                ? "bg-green-500 hover:bg-green-600" 
+                : !latitude || !longitude
+                ? "bg-gray-400"
+                : "bg-red-400 hover:bg-red-500"
+            } text-white p-2 rounded-full shadow-lg disabled:opacity-50`}
+            onClick={() => huntMutation.mutate()}
+            disabled={huntMutation.isPending || !withinRange || !latitude || !longitude}
+            title={
+              !latitude || !longitude 
+                ? "Location needed" 
+                : withinRange 
+                ? "In range - tap to hunt!" 
+                : `Too far away (${distance ? Math.round(distance) : '?'}m)`
+            }
+          >
+            {!latitude || !longitude ? (
+              <MapPin className="w-4 h-4" />
+            ) : withinRange ? (
+              <Target className="w-4 h-4" />
+            ) : (
+              <Navigation className="w-4 h-4" />
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );
