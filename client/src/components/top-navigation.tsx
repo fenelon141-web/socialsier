@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, Trophy } from "lucide-react";
+import { useLocation } from "@/hooks/use-location";
 import type { User } from "@shared/schema";
 
 export default function TopNavigation() {
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user/1"]
   });
+  
+  const { city, country, loading: locationLoading } = useLocation();
 
   return (
     <div className="bg-gradient-to-r from-pink-400 to-purple-300 p-4 text-white relative">
@@ -13,8 +16,12 @@ export default function TopNavigation() {
         <div className="flex items-center space-x-2">
           <MapPin className="text-2xl animate-bounce-slow" />
           <div>
-            <h1 className="text-xl font-bold">Hot Girl Hunt ✨</h1>
-            <p className="text-xs opacity-90">Beverly Hills, CA 📍</p>
+            <h1 className="text-xl font-bold">IYKYK ✨</h1>
+            <p className="text-xs opacity-90">
+              {locationLoading ? "Finding location..." : 
+               city && country ? `${city}, ${country} 📍` : 
+               "Location unavailable 📍"}
+            </p>
           </div>
         </div>
         <div className="flex items-center space-x-3">

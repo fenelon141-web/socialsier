@@ -9,11 +9,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Camera, Navigation } from "lucide-react";
 import { Link } from "wouter";
 import { useGeolocation } from "@/hooks/use-geolocation";
+import { useLocation } from "@/hooks/use-location";
 import { apiRequest } from "@/lib/queryClient";
 import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
 
 export default function Home() {
   const { latitude, longitude, loading: locationLoading } = useGeolocation();
+  const { city, country, loading: locationNameLoading } = useLocation();
   
   const { data: trendingSpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"]

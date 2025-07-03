@@ -284,9 +284,15 @@ export class MemStorage implements IStorage {
   }
 
   async createUser(user: InsertUser): Promise<User> {
+    // Ensure all new users start with zero stats
     const newUser: User = {
-      ...user,
       id: this.currentUserId++,
+      username: user.username,
+      email: user.email,
+      level: 1,
+      totalPoints: 0,
+      spotsHunted: 0,
+      avatar: user.avatar ?? null,
       createdAt: new Date()
     };
     this.users.set(newUser.id, newUser);
@@ -467,9 +473,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
+    // Ensure all new users start with zero stats
+    const userWithDefaults = {
+      ...insertUser,
+      level: 1,
+      totalPoints: 0,
+      spotsHunted: 0,
+    };
+    
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values(userWithDefaults)
       .returning();
     return user;
   }

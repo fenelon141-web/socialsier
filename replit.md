@@ -141,6 +141,11 @@ Changelog:
   - Updated spot descriptions to highlight aesthetic foods (açaí bowls, avocado toast, poke bowls)
   - Added directions functionality with native mobile app integration
   - One-tap navigation to Google Maps, Apple Maps, or OpenStreetMap
+- July 03, 2025. Unique user profiles and genuine location display
+  - All new users start with zero stats (level 1, 0 points, 0 spots hunted, no badges)
+  - Added genuine location display using reverse geocoding with OpenStreetMap Nominatim API
+  - Home page top-left shows user's real city/town/country location
+  - Enhanced user creation process to ensure proper initialization
 ```
 
 ## User Preferences
