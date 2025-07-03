@@ -1,7 +1,19 @@
-import { pgTable, text, serial, integer, boolean, timestamp, real } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, real, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Session storage table for Replit Auth
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table (keeping existing structure for now)
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -84,10 +96,11 @@ export const rewards = pgTable("rewards", {
   expiresAt: timestamp("expires_at")
 });
 
-// Insert schemas
+// Insert schemas  
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
-  createdAt: true
+  createdAt: true,
+  updatedAt: true
 });
 
 export const insertSpotSchema = createInsertSchema(spots).omit({
@@ -174,6 +187,7 @@ export const rewardsRelations = relations(rewards, ({ one }) => ({
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 export type Spot = typeof spots.$inferSelect;
 export type InsertSpot = z.infer<typeof insertSpotSchema>;
 export type Badge = typeof badges.$inferSelect;
