@@ -1,8 +1,8 @@
-# Hot Girl Hunt - Location-Based Discovery Mobile App
+# IYKYK - Location-Based Discovery Mobile App
 
 ## Overview
 
-Hot Girl Hunt is a modern mobile-first web application that gamifies location discovery. Built as a "valley girl" themed spot hunting game, users can discover trendy cafes, restaurants, gym classes, and other locations while earning points, badges, and completing daily challenges. The application features a React frontend with Express backend, using PostgreSQL for data persistence.
+IYKYK is a modern mobile-first web application that gamifies location discovery. Built as a "valley girl" themed spot hunting game, users can discover trendy cafes, restaurants, gym classes, and other locations while earning points, badges, and completing daily challenges. The application features a React frontend with Express backend, using PostgreSQL for data persistence.
 
 ## System Architecture
 
@@ -111,6 +111,7 @@ The application uses a comprehensive schema with the following main entities:
 Changelog:
 - July 03, 2025. Initial setup - SpotHunt app created with Valley Girl theme
 - July 03, 2025. App renamed to "Hot Girl Hunt" and added gym classes section
+- July 03, 2025. App renamed to "IYKYK"
   - Added 3 trending gym spots (Pure Barre Paradise, SoulCycle Vibes, Pilates Princess)
   - Added fitness badges (Workout Warrior, Barre Babe, Hot Girl Summer)
   - Added "Hot Girl Workouts" section on home page with trending gym classes
@@ -137,4 +138,5 @@ Changelog:
 ## User Preferences
 ```
 Preferred communication style: Simple, everyday language.
+App name: "IYKYK" (finalized name change from "Hot Girl Hunt")
 ```

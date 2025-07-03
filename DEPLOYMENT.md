@@ -1,7 +1,7 @@
-# Hot Girl Hunt - Mobile App Deployment Guide
+# IYKYK - Mobile App Deployment Guide
 
 ## Overview
-Hot Girl Hunt has been converted into a mobile app using Capacitor, making it ready for deployment to both the Apple App Store and Google Play Store.
+IYKYK has been converted into a mobile app using Capacitor, making it ready for deployment to both the Apple App Store and Google Play Store.
 
 ## What's Been Setup
 
@@ -72,7 +72,7 @@ npx cap open android
 - Android: Phone and tablet sizes
 
 **Store Descriptions:**
-- App title: "Hot Girl Hunt"
+- App title: "IYKYK"
 - Short description: "Discover trendy spots and gym classes"
 - Full description: "Location-based discovery app for finding Instagram-worthy cafes, restaurants, and fitness classes. Gamified experience with badges, challenges, and rewards."
 
@@ -128,7 +128,7 @@ npx cap run android --device
 - Mobile-first responsive design
 
 ## Ready for Production
-The app is now production-ready with:
+IYKYK is now production-ready with:
 - Database persistence
 - Mobile-optimized interface  
 - Native device features
