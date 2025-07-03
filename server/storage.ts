@@ -17,6 +17,7 @@ export interface IStorage {
   // Spots
   getAllSpots(): Promise<Spot[]>;
   getTrendingSpots(): Promise<Spot[]>;
+  getGymClasses(): Promise<Spot[]>;
   getSpot(id: number): Promise<Spot | undefined>;
   createSpot(spot: InsertSpot): Promise<Spot>;
   huntSpot(userId: number, spotId: number): Promise<SpotHunt>;
@@ -142,6 +143,45 @@ export class MemStorage implements IStorage {
         imageUrl: "https://images.unsplash.com/photo-1603046891744-432d9b8a5689?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400",
         trending: false,
         createdAt: new Date()
+      },
+      {
+        name: "Pure Barre Paradise 💪",
+        description: "The most aesthetic barre studio ever!",
+        category: "gym",
+        latitude: 34.0750,
+        longitude: -118.4030,
+        address: "987 Fitness Blvd",
+        rating: 4.9,
+        huntCount: 95,
+        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400",
+        trending: true,
+        createdAt: new Date()
+      },
+      {
+        name: "SoulCycle Vibes ✨",
+        description: "Spin classes with the best playlist RN",
+        category: "gym",
+        latitude: 34.0760,
+        longitude: -118.4040,
+        address: "456 Workout Way",
+        rating: 4.7,
+        huntCount: 156,
+        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400",
+        trending: true,
+        createdAt: new Date()
+      },
+      {
+        name: "Pilates Princess 👑",
+        description: "Pink equipment & dreamy reformer classes",
+        category: "gym",
+        latitude: 34.0720,
+        longitude: -118.4010,
+        address: "321 Pilates Place",
+        rating: 4.8,
+        huntCount: 78,
+        imageUrl: "https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400",
+        trending: false,
+        createdAt: new Date()
       }
     ];
 
@@ -158,7 +198,10 @@ export class MemStorage implements IStorage {
       { name: "Latte Art", description: "Hunt 15 coffee spots", emoji: "☕", category: "coffee", requirement: "15_coffee_spots", rarity: "common" },
       { name: "Kombucha Queen", description: "Master of fermented drinks", emoji: "👑", category: "drinks", requirement: "kombucha_master", rarity: "epic" },
       { name: "Matcha Master", description: "Expert matcha hunter", emoji: "🍵", category: "drinks", requirement: "matcha_expert", rarity: "rare" },
-      { name: "Bowl Boss", description: "Acai bowl enthusiast", emoji: "🍇", category: "food", requirement: "bowl_lover", rarity: "common" }
+      { name: "Bowl Boss", description: "Acai bowl enthusiast", emoji: "🍇", category: "food", requirement: "bowl_lover", rarity: "common" },
+      { name: "Workout Warrior", description: "Hit 10 trendy gym classes", emoji: "💪", category: "fitness", requirement: "10_gym_classes", rarity: "common" },
+      { name: "Barre Babe", description: "Pure barre perfection", emoji: "🩰", category: "fitness", requirement: "barre_master", rarity: "rare" },
+      { name: "Hot Girl Summer", description: "Complete summer fitness challenge", emoji: "🔥", category: "fitness", requirement: "summer_fitness", rarity: "epic" }
     ];
 
     mockBadges.forEach(badge => {
@@ -263,6 +306,10 @@ export class MemStorage implements IStorage {
 
   async getTrendingSpots(): Promise<Spot[]> {
     return Array.from(this.spots.values()).filter(spot => spot.trending);
+  }
+
+  async getGymClasses(): Promise<Spot[]> {
+    return Array.from(this.spots.values()).filter(spot => spot.category === 'gym');
   }
 
   async getSpot(id: number): Promise<Spot | undefined> {

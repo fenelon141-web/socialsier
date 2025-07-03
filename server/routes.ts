@@ -32,6 +32,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(spots);
   });
 
+  app.get("/api/spots/gym", async (req, res) => {
+    const spots = await storage.getGymClasses();
+    res.json(spots);
+  });
+
   app.get("/api/spots/:id", async (req, res) => {
     const spot = await storage.getSpot(parseInt(req.params.id));
     if (!spot) {

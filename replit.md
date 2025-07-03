@@ -1,8 +1,8 @@
-# SpotHunt - Location-Based Discovery Mobile App
+# Hot Girl Hunt - Location-Based Discovery Mobile App
 
 ## Overview
 
-SpotHunt is a modern mobile-first web application that gamifies location discovery. Built as a "valley girl" themed spot hunting game, users can discover trendy cafes, restaurants, and other locations while earning points, badges, and completing daily challenges. The application features a React frontend with Express backend, using PostgreSQL for data persistence.
+Hot Girl Hunt is a modern mobile-first web application that gamifies location discovery. Built as a "valley girl" themed spot hunting game, users can discover trendy cafes, restaurants, gym classes, and other locations while earning points, badges, and completing daily challenges. The application features a React frontend with Express backend, using PostgreSQL for data persistence.
 
 ## System Architecture
 
@@ -33,7 +33,7 @@ SpotHunt is a modern mobile-first web application that gamifies location discove
 The application uses a comprehensive schema with the following main entities:
 
 - **Users**: Profile management with levels, points, and avatar
-- **Spots**: Location data with coordinates, ratings, and categories
+- **Spots**: Location data with coordinates, ratings, and categories (including gym classes)
 - **Badges**: Achievement system with rarity levels
 - **SpotHunts**: User check-ins and point tracking
 - **DailyChallenges**: Gamification with progress tracking
@@ -41,7 +41,7 @@ The application uses a comprehensive schema with the following main entities:
 
 ### API Endpoints
 - User management (`/api/user/:id`)
-- Spot discovery (`/api/spots`, `/api/spots/trending`)
+- Spot discovery (`/api/spots`, `/api/spots/trending`, `/api/spots/gym`)
 - Spot hunting/check-ins (`/api/spots/:id/hunt`)
 - Badge system (`/api/badges`, `/api/user/:id/badges`)
 - Challenge tracking (`/api/challenges`)
@@ -109,7 +109,12 @@ The application uses a comprehensive schema with the following main entities:
 ## Changelog
 ```
 Changelog:
-- July 03, 2025. Initial setup
+- July 03, 2025. Initial setup - SpotHunt app created with Valley Girl theme
+- July 03, 2025. App renamed to "Hot Girl Hunt" and added gym classes section
+  - Added 3 trending gym spots (Pure Barre Paradise, SoulCycle Vibes, Pilates Princess)
+  - Added fitness badges (Workout Warrior, Barre Babe, Hot Girl Summer)
+  - Added "Hot Girl Workouts" section on home page with trending gym classes
+  - Added new API endpoint /api/spots/gym for gym class discovery
 ```
 
 ## User Preferences

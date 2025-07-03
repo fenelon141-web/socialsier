@@ -17,7 +17,7 @@ export const spots = pgTable("spots", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  category: text("category").notNull(), // cafe, bowl, smoothie, etc
+  category: text("category").notNull(), // cafe, bowl, smoothie, gym, etc
   latitude: real("latitude").notNull(),
   longitude: real("longitude").notNull(),
   address: text("address").notNull(),

@@ -19,6 +19,10 @@ export default function Home() {
     queryKey: ["/api/user/1/badges"]
   });
 
+  const { data: gymClasses, isLoading: gymLoading } = useQuery<Spot[]>({
+    queryKey: ["/api/spots/gym"]
+  });
+
   const { data: rewards } = useQuery<Reward[]>({
     queryKey: ["/api/rewards"]
   });
@@ -75,6 +79,38 @@ export default function Home() {
               ) : (
                 trendingSpots?.map(spot => (
                   <SpotCard key={spot.id} spot={spot} />
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Hot Girl Workouts */}
+        <Card className="card-gradient rounded-2xl shadow-lg border-0">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-800">Hot Girl Workouts 💪</h2>
+              <span className="text-xs bg-valley-coral text-white px-2 py-1 rounded-full">Trending</span>
+            </div>
+            
+            <div className="space-y-3">
+              {gymLoading ? (
+                <div className="space-y-3">
+                  {[1, 2].map(i => (
+                    <div key={i} className="bg-white rounded-xl p-3 shadow-md animate-pulse">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-16 h-16 bg-gray-200 rounded-xl"></div>
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                gymClasses?.slice(0, 2).map(gym => (
+                  <SpotCard key={gym.id} spot={gym} />
                 ))
               )}
             </div>

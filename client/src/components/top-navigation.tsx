@@ -13,7 +13,7 @@ export default function TopNavigation() {
         <div className="flex items-center space-x-2">
           <MapPin className="text-2xl animate-bounce-slow" />
           <div>
-            <h1 className="text-xl font-bold">SpotHunt ✨</h1>
+            <h1 className="text-xl font-bold">Hot Girl Hunt ✨</h1>
             <p className="text-xs opacity-90">Beverly Hills, CA 📍</p>
           </div>
         </div>
