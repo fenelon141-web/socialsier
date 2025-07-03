@@ -91,6 +91,7 @@ class MemStorage implements IStorage {
           id: 1,
           username: "Guest User",
           email: "guest@example.com",
+          password: null, // No password for guest account
           level: 1,
           totalPoints: 0,
           spotsHunted: 0,
@@ -101,6 +102,7 @@ class MemStorage implements IStorage {
           id: 2,
           username: "sophie_cafes",
           email: "sophie@example.com",
+          password: null, // Demo user
           level: 3,
           totalPoints: 450,
           spotsHunted: 12,
@@ -111,6 +113,7 @@ class MemStorage implements IStorage {
           id: 3,
           username: "matcha_lover",
           email: "emma@example.com",
+          password: null, // Demo user
           level: 2,
           totalPoints: 280,
           spotsHunted: 8,
@@ -121,6 +124,7 @@ class MemStorage implements IStorage {
           id: 4,
           username: "fitness_queen",
           email: "maya@example.com",
+          password: null, // Demo user
           level: 4,
           totalPoints: 620,
           spotsHunted: 18,

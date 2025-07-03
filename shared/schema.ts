@@ -18,6 +18,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
+  password: text("password"), // For email/password authentication
   level: integer("level").notNull().default(1),
   totalPoints: integer("total_points").notNull().default(0),
   spotsHunted: integer("spots_hunted").notNull().default(0),
@@ -145,8 +146,7 @@ export const spotReviews = pgTable("spot_reviews", {
 // Insert schemas  
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
-  createdAt: true,
-  updatedAt: true
+  createdAt: true
 });
 
 export const insertSpotSchema = createInsertSchema(spots).omit({

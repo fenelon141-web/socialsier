@@ -8,6 +8,8 @@ import MapView from "@/pages/map";
 import Social from "@/pages/social";
 import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
+import Login from "@/pages/login";
+import Register from "@/pages/register";
 import NotFound from "@/pages/not-found";
 import { useCapacitor } from "./hooks/use-capacitor";
 
@@ -19,6 +21,8 @@ function Router() {
       <Route path="/social" component={Social} />
       <Route path="/badges" component={Badges} />
       <Route path="/profile" component={Profile} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
       <Route component={NotFound} />
     </Switch>
   );
