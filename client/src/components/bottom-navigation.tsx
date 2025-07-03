@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Home, Map, Camera, Trophy, User } from "lucide-react";
+import { Home, Map, Users, Trophy, User } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export default function BottomNavigation() {
@@ -8,7 +8,7 @@ export default function BottomNavigation() {
   const navItems = [
     { path: "/", icon: Home, label: "Hunt", isActive: location === "/" },
     { path: "/map", icon: Map, label: "Map", isActive: location === "/map" },
-    { path: "/camera", icon: Camera, label: "Camera", isActive: false, isCenter: true },
+    { path: "/social", icon: Users, label: "Social", isActive: location === "/social" },
     { path: "/badges", icon: Trophy, label: "Badges", isActive: location === "/badges" },
     { path: "/profile", icon: User, label: "Profile", isActive: location === "/profile" },
   ];
@@ -19,7 +19,7 @@ export default function BottomNavigation() {
         {navItems.map((item, index) => {
           const Icon = item.icon;
           
-          if (item.isCenter) {
+          if (item.label === "Camera") {
             return (
               <Button
                 key={item.path}

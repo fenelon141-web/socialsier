@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import MapView from "@/pages/map";
+import Social from "@/pages/social";
 import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
@@ -15,6 +16,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/map" component={MapView} />
+      <Route path="/social" component={Social} />
       <Route path="/badges" component={Badges} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />

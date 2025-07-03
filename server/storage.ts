@@ -1,7 +1,9 @@
 import { 
   type User, type InsertUser, type Spot, type InsertSpot, 
   type Badge, type UserBadge, type SpotHunt, type DailyChallenge, 
-  type UserChallengeProgress, type Reward
+  type UserChallengeProgress, type Reward, type Friendship, type InsertFriendship,
+  type Post, type InsertPost, type PostLike, type InsertPostLike,
+  type PostComment, type InsertPostComment, type SpotReview, type InsertSpotReview
 } from "@shared/schema";
 
 export interface IStorage {
@@ -35,6 +37,26 @@ export interface IStorage {
 
   // Activity Feed
   getRecentActivity(): Promise<any[]>;
+
+  // Social Features
+  // Friends
+  sendFriendRequest(requesterId: string, addresseeId: string): Promise<Friendship>;
+  acceptFriendRequest(friendshipId: number): Promise<Friendship>;
+  getFriends(userId: string): Promise<User[]>;
+  getFriendRequests(userId: string): Promise<(Friendship & { requester: User })[]>;
+  
+  // Posts & Feed
+  createPost(post: InsertPost): Promise<Post>;
+  getFeedPosts(userId: string): Promise<(Post & { user: User; spot?: Spot; likes: PostLike[]; comments: PostComment[] })[]>;
+  getUserPosts(userId: string): Promise<(Post & { spot?: Spot; likes: PostLike[]; comments: PostComment[] })[]>;
+  likePost(userId: string, postId: number): Promise<PostLike>;
+  unlikePost(userId: string, postId: number): Promise<boolean>;
+  commentOnPost(userId: string, postId: number, content: string): Promise<PostComment>;
+  
+  // Spot Reviews
+  createSpotReview(review: InsertSpotReview): Promise<SpotReview>;
+  getSpotReviews(spotId: number): Promise<(SpotReview & { user: User })[]>;
+  getUserReviews(userId: string): Promise<(SpotReview & { spot: Spot })[]>;
 }
 
 class MemStorage implements IStorage {
@@ -46,6 +68,18 @@ class MemStorage implements IStorage {
   private dailyChallenges: DailyChallenge[] = [];
   private userChallengeProgress: UserChallengeProgress[] = [];
   private rewards: Reward[] = [];
+  
+  // Social storage
+  private friendships: Friendship[] = [];
+  private posts: Post[] = [];
+  private postLikes: PostLike[] = [];
+  private postComments: PostComment[] = [];
+  private spotReviews: SpotReview[] = [];
+  private nextPostId = 1;
+  private nextFriendshipId = 1;
+  private nextCommentId = 1;
+  private nextLikeId = 1;
+  private nextReviewId = 1;
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
@@ -262,6 +296,162 @@ class MemStorage implements IStorage {
     if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
     if (diffHours > 0) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
     return 'just now';
+  }
+
+  // Social Features Implementation
+  async sendFriendRequest(requesterId: string, addresseeId: string): Promise<Friendship> {
+    const friendship: Friendship = {
+      id: this.nextFriendshipId++,
+      requesterId,
+      addresseeId,
+      status: "pending",
+      createdAt: new Date(),
+      acceptedAt: null
+    };
+    this.friendships.push(friendship);
+    return friendship;
+  }
+
+  async acceptFriendRequest(friendshipId: number): Promise<Friendship> {
+    const friendship = this.friendships.find(f => f.id === friendshipId);
+    if (!friendship) throw new Error("Friendship not found");
+    
+    friendship.status = "accepted";
+    friendship.acceptedAt = new Date();
+    return friendship;
+  }
+
+  async getFriends(userId: string): Promise<User[]> {
+    const friendships = this.friendships.filter(f => 
+      (f.requesterId === userId || f.addresseeId === userId) && f.status === "accepted"
+    );
+    
+    const friendIds = friendships.map(f => 
+      f.requesterId === userId ? f.addresseeId : f.requesterId
+    );
+    
+    return this.users.filter(u => friendIds.includes(u.id.toString()));
+  }
+
+  async getFriendRequests(userId: string): Promise<(Friendship & { requester: User })[]> {
+    const requests = this.friendships.filter(f => 
+      f.addresseeId === userId && f.status === "pending"
+    );
+    
+    return requests.map(req => {
+      const requester = this.users.find(u => u.id.toString() === req.requesterId);
+      return { ...req, requester: requester! };
+    });
+  }
+
+  async createPost(post: InsertPost): Promise<Post> {
+    const newPost: Post = {
+      id: this.nextPostId++,
+      ...post,
+      createdAt: new Date()
+    };
+    this.posts.push(newPost);
+    return newPost;
+  }
+
+  async getFeedPosts(userId: string): Promise<(Post & { user: User; spot?: Spot; likes: PostLike[]; comments: PostComment[] })[]> {
+    const friends = await this.getFriends(userId);
+    const friendIds = friends.map(f => f.id.toString());
+    friendIds.push(userId); // Include user's own posts
+    
+    const feedPosts = this.posts
+      .filter(p => friendIds.includes(p.userId))
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime())
+      .slice(0, 20);
+    
+    return feedPosts.map(post => {
+      const user = this.users.find(u => u.id.toString() === post.userId)!;
+      const spot = post.spotId ? this.spots.find(s => s.id === post.spotId) : undefined;
+      const likes = this.postLikes.filter(l => l.postId === post.id);
+      const comments = this.postComments.filter(c => c.postId === post.id);
+      
+      return { ...post, user, spot, likes, comments };
+    });
+  }
+
+  async getUserPosts(userId: string): Promise<(Post & { spot?: Spot; likes: PostLike[]; comments: PostComment[] })[]> {
+    const userPosts = this.posts
+      .filter(p => p.userId === userId)
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+    
+    return userPosts.map(post => {
+      const spot = post.spotId ? this.spots.find(s => s.id === post.spotId) : undefined;
+      const likes = this.postLikes.filter(l => l.postId === post.id);
+      const comments = this.postComments.filter(c => c.postId === post.id);
+      
+      return { ...post, spot, likes, comments };
+    });
+  }
+
+  async likePost(userId: string, postId: number): Promise<PostLike> {
+    const existingLike = this.postLikes.find(l => l.userId === userId && l.postId === postId);
+    if (existingLike) return existingLike;
+    
+    const like: PostLike = {
+      id: this.nextLikeId++,
+      postId,
+      userId,
+      createdAt: new Date()
+    };
+    this.postLikes.push(like);
+    return like;
+  }
+
+  async unlikePost(userId: string, postId: number): Promise<boolean> {
+    const likeIndex = this.postLikes.findIndex(l => l.userId === userId && l.postId === postId);
+    if (likeIndex === -1) return false;
+    
+    this.postLikes.splice(likeIndex, 1);
+    return true;
+  }
+
+  async commentOnPost(userId: string, postId: number, content: string): Promise<PostComment> {
+    const comment: PostComment = {
+      id: this.nextCommentId++,
+      postId,
+      userId,
+      content,
+      createdAt: new Date()
+    };
+    this.postComments.push(comment);
+    return comment;
+  }
+
+  async createSpotReview(review: InsertSpotReview): Promise<SpotReview> {
+    const newReview: SpotReview = {
+      id: this.nextReviewId++,
+      ...review,
+      createdAt: new Date()
+    };
+    this.spotReviews.push(newReview);
+    return newReview;
+  }
+
+  async getSpotReviews(spotId: number): Promise<(SpotReview & { user: User })[]> {
+    const reviews = this.spotReviews
+      .filter(r => r.spotId === spotId)
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+    
+    return reviews.map(review => {
+      const user = this.users.find(u => u.id.toString() === review.userId)!;
+      return { ...review, user };
+    });
+  }
+
+  async getUserReviews(userId: string): Promise<(SpotReview & { spot: Spot })[]> {
+    const reviews = this.spotReviews
+      .filter(r => r.userId === userId)
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+    
+    return reviews.map(review => {
+      const spot = this.spots.find(s => s.id === review.spotId)!;
+      return { ...review, spot };
+    });
   }
 }
 

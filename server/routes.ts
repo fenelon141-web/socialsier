@@ -628,6 +628,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(activity);
   });
 
+  // Social API routes
+  // Friends
+  app.post("/api/friends/request", async (req, res) => {
+    try {
+      const { requesterId, addresseeId } = req.body;
+      const friendship = await storage.sendFriendRequest(requesterId, addresseeId);
+      res.json(friendship);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to send friend request" });
+    }
+  });
+
+  app.post("/api/friends/accept/:id", async (req, res) => {
+    try {
+      const friendship = await storage.acceptFriendRequest(parseInt(req.params.id));
+      res.json(friendship);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to accept friend request" });
+    }
+  });
+
+  app.get("/api/user/:id/friends", async (req, res) => {
+    try {
+      const friends = await storage.getFriends(req.params.id);
+      res.json(friends);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get friends" });
+    }
+  });
+
+  app.get("/api/user/:id/friend-requests", async (req, res) => {
+    try {
+      const requests = await storage.getFriendRequests(req.params.id);
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get friend requests" });
+    }
+  });
+
+  // Posts and Feed
+  app.post("/api/posts", async (req, res) => {
+    try {
+      const post = await storage.createPost(req.body);
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create post" });
+    }
+  });
+
+  app.get("/api/user/:id/feed", async (req, res) => {
+    try {
+      const posts = await storage.getFeedPosts(req.params.id);
+      res.json(posts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get feed" });
+    }
+  });
+
+  app.get("/api/user/:id/posts", async (req, res) => {
+    try {
+      const posts = await storage.getUserPosts(req.params.id);
+      res.json(posts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user posts" });
+    }
+  });
+
+  app.post("/api/posts/:id/like", async (req, res) => {
+    try {
+      const { userId } = req.body;
+      const like = await storage.likePost(userId, parseInt(req.params.id));
+      res.json(like);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to like post" });
+    }
+  });
+
+  app.delete("/api/posts/:id/like", async (req, res) => {
+    try {
+      const { userId } = req.body;
+      const success = await storage.unlikePost(userId, parseInt(req.params.id));
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to unlike post" });
+    }
+  });
+
+  app.post("/api/posts/:id/comment", async (req, res) => {
+    try {
+      const { userId, content } = req.body;
+      const comment = await storage.commentOnPost(userId, parseInt(req.params.id), content);
+      res.json(comment);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add comment" });
+    }
+  });
+
+  // Spot Reviews
+  app.post("/api/spots/:id/review", async (req, res) => {
+    try {
+      const spotId = parseInt(req.params.id);
+      const review = await storage.createSpotReview({ ...req.body, spotId });
+      res.json(review);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create review" });
+    }
+  });
+
+  app.get("/api/spots/:id/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getSpotReviews(parseInt(req.params.id));
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get reviews" });
+    }
+  });
+
+  app.get("/api/user/:id/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getUserReviews(req.params.id);
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user reviews" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

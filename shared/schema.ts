@@ -96,6 +96,52 @@ export const rewards = pgTable("rewards", {
   expiresAt: timestamp("expires_at")
 });
 
+// Social features tables
+export const friendships = pgTable("friendships", {
+  id: serial("id").primaryKey(),
+  requesterId: varchar("requester_id").notNull(),
+  addresseeId: varchar("addressee_id").notNull(),
+  status: text("status").notNull().default("pending"), // pending, accepted, blocked
+  createdAt: timestamp("created_at").defaultNow(),
+  acceptedAt: timestamp("accepted_at")
+});
+
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  spotId: integer("spot_id"),
+  content: text("content").notNull(),
+  imageUrl: text("image_url"),
+  type: text("type").notNull().default("checkin"), // checkin, review, photo
+  rating: integer("rating"), // 1-5 stars for reviews
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const postLikes = pgTable("post_likes", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const postComments = pgTable("post_comments", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const spotReviews = pgTable("spot_reviews", {
+  id: serial("id").primaryKey(),
+  spotId: integer("spot_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  rating: integer("rating").notNull(), // 1-5 stars
+  review: text("review"),
+  imageUrl: text("image_url"),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
 // Insert schemas  
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -121,6 +167,32 @@ export const insertRewardSchema = createInsertSchema(rewards).omit({
   id: true
 });
 
+export const insertFriendshipSchema = createInsertSchema(friendships).omit({
+  id: true,
+  createdAt: true,
+  acceptedAt: true
+});
+
+export const insertPostSchema = createInsertSchema(posts).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertPostLikeSchema = createInsertSchema(postLikes).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertPostCommentSchema = createInsertSchema(postComments).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertSpotReviewSchema = createInsertSchema(spotReviews).omit({
+  id: true,
+  createdAt: true
+});
+
 // Types
 // Relations
 import { relations } from "drizzle-orm";
@@ -129,11 +201,19 @@ export const usersRelations = relations(users, ({ many }) => ({
   badges: many(userBadges),
   spotHunts: many(spotHunts),
   challengeProgress: many(userChallengeProgress),
+  posts: many(posts),
+  postLikes: many(postLikes),
+  postComments: many(postComments),
+  spotReviews: many(spotReviews),
+  sentFriendRequests: many(friendships, { relationName: "requester" }),
+  receivedFriendRequests: many(friendships, { relationName: "addressee" })
 }));
 
 export const spotsRelations = relations(spots, ({ many }) => ({
   hunts: many(spotHunts),
   rewards: many(rewards),
+  posts: many(posts),
+  reviews: many(spotReviews)
 }));
 
 export const badgesRelations = relations(badges, ({ many }) => ({
@@ -184,6 +264,66 @@ export const rewardsRelations = relations(rewards, ({ one }) => ({
   }),
 }));
 
+// Social relations
+export const friendshipsRelations = relations(friendships, ({ one }) => ({
+  requester: one(users, {
+    fields: [friendships.requesterId],
+    references: [users.id],
+    relationName: "requester"
+  }),
+  addressee: one(users, {
+    fields: [friendships.addresseeId],
+    references: [users.id],
+    relationName: "addressee"
+  })
+}));
+
+export const postsRelations = relations(posts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [posts.userId],
+    references: [users.id]
+  }),
+  spot: one(spots, {
+    fields: [posts.spotId],
+    references: [spots.id]
+  }),
+  likes: many(postLikes),
+  comments: many(postComments)
+}));
+
+export const postLikesRelations = relations(postLikes, ({ one }) => ({
+  post: one(posts, {
+    fields: [postLikes.postId],
+    references: [posts.id]
+  }),
+  user: one(users, {
+    fields: [postLikes.userId],
+    references: [users.id]
+  })
+}));
+
+export const postCommentsRelations = relations(postComments, ({ one }) => ({
+  post: one(posts, {
+    fields: [postComments.postId],
+    references: [posts.id]
+  }),
+  user: one(users, {
+    fields: [postComments.userId],
+    references: [users.id]
+  })
+}));
+
+export const spotReviewsRelations = relations(spotReviews, ({ one }) => ({
+  spot: one(spots, {
+    fields: [spotReviews.spotId],
+    references: [spots.id]
+  }),
+  user: one(users, {
+    fields: [spotReviews.userId],
+    references: [users.id]
+  })
+}));
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -199,3 +339,15 @@ export type DailyChallenge = typeof dailyChallenges.$inferSelect;
 export type UserChallengeProgress = typeof userChallengeProgress.$inferSelect;
 export type Reward = typeof rewards.$inferSelect;
 export type InsertReward = z.infer<typeof insertRewardSchema>;
+
+// Social types
+export type Friendship = typeof friendships.$inferSelect;
+export type InsertFriendship = z.infer<typeof insertFriendshipSchema>;
+export type Post = typeof posts.$inferSelect;
+export type InsertPost = z.infer<typeof insertPostSchema>;
+export type PostLike = typeof postLikes.$inferSelect;
+export type InsertPostLike = z.infer<typeof insertPostLikeSchema>;
+export type PostComment = typeof postComments.$inferSelect;
+export type InsertPostComment = z.infer<typeof insertPostCommentSchema>;
+export type SpotReview = typeof spotReviews.$inferSelect;
+export type InsertSpotReview = z.infer<typeof insertSpotReviewSchema>;
