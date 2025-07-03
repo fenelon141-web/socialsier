@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(330, 100%, 70%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.75rem;
+
+  /* Valley Girl color palette */
+  --valley-pink: hsl(330, 100%, 70%);
+  --valley-lavender: hsl(240, 67%, 94%);
+  --valley-gold: hsl(51, 100%, 50%);
+  --valley-peach: hsl(28, 100%, 82%);
+  --valley-mint: hsl(152, 64%, 81%);
+  --valley-coral: hsl(0, 100%, 75%);
+  --valley-rose-gold: hsl(349, 29%, 88%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(330, 100%, 70%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+@layer utilities {
+  .gradient-bg {
+    background: linear-gradient(135deg, var(--valley-pink) 0%, var(--valley-lavender) 50%, var(--valley-gold) 100%);
+  }
+  
+  .card-gradient {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(230,230,250,0.8) 100%);
+  }
+  
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+  }
+  
+  .spot-card {
+    transition: all 0.3s ease;
+  }
+  
+  .spot-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .valley-pink {
+    color: var(--valley-pink);
+  }
+  
+  .valley-lavender {
+    color: var(--valley-lavender);
+  }
+  
+  .valley-gold {
+    color: var(--valley-gold);
+  }
+  
+  .valley-peach {
+    color: var(--valley-peach);
+  }
+  
+  .valley-mint {
+    color: var(--valley-mint);
+  }
+  
+  .valley-coral {
+    color: var(--valley-coral);
+  }
+
+  .bg-valley-pink {
+    background-color: var(--valley-pink);
+  }
+  
+  .bg-valley-lavender {
+    background-color: var(--valley-lavender);
+  }
+  
+  .bg-valley-gold {
+    background-color: var(--valley-gold);
+  }
+  
+  .bg-valley-peach {
+    background-color: var(--valley-peach);
+  }
+  
+  .bg-valley-mint {
+    background-color: var(--valley-mint);
+  }
+  
+  .bg-valley-coral {
+    background-color: var(--valley-coral);
+  }
+
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse 1.5s ease-in-out infinite alternate;
+  }
+}
