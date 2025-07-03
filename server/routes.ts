@@ -70,6 +70,8 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       return [];
     }
 
+
+
     // Convert OSM data to our spot format
     const spots = data.elements
       .filter((element: any) => element.lat && element.lon && element.tags && element.tags.name)
@@ -112,6 +114,9 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
     distance: Math.round(distance),
     amenity: tags.amenity,
     cuisine: tags.cuisine,
+    leisure: tags.leisure,
+    sport: tags.sport,
+    shop: tags.shop,
     website: tags.website,
     phone: tags.phone
   };
@@ -275,6 +280,8 @@ function isTrendyPlace(place: any): boolean {
   const amenity = place.amenity?.toLowerCase() || '';
   const shop = place.shop?.toLowerCase() || '';
   const cuisine = place.cuisine?.toLowerCase() || '';
+  const leisure = place.leisure?.toLowerCase() || '';
+  const sport = place.sport?.toLowerCase() || '';
   
   // Exclude fast food chains and non-aesthetic places
   const excludeKeywords = [
@@ -499,6 +506,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const spots = await storage.getGymClasses();
     res.json(spots);
   });
+
+
 
   // Get nearby spots based on user location using OpenStreetMap
   app.get("/api/spots/nearby", async (req, res) => {
