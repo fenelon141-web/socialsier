@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/bottom-navigation";
 import SpotCard from "@/components/spot-card";
+import GoogleMap from "@/components/google-map";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { ArrowLeft, MapPin, Star, Target, Navigation } from "lucide-react";
 import { Link } from "wouter";
@@ -11,18 +12,20 @@ import type { Spot } from "@shared/schema";
 export default function MapView() {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
   
-  // Get nearby spots based on current location
+  // Get nearby spots from Google Places API based on current location
   const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/nearby", latitude, longitude],
     queryFn: async () => {
       if (!latitude || !longitude) return [];
-      const response = await fetch(`/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=5000`);
+      const response = await fetch(`/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=2000`);
       return response.json();
     },
-    enabled: !!latitude && !!longitude
+    enabled: !!latitude && !!longitude,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Fallback to all spots if location is not available
+  // Fallback to stored spots if location is not available
   const { data: allSpots, isLoading: allSpotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots"],
     enabled: !latitude || !longitude
@@ -48,55 +51,52 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* Map Area with Location Status */}
-      <div className="relative h-64 bg-gradient-to-br from-green-100 to-blue-100 border-b">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            {locationLoading ? (
-              <>
-                <Navigation className="w-12 h-12 text-pink-400 mx-auto mb-2 animate-spin" />
-                <p className="text-gray-600 text-sm">Finding your location...</p>
-              </>
-            ) : locationError ? (
-              <>
-                <MapPin className="w-12 h-12 text-red-400 mx-auto mb-2" />
-                <p className="text-gray-600 text-sm">Location unavailable</p>
-                <p className="text-xs text-gray-500">Showing all spots</p>
-              </>
-            ) : (
-              <>
-                <MapPin className="w-12 h-12 text-pink-400 mx-auto mb-2" />
-                <p className="text-gray-600 text-sm">Location Active ✓</p>
-                <p className="text-xs text-gray-500">
-                  Lat: {latitude?.toFixed(4)}, Lng: {longitude?.toFixed(4)}
-                </p>
-                <p className="text-xs text-green-600 mt-1">Pokemon Go-style tracking enabled</p>
-              </>
-            )}
-          </div>
-        </div>
-        
-        {/* Dynamic spot markers based on nearby spots */}
-        {spots.slice(0, 3).map((spot, index) => (
-          <div 
-            key={spot.id}
-            className={`absolute ${
-              index === 0 ? "top-16 left-12" : 
-              index === 1 ? "top-32 right-16" : 
-              "bottom-16 left-1/2 transform -translate-x-1/2"
-            }`}
-          >
-            <div className={`w-6 h-6 ${
-              index === 0 ? "bg-pink-400" : 
-              index === 1 ? "bg-purple-400" : 
-              "bg-yellow-400"
-            } rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg ${
-              index === 0 ? "animate-bounce-slow" : ""
-            }`}>
-              {index + 1}
+      {/* Google Maps Integration */}
+      <div className="relative border-b">
+        {locationLoading ? (
+          <div className="h-64 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
+            <div className="text-center">
+              <Navigation className="w-12 h-12 text-pink-400 mx-auto mb-2 animate-spin" />
+              <p className="text-gray-600 text-sm">Finding your location...</p>
+              <p className="text-xs text-gray-500">Pokemon Go-style tracking starting</p>
             </div>
           </div>
-        ))}
+        ) : locationError ? (
+          <div className="h-64 bg-gradient-to-br from-red-100 to-orange-100 flex items-center justify-center">
+            <div className="text-center">
+              <MapPin className="w-12 h-12 text-red-400 mx-auto mb-2" />
+              <p className="text-gray-600 text-sm">Location permission needed</p>
+              <p className="text-xs text-gray-500">Enable location for nearby trendy spots</p>
+            </div>
+          </div>
+        ) : latitude && longitude ? (
+          <GoogleMap 
+            center={{ lat: latitude, lng: longitude }}
+            spots={spots}
+            onSpotClick={(spot) => {
+              console.log('Spot clicked:', spot);
+            }}
+          />
+        ) : (
+          <div className="h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <div className="text-center">
+              <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+              <p className="text-gray-600 text-sm">Waiting for location...</p>
+            </div>
+          </div>
+        )}
+        
+        {/* Location status overlay */}
+        {latitude && longitude && (
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-md">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-xs font-medium text-gray-700">
+                Location Active
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Spots List */}

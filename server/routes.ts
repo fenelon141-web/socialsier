@@ -24,7 +24,169 @@ function calculateDistance(
   return R * c; // Distance in meters
 }
 
+async function findNearbyTrendySpots(lat: number, lng: number, radius: number, apiKey: string) {
+  const trendyTypes = ['restaurant', 'cafe', 'coffee_shop', 'bakery', 'meal_takeaway'];
+  const allResults: any[] = [];
+
+  for (const type of trendyTypes) {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?` +
+        `location=${lat},${lng}&radius=${radius}&type=${type}&` +
+        `key=${apiKey}&fields=place_id,name,geometry,rating,price_level,types,photos,vicinity,business_status`
+      );
+      
+      if (!response.ok) continue;
+      
+      const data = await response.json();
+      
+      if (data.results) {
+        const trendyResults = data.results.filter((place: any) => {
+          const isTrendy = isTrendyPlace(place);
+          const hasGoodRating = !place.rating || place.rating >= 4.0;
+          const isOpen = place.business_status === 'OPERATIONAL' || !place.business_status;
+          
+          return isTrendy && hasGoodRating && isOpen;
+        });
+
+        allResults.push(...trendyResults);
+      }
+    } catch (error) {
+      console.warn(`Failed to search for ${type}:`, error);
+    }
+  }
+
+  const uniqueResults = removeDuplicates(allResults);
+  const spots = uniqueResults.map(place => convertGooglePlaceToSpot(place, lat, lng));
+  
+  return sortByTrendiness(spots).slice(0, 25);
+}
+
+function isTrendyPlace(place: any): boolean {
+  const name = place.name?.toLowerCase() || '';
+  const types = (place.types || []).join(' ').toLowerCase();
+  
+  const trendyKeywords = [
+    'artisan', 'craft', 'organic', 'local', 'farm', 'fresh',
+    'boutique', 'specialty', 'gourmet', 'matcha', 'acai',
+    'juice', 'smoothie', 'avocado', 'toast', 'bowl',
+    'brunch', 'aesthetic', 'instagrammable', 'cute',
+    'cozy', 'chic', 'modern', 'contemporary'
+  ];
+
+  const trendyTypes = [
+    'juice_bar', 'health_food', 'organic_food',
+    'coffee_shop', 'cafe', 'bakery'
+  ];
+
+  const hasTrendyKeyword = trendyKeywords.some(keyword => 
+    name.includes(keyword) || types.includes(keyword)
+  );
+
+  const hasTrendyType = trendyTypes.some(type => types.includes(type));
+  const hasHighRating = place.rating && place.rating >= 4.2;
+
+  return hasTrendyKeyword || hasTrendyType || hasHighRating;
+}
+
+function removeDuplicates(places: any[]): any[] {
+  const seen = new Set();
+  return places.filter(place => {
+    const key = `${place.name}-${place.geometry?.location?.lat}-${place.geometry?.location?.lng}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function convertGooglePlaceToSpot(place: any, userLat: number, userLng: number) {
+  const placeLat = place.geometry?.location?.lat || 0;
+  const placeLng = place.geometry?.location?.lng || 0;
+  const distance = calculateDistance(userLat, userLng, placeLat, placeLng);
+  
+  return {
+    id: place.place_id || Math.random().toString(),
+    name: place.name || 'Unknown Place',
+    description: getPlaceDescription(place),
+    latitude: placeLat,
+    longitude: placeLng,
+    rating: place.rating || 4.0,
+    imageUrl: getPlaceImageUrl(place),
+    category: getCategoryFromTypes(place.types || []),
+    trending: place.rating >= 4.3,
+    huntCount: Math.floor(Math.random() * 50) + 10,
+    distance: Math.round(distance)
+  };
+}
+
+function getPlaceDescription(place: any): string {
+  const types = place.types || [];
+  const priceLevel = place.price_level;
+  
+  let description = '';
+  
+  if (types.includes('coffee_shop') || types.includes('cafe')) {
+    description = '☕ Trendy coffee spot with aesthetic vibes';
+  } else if (types.includes('restaurant')) {
+    description = '🍽️ Instagram-worthy dining experience';
+  } else if (types.includes('bakery')) {
+    description = '🥐 Fresh pastries and aesthetic treats';
+  } else if (types.includes('meal_takeaway')) {
+    description = '🥗 Quick & healthy on-the-go meals';
+  } else {
+    description = '✨ Trendy spot perfect for your feed';
+  }
+  
+  if (priceLevel) {
+    description += ` • ${'$'.repeat(priceLevel)}`;
+  }
+  
+  return description;
+}
+
+function getPlaceImageUrl(place: any): string {
+  const aestheticImages = [
+    'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
+  ];
+  
+  const imageIndex = (place.place_id || place.name || '').length % aestheticImages.length;
+  return aestheticImages[imageIndex];
+}
+
+function getCategoryFromTypes(types: string[]): string {
+  if (types.includes('coffee_shop') || types.includes('cafe')) return 'coffee';
+  if (types.includes('restaurant')) return 'restaurant';
+  if (types.includes('bakery')) return 'bakery';
+  if (types.includes('meal_takeaway')) return 'takeaway';
+  return 'food';
+}
+
+function sortByTrendiness(spots: any[]): any[] {
+  return spots.sort((a, b) => {
+    const ratingA = a.rating || 0;
+    const ratingB = b.rating || 0;
+    
+    if (ratingA !== ratingB) {
+      return ratingB - ratingA;
+    }
+    
+    return (a.distance || 0) - (b.distance || 0);
+  });
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Config routes
+  app.get("/api/config", (req, res) => {
+    res.json({
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || ''
+    });
+  });
+
   // User routes
   app.get("/api/user/:id", async (req, res) => {
     const user = await storage.getUser(parseInt(req.params.id));
@@ -81,10 +243,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(spots);
   });
 
-  // Get nearby spots based on user location
+  // Get nearby spots based on user location using Google Places API
   app.get("/api/spots/nearby", async (req, res) => {
     try {
-      const { lat, lng, radius = 1000 } = req.query;
+      const { lat, lng, radius = 2000 } = req.query;
       
       if (!lat || !lng) {
         return res.status(400).json({ message: "Latitude and longitude are required" });
@@ -92,21 +254,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userLat = parseFloat(lat as string);
       const userLng = parseFloat(lng as string);
-      const maxRadius = parseInt(radius as string);
+      const searchRadius = parseInt(radius as string);
       
-      const allSpots = await storage.getAllSpots();
-      
-      // Filter spots by proximity and add distance
-      const nearbySpots = allSpots
-        .map(spot => ({
-          ...spot,
-          distance: calculateDistance(userLat, userLng, spot.latitude, spot.longitude)
-        }))
-        .filter(spot => spot.distance <= maxRadius)
-        .sort((a, b) => a.distance - b.distance);
-      
+      // Get Google Places API key
+      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        // Fallback to stored spots
+        const allSpots = await storage.getAllSpots();
+        const nearbySpots = allSpots
+          .map(spot => ({
+            ...spot,
+            distance: calculateDistance(userLat, userLng, spot.latitude, spot.longitude)
+          }))
+          .filter(spot => spot.distance <= searchRadius)
+          .sort((a, b) => a.distance - b.distance);
+        
+        return res.json(nearbySpots);
+      }
+
+      // Use Google Places API to find trendy spots
+      const nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius, apiKey);
       res.json(nearbySpots);
+      
     } catch (error) {
+      console.error("Error fetching nearby spots:", error);
       res.status(500).json({ message: "Failed to get nearby spots" });
     }
   });
