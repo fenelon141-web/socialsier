@@ -257,10 +257,84 @@ class MemStorage implements IStorage {
 
   // Badge operations
   async getAllBadges(): Promise<Badge[]> {
+    // Initialize badges if none exist yet
+    if (this.badges.length === 0) {
+      this.badges = [
+        // 🍹 DRINK BADGES - Girly & Cute
+        { id: 1, name: "Boba Princess", description: "Sip 5 boba teas like the queen you are", emoji: "🧋", category: "drinks", requirement: "5_boba_spots", rarity: "common" },
+        { id: 2, name: "Matcha Mermaid", description: "Dive deep into 10 matcha lattes", emoji: "🧜‍♀️", category: "drinks", requirement: "10_matcha_spots", rarity: "rare" },
+        { id: 3, name: "Pink Latte Lover", description: "Find 7 rose or beetroot lattes", emoji: "🌸", category: "drinks", requirement: "7_pink_lattes", rarity: "rare" },
+        { id: 4, name: "Golden Milk Goddess", description: "Discover 5 turmeric golden milk spots", emoji: "✨", category: "drinks", requirement: "5_golden_milk", rarity: "common" },
+        { id: 5, name: "Kombucha Cutie", description: "Fermented drink fanatic", emoji: "🍄", category: "drinks", requirement: "8_kombucha_spots", rarity: "rare" },
+        { id: 6, name: "Smoothie Sweetheart", description: "Blend into 15 smoothie spots", emoji: "🍓", category: "drinks", requirement: "15_smoothie_spots", rarity: "common" },
+        { id: 7, name: "Oat Milk Angel", description: "Only the creamiest plant milk", emoji: "👼", category: "drinks", requirement: "12_oat_milk_spots", rarity: "common" },
+        { id: 8, name: "Butterfly Pea Queen", description: "Color-changing tea royalty", emoji: "🦋", category: "drinks", requirement: "3_butterfly_pea", rarity: "epic" },
+        { id: 9, name: "Lavender Latte Lady", description: "Floral coffee connoisseur", emoji: "💜", category: "drinks", requirement: "6_lavender_drinks", rarity: "rare" },
+        { id: 10, name: "Coconut Water Cutie", description: "Hydration with tropical vibes", emoji: "🥥", category: "drinks", requirement: "10_coconut_water", rarity: "common" },
+
+        // 🥗 FOOD BADGES - Aesthetic & Cute
+        { id: 11, name: "Açaí Bowl Babe", description: "Purple perfection in every bite", emoji: "🍇", category: "food", requirement: "10_acai_bowls", rarity: "common" },
+        { id: 12, name: "Avo Toast Angel", description: "Millennial breakfast queen", emoji: "🥑", category: "food", requirement: "15_avocado_toast", rarity: "common" },
+        { id: 13, name: "Poke Bowl Princess", description: "Fresh fish and rice royalty", emoji: "🐠", category: "food", requirement: "8_poke_bowls", rarity: "rare" },
+        { id: 14, name: "Rainbow Salad Fairy", description: "Colorful veggie magic", emoji: "🌈", category: "food", requirement: "12_rainbow_salads", rarity: "rare" },
+        { id: 15, name: "Sushi Sweetheart", description: "Raw fish romance", emoji: "🍣", category: "food", requirement: "10_sushi_spots", rarity: "common" },
+        { id: 16, name: "Chia Pudding Cutie", description: "Tiny seeds, big dreams", emoji: "🍮", category: "food", requirement: "7_chia_puddings", rarity: "common" },
+        { id: 17, name: "Croissant Goddess", description: "Buttery pastry perfection", emoji: "🥐", category: "food", requirement: "8_croissant_spots", rarity: "rare" },
+        { id: 18, name: "Macaron Muse", description: "French cookie inspiration", emoji: "🍪", category: "food", requirement: "5_macaron_spots", rarity: "epic" },
+        { id: 19, name: "Sourdough Sweetheart", description: "Artisan bread lover", emoji: "🍞", category: "food", requirement: "6_sourdough_spots", rarity: "rare" },
+        { id: 20, name: "Granola Girl", description: "Crunchy breakfast bestie", emoji: "🥣", category: "food", requirement: "9_granola_spots", rarity: "common" },
+        { id: 21, name: "Vegan Vanilla", description: "Plant-based princess", emoji: "🌱", category: "food", requirement: "20_vegan_spots", rarity: "rare" },
+        { id: 22, name: "Gluten-Free Goddess", description: "Wheat-free warrior", emoji: "🌾", category: "food", requirement: "15_gf_spots", rarity: "rare" },
+
+        // 💪 FITNESS BADGES - Cute & Motivating
+        { id: 23, name: "Pilates Princess", description: "Core strength royalty", emoji: "👸", category: "fitness", requirement: "10_pilates_classes", rarity: "common" },
+        { id: 24, name: "Yoga Yogi", description: "Namaste all day", emoji: "🧘‍♀️", category: "fitness", requirement: "15_yoga_classes", rarity: "common" },
+        { id: 25, name: "Barre Bestie", description: "Shake it till you make it", emoji: "🩰", category: "fitness", requirement: "12_barre_classes", rarity: "rare" },
+        { id: 26, name: "Spin Sweetheart", description: "Cycling cutie", emoji: "🚴‍♀️", category: "fitness", requirement: "8_spin_classes", rarity: "common" },
+        { id: 27, name: "HIIT Honey", description: "High intensity, high fashion", emoji: "🍯", category: "fitness", requirement: "10_hiit_classes", rarity: "rare" },
+        { id: 28, name: "Dance Diva", description: "Move to the beat", emoji: "💃", category: "fitness", requirement: "6_dance_classes", rarity: "rare" },
+        { id: 29, name: "Hot Girl Walk", description: "Steps and selfies", emoji: "🚶‍♀️", category: "fitness", requirement: "20_walking_spots", rarity: "common" },
+        { id: 30, name: "Reformer Royalty", description: "Pilates machine mastery", emoji: "👑", category: "fitness", requirement: "8_reformer_classes", rarity: "epic" },
+        { id: 31, name: "Bootcamp Babe", description: "Sweat with style", emoji: "🔥", category: "fitness", requirement: "5_bootcamp_classes", rarity: "rare" },
+        { id: 32, name: "Stretching Sweetie", description: "Flexibility queen", emoji: "🤸‍♀️", category: "fitness", requirement: "12_stretch_classes", rarity: "common" },
+
+        // ✨ AESTHETIC & LIFESTYLE BADGES
+        { id: 33, name: "Pink Paradise", description: "Find 10 pink aesthetic spots", emoji: "🌸", category: "aesthetic", requirement: "10_pink_spots", rarity: "rare" },
+        { id: 34, name: "Marble Counter Muse", description: "Instagram-worthy surfaces", emoji: "🤍", category: "aesthetic", requirement: "8_marble_spots", rarity: "rare" },
+        { id: 35, name: "Neon Sign Angel", description: "Glow up with LED vibes", emoji: "💡", category: "aesthetic", requirement: "6_neon_spots", rarity: "epic" },
+        { id: 36, name: "Plant Parent", description: "Green goddess energy", emoji: "🪴", category: "aesthetic", requirement: "12_plant_cafes", rarity: "common" },
+        { id: 37, name: "Golden Hour Girl", description: "Perfect lighting every time", emoji: "🌅", category: "aesthetic", requirement: "sunset_spots", rarity: "rare" },
+        { id: 38, name: "Mirror Selfie Queen", description: "Reflection perfection", emoji: "🪞", category: "aesthetic", requirement: "mirror_spots", rarity: "common" },
+        { id: 39, name: "Flower Wall Fairy", description: "Bloom where you're photographed", emoji: "🌺", category: "aesthetic", requirement: "flower_wall_spots", rarity: "epic" },
+        { id: 40, name: "Rooftop Darling", description: "Sky-high vibes", emoji: "🏢", category: "aesthetic", requirement: "rooftop_spots", rarity: "rare" },
+
+        // 🎯 ACHIEVEMENT BADGES
+        { id: 41, name: "First Hunt Cutie", description: "Your very first spot!", emoji: "🎉", category: "achievement", requirement: "first_hunt", rarity: "common" },
+        { id: 42, name: "Weekend Warrior", description: "Hunt 20 spots on weekends", emoji: "🎊", category: "achievement", requirement: "weekend_hunts", rarity: "rare" },
+        { id: 43, name: "Early Bird Babe", description: "Hunt 10 spots before 9am", emoji: "🐣", category: "achievement", requirement: "early_hunts", rarity: "rare" },
+        { id: 44, name: "Night Owl Darling", description: "Hunt 8 spots after 8pm", emoji: "🦉", category: "achievement", requirement: "night_hunts", rarity: "rare" },
+        { id: 45, name: "Social Butterfly", description: "Share 15 spots with friends", emoji: "🦋", category: "achievement", requirement: "social_shares", rarity: "common" },
+        { id: 46, name: "Explorer Extraordinaire", description: "Visit 50 unique spots", emoji: "🗺️", category: "achievement", requirement: "50_unique_spots", rarity: "epic" },
+        { id: 47, name: "Trendsetter", description: "Discover 5 spots before they trend", emoji: "🔮", category: "achievement", requirement: "trend_predictor", rarity: "legendary" },
+        { id: 48, name: "Local Legend", description: "Hunt 100 spots in your city", emoji: "🏆", category: "achievement", requirement: "100_local_spots", rarity: "legendary" }
+      ];
+    }
     return this.badges;
   }
 
   async getUserBadges(userId: number): Promise<(UserBadge & { badge: Badge })[]> {
+    // Initialize sample badges for guest user to showcase the collection
+    if (this.userBadges.length === 0 && userId === 1) {
+      await this.getAllBadges(); // Ensure badges are initialized
+      this.userBadges = [
+        { id: 1, userId: "1", badgeId: 41, earnedAt: new Date() }, // First Hunt Cutie
+        { id: 2, userId: "1", badgeId: 1, earnedAt: new Date() },  // Boba Princess
+        { id: 3, userId: "1", badgeId: 12, earnedAt: new Date() }, // Avo Toast Angel
+        { id: 4, userId: "1", badgeId: 25, earnedAt: new Date() }, // Barre Bestie
+        { id: 5, userId: "1", badgeId: 33, earnedAt: new Date() }  // Pink Paradise
+      ];
+    }
+    
     return this.userBadges
       .filter(ub => ub.userId === userId.toString())
       .map(ub => ({

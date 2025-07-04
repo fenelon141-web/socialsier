@@ -270,22 +270,22 @@ export default function Home() {
               <div className="space-y-3">
                 {activity?.map(item => (
                   <div key={item.id} className="flex items-center space-x-3">
-                    <img 
-                      src={item.friend.avatar} 
-                      alt={item.friend.name}
-                      className="w-10 h-10 rounded-full border-2 border-pink-400"
-                    />
+                    <div className="w-10 h-10 rounded-full border-2 border-pink-400 bg-valley-pink flex items-center justify-center">
+                      <span className="text-white text-sm">
+                        {item.type === 'badge_earned' ? '🏆' : item.type === 'spot_hunt' ? '📍' : '✨'}
+                      </span>
+                    </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-800">
-                        <span className="font-semibold">{item.friend.name}</span> {item.action}
+                        <span className="font-semibold">You</span> {item.action}
                       </p>
-                      <p className="text-xs text-gray-600">{item.timestamp}</p>
+                      <p className="text-xs text-gray-600">{item.timeAgo}</p>
                     </div>
                     <div className="text-right">
-                      {item.badge ? (
+                      {item.badge || item.type === 'badge_earned' ? (
                         <div className="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full">🏆 Badge</div>
                       ) : (
-                        <div className="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">+{item.points} XP</div>
+                        <div className="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">+{item.points || 10} XP</div>
                       )}
                     </div>
                   </div>
