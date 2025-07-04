@@ -36,8 +36,12 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
         relation["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
         node["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
         way["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
-        node["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy)$"](around:${radius},${lat},${lng});
-        way["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy)$"](around:${radius},${lat},${lng});
+        node["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy|japanese|poke)$"](around:${radius},${lat},${lng});
+        way["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy|japanese|poke)$"](around:${radius},${lat},${lng});
+        node["shop"~"^(tea|bakery|pastry|beverages)$"](around:${radius},${lat},${lng});
+        way["shop"~"^(tea|bakery|pastry|beverages)$"](around:${radius},${lat},${lng});
+        node["amenity"="juice_bar"](around:${radius},${lat},${lng});
+        way["amenity"="juice_bar"](around:${radius},${lat},${lng});
         node["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
         way["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
         relation["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
@@ -147,18 +151,27 @@ function getOSMDescription(tags: any): string {
     description = '🏋️‍♀️ Boutique fitness with trendy equipment';
   } 
   // Specific trendy drink spots
-  else if (name.includes('matcha') || cuisine === 'bubble_tea' || shop === 'tea') {
-    description = '🍵 Aesthetic matcha lattes & boba tea';
-  } else if (name.includes('juice') || amenity === 'juice_bar') {
-    description = '🥤 Cold-pressed juices & smoothie bowls';
+  else if (name.includes('matcha') || name.includes('boba') || name.includes('bubble') || cuisine === 'bubble_tea' || shop === 'tea') {
+    description = '🍵 Aesthetic matcha lattes, boba tea & trendy drinks';
+  } else if (name.includes('juice') || name.includes('smoothie') || amenity === 'juice_bar') {
+    description = '🥤 Cold-pressed juices, açaí bowls & smoothie bowls';
   } else if (name.includes('coffee') || amenity === 'cafe') {
-    description = '☕ Iced lattes with oat milk & aesthetic vibes';
+    // Add variety to cafe descriptions to include trendy foods
+    const descriptions = [
+      '☕ Iced oat milk lattes & avocado toast',
+      '🥑 Specialty coffee with açaí bowls & chia pudding',
+      '🍵 Matcha lattes, cold brew & aesthetic pastries',
+      '☕ Third-wave coffee with poke bowls & quinoa salads',
+      '🧋 Specialty drinks with Instagram-worthy presentation'
+    ];
+    const hash = (name || '').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    description = descriptions[hash % descriptions.length];
   } else if (shop === 'bakery' || name.includes('bakery')) {
-    description = '🥐 Artisan pastries & Instagram-worthy treats';
-  } else if (cuisine === 'vegan' || name.includes('vegan')) {
-    description = '🌱 Plant-based açaí bowls & avocado toast';
-  } else if (cuisine === 'healthy' || name.includes('bowl')) {
-    description = '🥗 Poke bowls, quinoa salads & buddha bowls';
+    description = '🥐 Artisan pastries, sourdough & Instagram-worthy treats';
+  } else if (cuisine === 'vegan' || name.includes('vegan') || name.includes('plant')) {
+    description = '🌱 Plant-based açaí bowls, avocado toast & superfood smoothies';
+  } else if (cuisine === 'healthy' || name.includes('bowl') || name.includes('salad')) {
+    description = '🥗 Poke bowls, quinoa salads, buddha bowls & grain bowls';
   } else if (amenity === 'restaurant' && cuisine) {
     // Specific cuisine types
     if (cuisine === 'japanese') {
