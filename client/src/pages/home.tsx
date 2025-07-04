@@ -63,10 +63,12 @@ export default function Home() {
               🗺️ Explore Map
             </Button>
           </Link>
-          <Button className="flex-1 bg-gradient-to-r from-emerald-300 to-purple-200 text-gray-800 py-3 rounded-2xl font-semibold text-sm shadow-lg">
-            <Camera className="w-4 h-4 mr-2" />
-            📸 Check In
-          </Button>
+          <Link href="/social" asChild>
+            <Button className="flex-1 bg-gradient-to-r from-emerald-300 to-purple-200 text-gray-800 py-3 rounded-2xl font-semibold text-sm shadow-lg">
+              <Camera className="w-4 h-4 mr-2" />
+              📸 Check In
+            </Button>
+          </Link>
         </div>
 
         {/* Nearby Spots */}
