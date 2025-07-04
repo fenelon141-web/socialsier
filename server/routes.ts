@@ -286,72 +286,9 @@ function getOSMDescription(tags: any): string {
 }
 
 function getAestheticImageUrl(tags: any): string {
-  const amenity = tags.amenity || '';
-  const cuisine = tags.cuisine || '';
-  const shop = tags.shop || '';
-  const leisure = tags.leisure || '';
-  const sport = tags.sport || '';
-  const name = (tags.name || '').toLowerCase();
-  
-  // Fitness and workout images
-  if (leisure === 'fitness_centre' || leisure === 'sports_centre' || sport === 'fitness') {
-    return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Modern gym
-  }
-  if (sport === 'yoga' || name.includes('yoga')) {
-    return 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Yoga studio
-  }
-  if (sport === 'pilates' || name.includes('pilates')) {
-    return 'https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Pilates studio
-  }
-  if (sport === 'aerobics' || name.includes('barre')) {
-    return 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Barre class
-  }
-  if (shop === 'sports' || name.includes('gym')) {
-    return 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Modern fitness
-  }
-  
-  // Specific trendy aesthetic images
-  if (name.includes('matcha') || shop === 'tea') {
-    return 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Matcha latte
-  }
-  if (name.includes('boba') || name.includes('bubble') || cuisine === 'bubble_tea') {
-    return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Boba tea
-  }
-  if (name.includes('juice') || amenity === 'juice_bar') {
-    return 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Smoothie bowls
-  }
-  if (name.includes('acai') || name.includes('bowl')) {
-    return 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Açaí bowl
-  }
-  if (name.includes('avocado') || name.includes('toast')) {
-    return 'https://images.unsplash.com/photo-1541519869999-d5348ee78465?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Avocado toast
-  }
-  if (name.includes('poke')) {
-    return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Poke bowl
-  }
-  if (shop === 'bakery' || name.includes('bakery')) {
-    return 'https://images.unsplash.com/photo-1558618666-f87056e94e83?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Pastries
-  }
-  
-  // Cuisine-specific trendy images
-  if (cuisine === 'vegan') {
-    return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Vegan salad
-  }
-  if (cuisine === 'japanese') {
-    return 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Aesthetic sushi
-  }
-  if (cuisine === 'healthy') {
-    return 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'; // Healthy bowl
-  }
-  
-  // Default aesthetic images by type
-  const imageMap: { [key: string]: string } = {
-    'cafe': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300', // Coffee shop
-    'restaurant': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300', // Restaurant
-    'juice_bar': 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300' // Juice bar
-  };
-  
-  return imageMap[amenity] || 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300';
+  // Images are now replaced with icons in the frontend
+  // Return a placeholder that won't be used since we use icons
+  return '/placeholder-icon.svg';
 }
 
 function getOSMCategory(tags: any): string {
@@ -509,17 +446,9 @@ function getPlaceDescription(place: any): string {
 }
 
 function getPlaceImageUrl(place: any): string {
-  const aestheticImages = [
-    'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
-  ];
-  
-  const imageIndex = (place.place_id || place.name || '').length % aestheticImages.length;
-  return aestheticImages[imageIndex];
+  // Images are now replaced with icons in the frontend
+  // Return a placeholder that won't be used since we use icons
+  return '/placeholder-icon.svg';
 }
 
 function getCategoryFromTypes(types: string[]): string {

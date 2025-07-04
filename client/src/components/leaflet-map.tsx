@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { getSpotIconEmoji } from '@/lib/spot-icons';
 
 // Fix for default markers in react-leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -94,11 +95,9 @@ export default function LeafletMap({ center, spots, onSpotClick }: LeafletMapPro
           >
             <Popup maxWidth={300}>
               <div className="max-w-xs">
-                <img 
-                  src={spot.imageUrl} 
-                  alt={spot.name}
-                  className="w-full h-24 object-cover rounded-md mb-2"
-                />
+                <div className="flex items-center justify-center w-full h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-md mb-2">
+                  <span className="text-4xl">{getSpotIconEmoji(spot)}</span>
+                </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-1">
                   {spot.name}
                 </h3>

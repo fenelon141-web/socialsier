@@ -1,15 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Target, Star, Navigation, MapPin, Route } from "lucide-react";
+import { Target, Star, Route, MapPin, Navigation } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { formatDistance, calculateDistance, isWithinRange } from "@/lib/location-utils";
+import { getSpotIcon } from "@/lib/spot-icons";
 import type { Spot } from "@shared/schema";
 
 interface SpotCardProps {
   spot: Spot;
 }
+
+
 
 export default function SpotCard({ spot }: SpotCardProps) {
   const { toast } = useToast();
@@ -120,11 +123,9 @@ export default function SpotCard({ spot }: SpotCardProps) {
   return (
     <div className="spot-card bg-white rounded-xl p-3 shadow-md border border-purple-100">
       <div className="flex items-center space-x-3">
-        <img 
-          src={spot.imageUrl} 
-          alt={spot.name}
-          className="w-16 h-16 rounded-xl object-cover"
-        />
+        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+          {getSpotIcon(spot)}
+        </div>
         <div className="flex-1">
           <div className="flex items-center space-x-1">
             <h3 className="font-semibold text-gray-800 text-sm">{spot.name}</h3>
