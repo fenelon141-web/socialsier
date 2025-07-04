@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useCamera } from "@/hooks/use-camera";
 import { apiRequest } from "@/lib/queryClient";
-import { Camera, ImageIcon } from "lucide-react";
+import { Camera, ImageIcon, Images } from "lucide-react";
 import type { User } from "@shared/schema";
 
 interface EditProfileDialogProps {
@@ -24,7 +24,7 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { choosePhotoSource, isLoading: cameraLoading } = useCamera();
+  const { choosePhotoSource, selectFromGallery, takePhoto, isLoading: cameraLoading } = useCamera();
 
   const updateMutation = useMutation({
     mutationFn: async (updates: Partial<User>) => {
@@ -56,9 +56,28 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleSelectFromGallery = async () => {
+    try {
+      const photo = await selectFromGallery();
+      if (photo) {
+        handleChange('avatar', photo);
+        toast({
+          title: "Photo selected! 📸",
+          description: "Your new profile picture looks amazing!",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Photo selection failed 😢",
+        description: "Couldn't select photo. Try again!",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleTakePhoto = async () => {
     try {
-      const photo = await choosePhotoSource();
+      const photo = await takePhoto();
       if (photo) {
         handleChange('avatar', photo);
         toast({
@@ -68,7 +87,7 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
       }
     } catch (error) {
       toast({
-        title: "Photo failed 😢",
+        title: "Photo capture failed 😢",
         description: "Couldn't capture photo. Try again!",
         variant: "destructive",
       });
@@ -90,23 +109,43 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
               <img 
                 src={formData.avatar || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"} 
                 alt="Profile"
-                className="w-20 h-20 rounded-full mx-auto border-4 border-pink-200"
+                className="w-24 h-24 rounded-full mx-auto border-4 border-pink-200 object-cover"
               />
+            </div>
+            
+            {/* Photo Selection Buttons */}
+            <div className="flex justify-center gap-2 mt-3">
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleSelectFromGallery}
+                disabled={cameraLoading}
+                className="bg-purple-400 hover:bg-purple-500 text-white px-3 py-2 rounded-lg flex items-center gap-2"
+              >
+                {cameraLoading ? (
+                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                ) : (
+                  <Images className="w-4 h-4" />
+                )}
+                Photo Library
+              </Button>
+              
               <Button
                 type="button"
                 size="sm"
                 onClick={handleTakePhoto}
                 disabled={cameraLoading}
-                className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-pink-400 hover:bg-pink-500 p-0"
+                className="bg-pink-400 hover:bg-pink-500 text-white px-3 py-2 rounded-lg flex items-center gap-2"
               >
                 {cameraLoading ? (
                   <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
                 ) : (
                   <Camera className="w-4 h-4" />
                 )}
+                Take Photo
               </Button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Tap camera to take a new photo</p>
+            <p className="text-xs text-gray-500 mt-2">Choose from your photo library or take a new photo</p>
           </div>
           
           <div className="space-y-2">

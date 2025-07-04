@@ -169,6 +169,13 @@ Changelog:
   - Added push notifications schema and API endpoints for friend activity, nearby spots, and challenge reminders
   - Enhanced spot descriptions with more variety: matcha lattes, boba tea, açaí bowls, avocado toast, poke bowls
   - Improved OpenStreetMap queries to target more diverse trendy food and fitness spots
+- July 04, 2025. Enhanced photo library integration and nearby spots location accuracy
+  - Improved profile photo editing with dedicated Photo Library and Take Photo buttons
+  - Enhanced camera hook to support direct photo library access via Capacitor Camera plugin
+  - Added better UI for photo selection with clear visual feedback and loading states
+  - Fixed nearby spots distance sorting to prioritize proximity over rating/trendiness
+  - Updated OpenStreetMap queries to return spots sorted by actual distance from user
+  - Added debugging logs to track location accuracy and distance calculations
 ```
 
 ## User Preferences
