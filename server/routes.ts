@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { insertSpotHuntSchema } from "@shared/schema";
+import { notificationService } from "./notification-service";
 
 // Advanced search filter functions
 function filterByPriceRange(spot: any, priceRange: string): boolean {
@@ -930,6 +931,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(user);
     } catch (error) {
       res.status(500).json({ message: "Failed to update push settings" });
+    }
+  });
+
+  // Location tracking for push notifications
+  app.post("/api/user/:id/track-location", async (req, res) => {
+    try {
+      const { latitude, longitude } = req.body;
+      const userId = req.params.id;
+      
+      if (!latitude || !longitude) {
+        return res.status(400).json({ message: "Latitude and longitude are required" });
+      }
+      
+      // Track user location in notification service
+      await notificationService.trackUserLocation(userId, latitude, longitude);
+      
+      res.json({ 
+        message: "Location tracked successfully", 
+        activeUsers: notificationService.getActiveUsersCount()
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to track location" });
+    }
+  });
+
+  // Get notification service status
+  app.get("/api/notifications/status", async (req, res) => {
+    try {
+      res.json({
+        isRunning: true,
+        activeUsers: notificationService.getActiveUsersCount(),
+        message: "Push notification service is running"
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get notification status" });
+    }
+  });
+
+  // Manual trigger for testing nearby spot notifications
+  app.post("/api/notifications/test-nearby", async (req, res) => {
+    try {
+      const { userId, latitude, longitude } = req.body;
+      
+      if (!userId || !latitude || !longitude) {
+        return res.status(400).json({ message: "userId, latitude, and longitude are required" });
+      }
+      
+      // Temporarily track user and trigger immediate check
+      await notificationService.trackUserLocation(userId, latitude, longitude);
+      
+      res.json({ message: "Test notification check initiated" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to test notifications" });
     }
   });
 

@@ -10,12 +10,14 @@ import { MapPin, Camera, Navigation } from "lucide-react";
 import { Link } from "wouter";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useLocation } from "@/hooks/use-location";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { apiRequest } from "@/lib/queryClient";
 import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
 
 export default function Home() {
   const { latitude, longitude, loading: locationLoading } = useGeolocation();
   const { city, country, loading: locationNameLoading } = useLocation();
+  const { testNearby, isTracking, serviceStatus } = usePushNotifications();
   
   const { data: trendingSpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"]
@@ -70,6 +72,37 @@ export default function Home() {
             </Button>
           </Link>
         </div>
+
+        {/* Push Notification Test */}
+        {latitude && longitude && (
+          <Card className="card-gradient rounded-2xl shadow-lg border-0">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-bold text-gray-800">Push Notifications 🔔</h2>
+                <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  serviceStatus?.isRunning ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}>
+                  {serviceStatus?.isRunning ? 'Active' : 'Inactive'}
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Test the push notification system for nearby trending spots.
+              </p>
+              <Button
+                onClick={() => testNearby(latitude, longitude)}
+                disabled={isTracking}
+                className="w-full bg-gradient-to-r from-purple-400 to-pink-400 text-white py-2 rounded-xl font-semibold text-sm"
+              >
+                {isTracking ? 'Testing...' : 'Test Nearby Notifications'}
+              </Button>
+              {serviceStatus && (
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  {serviceStatus.activeUsers} users currently being tracked
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Nearby Spots */}
         {nearbySpots && nearbySpots.length > 0 && (

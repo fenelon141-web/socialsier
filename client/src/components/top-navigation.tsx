@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, Trophy } from "lucide-react";
 import { useLocation } from "@/hooks/use-location";
+import NotificationBell from "./notification-bell";
 import type { User } from "@shared/schema";
 
 export default function TopNavigation() {
@@ -25,6 +26,7 @@ export default function TopNavigation() {
           </div>
         </div>
         <div className="flex items-center space-x-3">
+          <NotificationBell />
           <div className="relative">
             <Trophy className="text-yellow-300 text-xl" />
             {user && user.spotsHunted > 0 && (
