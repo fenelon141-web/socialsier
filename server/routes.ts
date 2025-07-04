@@ -170,7 +170,10 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       .filter((spot: any) => spot && isTrendyPlace(spot));
 
     const uniqueResults = removeDuplicates(spots);
-    return sortByTrendiness(uniqueResults).slice(0, 25);
+    // Sort by distance for nearby spots (closest first)
+    return uniqueResults
+      .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+      .slice(0, 25);
 
   } catch (error) {
     console.warn('Failed to fetch nearby spots from OSM:', error);
@@ -559,6 +562,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userLng = parseFloat(lng as string);
       const searchRadius = parseInt(radius as string);
       
+      console.log(`Finding nearby spots for location: ${userLat}, ${userLng} within ${searchRadius}m`);
+      
       // Use OpenStreetMap to find nearby trendy spots (completely free)
       let nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
       
@@ -578,6 +583,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (category) {
         nearbySpots = nearbySpots.filter(spot => spot.category === category);
       }
+      
+      // Sort by distance first for nearby spots (primary concern is proximity)
+      nearbySpots = nearbySpots.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      
+      console.log(`Found ${nearbySpots.length} spots, closest distances:`, 
+        nearbySpots.slice(0, 5).map(s => `${s.name}: ${s.distance}m`));
       
       if (nearbySpots.length === 0) {
         // Fallback to stored spots if OSM returns no results after filtering
