@@ -10,6 +10,12 @@ function filterByPriceRange(spot: any, priceRange: string): boolean {
   // If "any" is selected, show all spots
   if (priceRange === 'any') return true;
   
+  // Check if spot has structured priceRange field (from OSM)
+  if (spot.priceRange) {
+    return spot.priceRange === priceRange;
+  }
+  
+  // Fallback to calculated price range for legacy spots
   const spotPriceRange = getSpotPriceRange(spot);
   return spotPriceRange === priceRange;
 }
@@ -18,6 +24,12 @@ function filterByDietary(spot: any, dietary: string): boolean {
   // If "any" is selected, show all spots
   if (dietary === 'any') return true;
   
+  // Check if spot has dietaryOptions array (from OSM)
+  if (spot.dietaryOptions && Array.isArray(spot.dietaryOptions)) {
+    return spot.dietaryOptions.includes(dietary);
+  }
+  
+  // Fallback to description/name checking for legacy spots
   const description = spot.description.toLowerCase();
   const name = spot.name.toLowerCase();
   
@@ -51,6 +63,12 @@ function filterByAmbiance(spot: any, ambiance: string): boolean {
   // If "any" is selected, show all spots
   if (ambiance === 'any') return true;
   
+  // Check if spot has ambiance array (from OSM)
+  if (spot.ambiance && Array.isArray(spot.ambiance)) {
+    return spot.ambiance.includes(ambiance);
+  }
+  
+  // Fallback to description/name checking for legacy spots
   const description = spot.description.toLowerCase();
   const name = spot.name.toLowerCase();
   
@@ -213,7 +231,12 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
     sport: tags.sport,
     shop: tags.shop,
     website: tags.website,
-    phone: tags.phone
+    phone: tags.phone,
+    // Add filter fields for OpenStreetMap spots
+    priceRange: getOSMPriceRange(tags),
+    dietaryOptions: getOSMDietaryOptions(tags),
+    ambiance: getOSMAmbiance(tags),
+    amenities: getOSMAmenities(tags)
   };
 }
 
@@ -314,6 +337,126 @@ function getOSMCategory(tags: any): string {
   };
   
   return categoryMap[amenity] || 'trendy';
+}
+
+function getOSMPriceRange(tags: any): string {
+  // Generate price range based on tags and location indicators
+  const name = (tags.name || '').toLowerCase();
+  const amenity = tags.amenity || '';
+  
+  // High-end indicators
+  if (name.includes('artisan') || name.includes('boutique') || name.includes('premium') || 
+      name.includes('gourmet') || tags.organic === 'yes' || tags.fair_trade === 'yes') {
+    return '$$$';
+  }
+  
+  // Budget indicators
+  if (name.includes('quick') || name.includes('express') || name.includes('grab') ||
+      amenity === 'fast_food') {
+    return '$';
+  }
+  
+  // Default to mid-range for most trendy spots
+  return '$$';
+}
+
+function getOSMDietaryOptions(tags: any): string[] {
+  const options: string[] = [];
+  const name = (tags.name || '').toLowerCase();
+  const cuisine = tags.cuisine || '';
+  
+  // Check for dietary options based on tags and name
+  if (tags.vegan === 'yes' || tags.diet_vegan === 'yes' || cuisine === 'vegan' || 
+      name.includes('vegan') || name.includes('plant')) {
+    options.push('vegan');
+  }
+  
+  if (tags.vegetarian === 'yes' || cuisine === 'vegetarian' || name.includes('vegetarian')) {
+    options.push('vegetarian');
+  }
+  
+  if (tags.gluten_free === 'yes' || name.includes('gluten') || name.includes('celiac')) {
+    options.push('gluten_free');
+  }
+  
+  if (name.includes('keto') || name.includes('low-carb') || name.includes('protein')) {
+    options.push('keto');
+  }
+  
+  if (tags.organic === 'yes' || name.includes('organic') || name.includes('healthy') ||
+      name.includes('superfood') || name.includes('detox') || name.includes('açaí') ||
+      name.includes('acai') || name.includes('quinoa')) {
+    options.push('healthy');
+  }
+  
+  return options;
+}
+
+function getOSMAmbiance(tags: any): string[] {
+  const ambiance: string[] = [];
+  const name = (tags.name || '').toLowerCase();
+  const description = getOSMDescription(tags).toLowerCase();
+  
+  // Determine ambiance based on keywords
+  if (name.includes('trendy') || name.includes('aesthetic') || name.includes('instagram') ||
+      name.includes('matcha') || name.includes('boba') || name.includes('açaí') ||
+      description.includes('aesthetic') || description.includes('instagram')) {
+    ambiance.push('trendy');
+  }
+  
+  if (name.includes('cozy') || name.includes('home') || name.includes('cottage') ||
+      name.includes('warm') || description.includes('cozy')) {
+    ambiance.push('cozy');
+  }
+  
+  if (name.includes('minimalist') || name.includes('clean') || name.includes('simple') ||
+      name.includes('modern') || description.includes('minimalist')) {
+    ambiance.push('minimalist');
+  }
+  
+  if (name.includes('vibrant') || name.includes('colorful') || name.includes('lively') ||
+      name.includes('fresh') || description.includes('vibrant')) {
+    ambiance.push('vibrant');
+  }
+  
+  if (name.includes('artisan') || name.includes('premium') || name.includes('boutique') ||
+      name.includes('gourmet') || description.includes('artisan')) {
+    ambiance.push('upscale');
+  }
+  
+  // Default to trendy if no specific ambiance found
+  if (ambiance.length === 0) {
+    ambiance.push('trendy');
+  }
+  
+  return ambiance;
+}
+
+function getOSMAmenities(tags: any): string[] {
+  const amenities: string[] = [];
+  
+  // Check for common amenities
+  if (tags.wifi === 'yes' || tags.internet_access === 'wifi') {
+    amenities.push('wifi');
+  }
+  
+  if (tags.outdoor_seating === 'yes') {
+    amenities.push('outdoor_seating');
+  }
+  
+  if (tags.takeaway === 'yes') {
+    amenities.push('takeaway');
+  }
+  
+  if (tags.delivery === 'yes') {
+    amenities.push('delivery');
+  }
+  
+  if (tags.wheelchair === 'yes') {
+    amenities.push('accessible');
+  }
+  
+  return amenities;
 }
 
 function isTrendyPlace(place: any): boolean {
