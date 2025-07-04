@@ -40,6 +40,22 @@ export interface IStorage {
   // Activity Feed
   getRecentActivity(): Promise<any[]>;
 
+  // User Analytics
+  getUserStats(userId: number): Promise<{
+    spotsHunted: number;
+    totalPoints: number;
+    currentStreak: number;
+    favoriteCategory: string;
+    mostActiveTime: string;
+    aestheticScore: number;
+  }>;
+  getUserAchievements(userId: number): Promise<{
+    title: string;
+    description: string;
+    date: string;
+    icon: string;
+  }[]>;
+
   // Social Features
   // Friends
   sendFriendRequest(requesterId: string, addresseeId: string): Promise<Friendship>;
@@ -549,6 +565,173 @@ class MemStorage implements IStorage {
       Object.assign(user, settings);
     }
     return user!;
+  }
+
+  async getUserStats(userId: number): Promise<{
+    spotsHunted: number;
+    totalPoints: number;
+    currentStreak: number;
+    favoriteCategory: string;
+    mostActiveTime: string;
+    aestheticScore: number;
+  }> {
+    const user = this.users.find(u => u.id === userId);
+    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId);
+    const userPosts = this.posts.filter(post => post.userId === userId.toString());
+    
+    // Calculate spots hunted
+    const spotsHunted = userHunts.length;
+    
+    // Calculate total points from hunts
+    const totalPoints = userHunts.reduce((sum, hunt) => sum + hunt.pointsEarned, 0);
+    
+    // Calculate current streak (consecutive days with activity)
+    const huntDates = userHunts.map(hunt => new Date(hunt.huntedAt!)).sort((a, b) => b.getTime() - a.getTime());
+    let currentStreak = 0;
+    if (huntDates.length > 0) {
+      const today = new Date();
+      let checkDate = new Date(today);
+      
+      for (let i = 0; i < huntDates.length; i++) {
+        const huntDate = new Date(huntDates[i]);
+        const diffDays = Math.floor((checkDate.getTime() - huntDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays <= 1) {
+          currentStreak++;
+          checkDate = new Date(huntDate);
+        } else {
+          break;
+        }
+      }
+    }
+    
+    // Calculate favorite category from hunted spots
+    const categoryCount: { [key: string]: number } = {};
+    for (const hunt of userHunts) {
+      const spot = this.spots.find(s => s.id === hunt.spotId);
+      if (spot && spot.category) {
+        categoryCount[spot.category] = (categoryCount[spot.category] || 0) + 1;
+      }
+    }
+    
+    const favoriteCategory = Object.keys(categoryCount).length > 0 
+      ? Object.entries(categoryCount).reduce((a, b) => categoryCount[a[0]] > categoryCount[b[0]] ? a : b)[0]
+      : "Cafe";
+    
+    // Calculate most active time based on hunt times
+    const hourCounts: { [key: number]: number } = {};
+    for (const hunt of userHunts) {
+      if (hunt.huntedAt) {
+        const hour = new Date(hunt.huntedAt).getHours();
+        hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+      }
+    }
+    
+    let mostActiveTime = "Morning Vibes";
+    if (Object.keys(hourCounts).length > 0) {
+      const peakHour = Object.entries(hourCounts).reduce((a, b) => hourCounts[a[0]] > hourCounts[b[0]] ? a : b)[0];
+      const hour = parseInt(peakHour);
+      if (hour >= 6 && hour < 12) mostActiveTime = "Morning Vibes";
+      else if (hour >= 12 && hour < 17) mostActiveTime = "Afternoon Energy";
+      else if (hour >= 17 && hour < 21) mostActiveTime = "Evening Glow";
+      else mostActiveTime = "Night Owl";
+    }
+    
+    // Calculate aesthetic score based on activity and engagement
+    const baseScore = Math.min(10, Math.floor(spotsHunted / 5) + Math.floor(userPosts.length / 3));
+    const streakBonus = Math.min(2, Math.floor(currentStreak / 7));
+    const aestheticScore = Math.min(10, baseScore + streakBonus);
+    
+    return {
+      spotsHunted,
+      totalPoints,
+      currentStreak,
+      favoriteCategory,
+      mostActiveTime,
+      aestheticScore
+    };
+  }
+
+  async getUserAchievements(userId: number): Promise<{
+    title: string;
+    description: string;
+    date: string;
+    icon: string;
+  }[]> {
+    const achievements: { title: string; description: string; date: string; icon: string }[] = [];
+    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId);
+    const userBadges = this.userBadges.filter(ub => ub.userId === userId);
+    const userPosts = this.posts.filter(post => post.userId === userId.toString());
+    
+    // First spot achievement
+    if (userHunts.length > 0) {
+      const firstHunt = userHunts.sort((a, b) => new Date(a.huntedAt!).getTime() - new Date(b.huntedAt!).getTime())[0];
+      achievements.push({
+        title: "First Hunt",
+        description: "Discovered your first spot",
+        date: this.getTimeAgo(firstHunt.huntedAt),
+        icon: "🎯"
+      });
+    }
+    
+    // Milestone achievements based on spots hunted
+    if (userHunts.length >= 5) {
+      achievements.push({
+        title: "Spot Explorer",
+        description: "Hunted 5+ amazing spots",
+        date: this.getTimeAgo(userHunts[4].huntedAt),
+        icon: "🌟"
+      });
+    }
+    
+    if (userHunts.length >= 10) {
+      achievements.push({
+        title: "Valley Hunter",
+        description: "Discovered 10+ trendy spots",
+        date: this.getTimeAgo(userHunts[9].huntedAt),
+        icon: "💎"
+      });
+    }
+    
+    // Social achievements
+    if (userPosts.length >= 5) {
+      achievements.push({
+        title: "Social Butterfly",
+        description: "Shared 5+ posts with friends",
+        date: this.getTimeAgo(userPosts[4].createdAt),
+        icon: "🦋"
+      });
+    }
+    
+    // Badge achievements
+    if (userBadges.length >= 3) {
+      achievements.push({
+        title: "Badge Collector",
+        description: "Earned 3+ badges",
+        date: this.getTimeAgo(userBadges[2].earnedAt),
+        icon: "🏆"
+      });
+    }
+    
+    // Category-specific achievements
+    const cafeHunts = userHunts.filter(hunt => {
+      const spot = this.spots.find(s => s.id === hunt.spotId);
+      return spot && (spot.category === "Cafe" || spot.description?.toLowerCase().includes("cafe"));
+    });
+    
+    if (cafeHunts.length >= 5) {
+      achievements.push({
+        title: "Cafe Connoisseur",
+        description: "Discovered 5+ aesthetic cafes",
+        date: this.getTimeAgo(cafeHunts[4].huntedAt),
+        icon: "☕"
+      });
+    }
+    
+    // Return most recent achievements (limit to 3)
+    return achievements
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 3);
   }
 }
 

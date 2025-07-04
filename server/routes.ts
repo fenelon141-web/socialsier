@@ -523,6 +523,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(updatedUser);
   });
 
+  app.get('/api/user/:id/stats', async (req, res) => {
+    try {
+      const stats = await storage.getUserStats(parseInt(req.params.id));
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+
+  app.get('/api/user/:id/achievements', async (req, res) => {
+    try {
+      const achievements = await storage.getUserAchievements(parseInt(req.params.id));
+      res.json(achievements);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user achievements" });
+    }
+  });
+
   // Spots routes
   app.get("/api/spots", async (req, res) => {
     const spots = await storage.getAllSpots();

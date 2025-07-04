@@ -176,6 +176,13 @@ Changelog:
   - Fixed nearby spots distance sorting to prioritize proximity over rating/trendiness
   - Updated OpenStreetMap queries to return spots sorted by actual distance from user
   - Added debugging logs to track location accuracy and distance calculations
+- July 04, 2025. Dynamic achievements and real-time Valley Vibes system
+  - Replaced all hardcoded achievements with dynamic system based on actual user activity
+  - Created getUserStats and getUserAchievements methods calculating real-time data from user hunts
+  - Valley Vibes now shows actual favorite categories, active times, hunting streaks, and aesthetic scores
+  - Achievements earned from real spot hunting milestones (first hunt, 5+ spots, social activity)
+  - Profile page displays authentic user progress instead of placeholder data
+  - Added loading states for dynamic content and proper fallbacks for new users
 ```
 
 ## User Preferences

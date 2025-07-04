@@ -17,21 +17,38 @@ export default function Profile() {
     queryKey: ["/api/user/1/badges"]
   });
 
-  const nextLevelXP = 1000;
-  const currentLevelXP = 300;
-  const progressPercentage = (currentLevelXP / nextLevelXP) * 100;
+  const { data: userStats, isLoading: statsLoading } = useQuery<{
+    spotsHunted: number;
+    totalPoints: number;
+    currentStreak: number;
+    favoriteCategory: string;
+    mostActiveTime: string;
+    aestheticScore: number;
+  }>({
+    queryKey: ["/api/user/1/stats"]
+  });
+
+  const { data: achievements, isLoading: achievementsLoading } = useQuery<{
+    title: string;
+    description: string;
+    date: string;
+    icon: string;
+  }[]>({
+    queryKey: ["/api/user/1/achievements"]
+  });
+
+  // Calculate level progress from total points
+  const currentLevel = user?.level || 1;
+  const baseXP = (currentLevel - 1) * 1000;
+  const nextLevelXP = currentLevel * 1000;
+  const currentLevelXP = (userStats?.totalPoints || 0) - baseXP;
+  const progressPercentage = Math.min(100, (currentLevelXP / 1000) * 100);
 
   const stats = [
-    { label: "Spots Hunted", value: user?.spotsHunted || 0, icon: "🎯" },
-    { label: "Total Points", value: user?.totalPoints || 0, icon: "✨" },
+    { label: "Spots Hunted", value: userStats?.spotsHunted || 0, icon: "🎯" },
+    { label: "Total Points", value: userStats?.totalPoints || 0, icon: "✨" },
     { label: "Badges Earned", value: userBadges?.length || 0, icon: "🏆" },
     { label: "Current Level", value: user?.level || 1, icon: "📈" }
-  ];
-
-  const achievements = [
-    { title: "Matcha Master", description: "Hunted 50+ matcha spots", date: "This week", icon: "🍵" },
-    { title: "Early Bird", description: "First spot of the day 5 times", date: "Last week", icon: "🌅" },
-    { title: "Social Butterfly", description: "Shared 25 spots", date: "2 weeks ago", icon: "🦋" }
   ];
 
   return (
@@ -154,18 +171,37 @@ export default function Profile() {
           <CardContent className="p-4">
             <h3 className="text-lg font-bold text-gray-800 mb-3">Recent Achievements 🌟</h3>
             <div className="space-y-3">
-              {achievements.map((achievement, index) => (
-                <div key={index} className="bg-white rounded-xl p-3 shadow-sm border border-purple-100">
-                  <div className="flex items-center space-x-3">
-                    <div className="text-2xl">{achievement.icon}</div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-sm text-gray-800">{achievement.title}</h4>
-                      <p className="text-xs text-gray-600">{achievement.description}</p>
+              {achievementsLoading ? (
+                [1, 2, 3].map(i => (
+                  <div key={i} className="bg-white rounded-xl p-3 shadow-sm border border-purple-100 animate-pulse">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                      </div>
+                      <div className="w-12 h-3 bg-gray-200 rounded"></div>
                     </div>
-                    <span className="text-xs text-gray-500">{achievement.date}</span>
                   </div>
+                ))
+              ) : achievements && achievements.length > 0 ? (
+                achievements.map((achievement, index) => (
+                  <div key={index} className="bg-white rounded-xl p-3 shadow-sm border border-purple-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-2xl">{achievement.icon}</div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm text-gray-800">{achievement.title}</h4>
+                        <p className="text-xs text-gray-600">{achievement.description}</p>
+                      </div>
+                      <span className="text-xs text-gray-500">{achievement.date}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-white rounded-xl p-3 shadow-sm border border-purple-100 text-center">
+                  <p className="text-sm text-gray-500">Start hunting spots to earn achievements! 🎯</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -175,22 +211,45 @@ export default function Profile() {
           <CardContent className="p-4">
             <h3 className="text-lg font-bold text-gray-800 mb-3">Valley Vibes 💅</h3>
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Favorite Spot Category</span>
-                <span className="text-sm font-semibold text-gray-800">Matcha Cafes ☕</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Most Active Time</span>
-                <span className="text-sm font-semibold text-gray-800">Morning Vibes 🌅</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Hunting Streak</span>
-                <span className="text-sm font-semibold text-gray-800">7 days 🔥</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Aesthetic Score</span>
-                <span className="text-sm font-semibold text-gray-800">10/10 ✨</span>
-              </div>
+              {statsLoading ? (
+                [1, 2, 3, 4].map(i => (
+                  <div key={i} className="flex justify-between items-center animate-pulse">
+                    <div className="w-24 h-4 bg-gray-200 rounded"></div>
+                    <div className="w-16 h-4 bg-gray-200 rounded"></div>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Favorite Spot Category</span>
+                    <span className="text-sm font-semibold text-gray-800">
+                      {userStats?.favoriteCategory || "Cafe"} {userStats?.favoriteCategory === "Cafe" ? "☕" : "🏋️"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Most Active Time</span>
+                    <span className="text-sm font-semibold text-gray-800">
+                      {userStats?.mostActiveTime || "Morning Vibes"} {
+                        userStats?.mostActiveTime === "Morning Vibes" ? "🌅" : 
+                        userStats?.mostActiveTime === "Afternoon Energy" ? "☀️" : 
+                        userStats?.mostActiveTime === "Evening Glow" ? "🌅" : "🌙"
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Hunting Streak</span>
+                    <span className="text-sm font-semibold text-gray-800">
+                      {userStats?.currentStreak || 0} {userStats?.currentStreak === 1 ? "day" : "days"} 🔥
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Aesthetic Score</span>
+                    <span className="text-sm font-semibold text-gray-800">
+                      {userStats?.aestheticScore || 0}/10 ✨
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
