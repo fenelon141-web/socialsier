@@ -6,45 +6,70 @@ import { insertSpotHuntSchema } from "@shared/schema";
 
 // Advanced search filter functions
 function filterByPriceRange(spot: any, priceRange: string): boolean {
+  // If "any" is selected, show all spots
+  if (priceRange === 'any') return true;
+  
   const spotPriceRange = getSpotPriceRange(spot);
   return spotPriceRange === priceRange;
 }
 
 function filterByDietary(spot: any, dietary: string): boolean {
+  // If "any" is selected, show all spots
+  if (dietary === 'any') return true;
+  
   const description = spot.description.toLowerCase();
   const name = spot.name.toLowerCase();
   
   switch (dietary) {
     case 'vegan':
-      return description.includes('vegan') || description.includes('plant-based') || name.includes('vegan');
+      return description.includes('vegan') || description.includes('plant-based') || 
+             description.includes('açaí') || description.includes('avocado') ||
+             description.includes('matcha') || name.includes('vegan') ||
+             description.includes('oat milk') || description.includes('almond');
     case 'vegetarian':
-      return description.includes('vegetarian') || description.includes('vegan') || description.includes('plant-based');
+      return description.includes('vegetarian') || description.includes('vegan') || 
+             description.includes('plant-based') || description.includes('salad') ||
+             description.includes('açaí') || description.includes('avocado');
     case 'gluten_free':
-      return description.includes('gluten') || name.includes('gluten');
+      return description.includes('gluten') || description.includes('quinoa') ||
+             description.includes('rice') || name.includes('gluten');
     case 'keto':
-      return description.includes('keto') || description.includes('low-carb');
+      return description.includes('keto') || description.includes('low-carb') ||
+             description.includes('avocado') || description.includes('protein');
     case 'healthy':
-      return description.includes('healthy') || description.includes('superfood') || description.includes('organic');
+      return description.includes('healthy') || description.includes('superfood') || 
+             description.includes('organic') || description.includes('açaí') ||
+             description.includes('matcha') || description.includes('poke') ||
+             description.includes('avocado') || description.includes('quinoa');
     default:
       return true;
   }
 }
 
 function filterByAmbiance(spot: any, ambiance: string): boolean {
+  // If "any" is selected, show all spots
+  if (ambiance === 'any') return true;
+  
   const description = spot.description.toLowerCase();
   const name = spot.name.toLowerCase();
   
   switch (ambiance) {
     case 'trendy':
-      return description.includes('trendy') || description.includes('aesthetic') || description.includes('instagram');
+      return description.includes('trendy') || description.includes('aesthetic') || 
+             description.includes('instagram') || description.includes('matcha') ||
+             description.includes('açaí') || description.includes('boba');
     case 'cozy':
-      return description.includes('cozy') || name.includes('home') || name.includes('cottage');
+      return description.includes('cozy') || name.includes('home') || 
+             name.includes('cottage') || description.includes('warm');
     case 'minimalist':
-      return description.includes('minimalist') || description.includes('clean') || name.includes('simple');
+      return description.includes('minimalist') || description.includes('clean') || 
+             name.includes('simple') || description.includes('modern');
     case 'vibrant':
-      return description.includes('vibrant') || description.includes('colorful') || description.includes('lively');
+      return description.includes('vibrant') || description.includes('colorful') || 
+             description.includes('lively') || description.includes('fresh');
     case 'upscale':
-      return description.includes('artisan') || description.includes('premium') || description.includes('boutique');
+      return description.includes('artisan') || description.includes('premium') || 
+             description.includes('boutique') || description.includes('gourmet');
     default:
       return true;
   }
@@ -626,17 +651,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       if (nearbySpots.length === 0) {
-        // Fallback to stored spots if OSM returns no results
+        // Fallback to stored spots if OSM returns no results after filtering
         const allSpots = await storage.getAllSpots();
-        const fallbackSpots = allSpots
+        let fallbackSpots = allSpots
           .map(spot => ({
             ...spot,
             distance: calculateDistance(userLat, userLng, spot.latitude, spot.longitude)
           }))
-          .filter(spot => spot.distance <= searchRadius)
-          .sort((a, b) => a.distance - b.distance);
+          .filter(spot => spot.distance <= searchRadius);
+          
+        // Apply the same filters to fallback spots
+        if (priceRange && priceRange !== 'any') {
+          fallbackSpots = fallbackSpots.filter(spot => filterByPriceRange(spot, priceRange as string));
+        }
         
-        return res.json(fallbackSpots);
+        if (dietary && dietary !== 'any') {
+          fallbackSpots = fallbackSpots.filter(spot => filterByDietary(spot, dietary as string));
+        }
+        
+        if (ambiance && ambiance !== 'any') {
+          fallbackSpots = fallbackSpots.filter(spot => filterByAmbiance(spot, ambiance as string));
+        }
+        
+        if (category) {
+          fallbackSpots = fallbackSpots.filter(spot => spot.category === category);
+        }
+        
+        return res.json(fallbackSpots.sort((a, b) => a.distance - b.distance));
       }
       
       res.json(nearbySpots);
