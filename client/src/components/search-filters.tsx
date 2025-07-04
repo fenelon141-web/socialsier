@@ -33,9 +33,9 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     
-    // Remove empty filters before sending
+    // Remove empty and "any" filters before sending
     const cleanFilters = Object.fromEntries(
-      Object.entries(newFilters).filter(([_, v]) => v !== '')
+      Object.entries(newFilters).filter(([_, v]) => v !== '' && v !== 'any')
     );
     onFiltersChange(cleanFilters);
   };
@@ -51,7 +51,7 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
     onFiltersChange({});
   };
 
-  const activeFiltersCount = Object.values(filters).filter(v => v !== '').length;
+  const activeFiltersCount = Object.values(filters).filter(v => v !== '' && v !== 'any').length;
 
   return (
     <div className="w-full">
@@ -100,7 +100,7 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
                     <SelectItem value="$">$ - Budget friendly</SelectItem>
                     <SelectItem value="$$">$$ - Moderate</SelectItem>
                     <SelectItem value="$$$">$$$ - Upscale</SelectItem>
@@ -118,7 +118,7 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
                     <SelectItem value="vegan">🌱 Vegan</SelectItem>
                     <SelectItem value="vegetarian">🥗 Vegetarian</SelectItem>
                     <SelectItem value="gluten_free">🌾 Gluten Free</SelectItem>
@@ -138,7 +138,7 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
                     <SelectItem value="trendy">✨ Trendy</SelectItem>
                     <SelectItem value="cozy">🏠 Cozy</SelectItem>
                     <SelectItem value="minimalist">⚪ Minimalist</SelectItem>
@@ -158,7 +158,7 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
                     <SelectItem value="cafe">☕ Cafes</SelectItem>
                     <SelectItem value="restaurant">🍽️ Restaurants</SelectItem>
                     <SelectItem value="fitness">💪 Fitness</SelectItem>
@@ -173,22 +173,22 @@ export default function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
               <div className="mt-3">
                 <p className="text-xs text-gray-500 mb-2">Active filters:</p>
                 <div className="flex flex-wrap gap-2">
-                  {filters.priceRange && (
+                  {filters.priceRange && filters.priceRange !== 'any' && (
                     <Badge variant="outline" className="text-xs">
                       {filters.priceRange}
                     </Badge>
                   )}
-                  {filters.dietary && (
+                  {filters.dietary && filters.dietary !== 'any' && (
                     <Badge variant="outline" className="text-xs">
                       {filters.dietary.replace('_', ' ')}
                     </Badge>
                   )}
-                  {filters.ambiance && (
+                  {filters.ambiance && filters.ambiance !== 'any' && (
                     <Badge variant="outline" className="text-xs">
                       {filters.ambiance}
                     </Badge>
                   )}
-                  {filters.category && (
+                  {filters.category && filters.category !== 'any' && (
                     <Badge variant="outline" className="text-xs">
                       {filters.category}
                     </Badge>

@@ -3,7 +3,8 @@ import {
   type Badge, type UserBadge, type SpotHunt, type DailyChallenge, 
   type UserChallengeProgress, type Reward, type Friendship, type InsertFriendship,
   type Post, type InsertPost, type PostLike, type InsertPostLike,
-  type PostComment, type InsertPostComment, type SpotReview, type InsertSpotReview
+  type PostComment, type InsertPostComment, type SpotReview, type InsertSpotReview,
+  type Notification, type InsertNotification
 } from "@shared/schema";
 
 export interface IStorage {
@@ -58,6 +59,12 @@ export interface IStorage {
   createSpotReview(review: InsertSpotReview): Promise<SpotReview>;
   getSpotReviews(spotId: number): Promise<(SpotReview & { user: User })[]>;
   getUserReviews(userId: string): Promise<(SpotReview & { spot: Spot })[]>;
+
+  // Notifications
+  getUserNotifications(userId: string): Promise<Notification[]>;
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  markNotificationAsRead(notificationId: number): Promise<Notification>;
+  updateUserPushSettings(userId: string, settings: any): Promise<User>;
 }
 
 class MemStorage implements IStorage {
@@ -76,11 +83,13 @@ class MemStorage implements IStorage {
   private postLikes: PostLike[] = [];
   private postComments: PostComment[] = [];
   private spotReviews: SpotReview[] = [];
+  private notifications: Notification[] = [];
   private nextPostId = 1;
   private nextFriendshipId = 1;
   private nextCommentId = 1;
   private nextLikeId = 1;
   private nextReviewId = 1;
+  private nextNotificationId = 1;
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
@@ -506,6 +515,40 @@ class MemStorage implements IStorage {
       const spot = this.spots.find(s => s.id === review.spotId)!;
       return { ...review, spot };
     });
+  }
+
+  // Notifications
+  async getUserNotifications(userId: string): Promise<Notification[]> {
+    return this.notifications
+      .filter(n => n.userId === userId)
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+  }
+
+  async createNotification(notification: any): Promise<Notification> {
+    const newNotification: Notification = {
+      id: this.nextNotificationId++,
+      ...notification,
+      createdAt: new Date(),
+      read: false
+    };
+    this.notifications.push(newNotification);
+    return newNotification;
+  }
+
+  async markNotificationAsRead(notificationId: number): Promise<Notification> {
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (notification) {
+      notification.read = true;
+    }
+    return notification!;
+  }
+
+  async updateUserPushSettings(userId: string, settings: any): Promise<User> {
+    const user = this.users.find(u => u.id.toString() === userId);
+    if (user) {
+      Object.assign(user, settings);
+    }
+    return user!;
   }
 }
 
