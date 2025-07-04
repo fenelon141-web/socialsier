@@ -162,6 +162,13 @@ Changelog:
   - Enhanced social post creation with camera and photo preview
   - Social navigation tab added to bottom navigation
   - Full photo sharing workflow from capture to social feed display
+- July 04, 2025. Enhanced search filters and push notifications system
+  - Added advanced search filters: price range ($/$$/$$$), dietary preferences (vegan, keto, etc.), ambiance (trendy, cozy, etc.)
+  - Implemented comprehensive filtering for nearby spots with dietary, price, and ambiance options
+  - Created interactive search filters UI component with real-time filtering
+  - Added push notifications schema and API endpoints for friend activity, nearby spots, and challenge reminders
+  - Enhanced spot descriptions with more variety: matcha lattes, boba tea, açaí bowls, avocado toast, poke bowls
+  - Improved OpenStreetMap queries to target more diverse trendy food and fitness spots
 ```
 
 ## User Preferences

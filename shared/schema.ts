@@ -23,6 +23,11 @@ export const users = pgTable("users", {
   totalPoints: integer("total_points").notNull().default(0),
   spotsHunted: integer("spots_hunted").notNull().default(0),
   avatar: text("avatar"),
+  // Push notification preferences
+  pushToken: text("push_token"), // Device push notification token
+  notifyFriendActivity: boolean("notify_friend_activity").default(true),
+  notifyNearbySpots: boolean("notify_nearby_spots").default(true),
+  notifyChallengeReminders: boolean("notify_challenge_reminders").default(true),
   createdAt: timestamp("created_at").defaultNow()
 });
 
@@ -38,6 +43,11 @@ export const spots = pgTable("spots", {
   huntCount: integer("hunt_count").notNull().default(0),
   imageUrl: text("image_url").notNull(),
   trending: boolean("trending").notNull().default(false),
+  // Advanced search filter fields
+  priceRange: text("price_range").default("$$"), // $, $$, $$$, $$$$
+  dietaryOptions: text("dietary_options").array().default([]), // vegan, vegetarian, gluten_free, keto, etc
+  ambiance: text("ambiance").array().default([]), // trendy, cozy, minimalist, vibrant, etc
+  amenities: text("amenities").array().default([]), // wifi, outdoor_seating, instagram_worthy, etc
   createdAt: timestamp("created_at").defaultNow()
 });
 
@@ -143,6 +153,18 @@ export const spotReviews = pgTable("spot_reviews", {
   createdAt: timestamp("created_at").defaultNow()
 });
 
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  type: text("type").notNull(), // friend_activity, nearby_spot, challenge_reminder
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  data: jsonb("data"), // Additional notification data
+  read: boolean("read").default(false),
+  sent: boolean("sent").default(false),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
 // Insert schemas  
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -189,6 +211,11 @@ export const insertPostCommentSchema = createInsertSchema(postComments).omit({
 });
 
 export const insertSpotReviewSchema = createInsertSchema(spotReviews).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
   id: true,
   createdAt: true
 });
@@ -324,6 +351,13 @@ export const spotReviewsRelations = relations(spotReviews, ({ one }) => ({
   })
 }));
 
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id]
+  })
+}));
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -351,3 +385,5 @@ export type PostComment = typeof postComments.$inferSelect;
 export type InsertPostComment = z.infer<typeof insertPostCommentSchema>;
 export type SpotReview = typeof spotReviews.$inferSelect;
 export type InsertSpotReview = z.infer<typeof insertSpotReviewSchema>;
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;

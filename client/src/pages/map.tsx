@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/bottom-navigation";
 import SpotCard from "@/components/spot-card";
 import LeafletMap from "@/components/leaflet-map";
+import SearchFilters from "@/components/search-filters";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { ArrowLeft, MapPin, Star, Target, Navigation } from "lucide-react";
 import { Link } from "wouter";
@@ -11,13 +13,27 @@ import type { Spot } from "@shared/schema";
 
 export default function MapView() {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
+  const [searchFilters, setSearchFilters] = useState({});
   
-  // Get nearby spots from Google Places API based on current location
+  // Get nearby spots with advanced filters
   const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({
-    queryKey: ["/api/spots/nearby", latitude, longitude],
+    queryKey: ["/api/spots/nearby", latitude, longitude, searchFilters],
     queryFn: async () => {
       if (!latitude || !longitude) return [];
-      const response = await fetch(`/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=2000`);
+      
+      // Build query string with filters
+      const params = new URLSearchParams({
+        lat: latitude.toString(),
+        lng: longitude.toString(),
+        radius: "2000"
+      });
+      
+      // Add filters to query params
+      Object.entries(searchFilters).forEach(([key, value]) => {
+        if (value) params.append(key, value as string);
+      });
+      
+      const response = await fetch(`/api/spots/nearby?${params.toString()}`);
       return response.json();
     },
     enabled: !!latitude && !!longitude,
@@ -109,6 +125,9 @@ export default function MapView() {
             {spots?.length || 0} spots found
           </span>
         </div>
+
+        {/* Search Filters */}
+        <SearchFilters onFiltersChange={setSearchFilters} />
 
         {locationError && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">

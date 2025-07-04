@@ -4,6 +4,68 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { insertSpotHuntSchema } from "@shared/schema";
 
+// Advanced search filter functions
+function filterByPriceRange(spot: any, priceRange: string): boolean {
+  const spotPriceRange = getSpotPriceRange(spot);
+  return spotPriceRange === priceRange;
+}
+
+function filterByDietary(spot: any, dietary: string): boolean {
+  const description = spot.description.toLowerCase();
+  const name = spot.name.toLowerCase();
+  
+  switch (dietary) {
+    case 'vegan':
+      return description.includes('vegan') || description.includes('plant-based') || name.includes('vegan');
+    case 'vegetarian':
+      return description.includes('vegetarian') || description.includes('vegan') || description.includes('plant-based');
+    case 'gluten_free':
+      return description.includes('gluten') || name.includes('gluten');
+    case 'keto':
+      return description.includes('keto') || description.includes('low-carb');
+    case 'healthy':
+      return description.includes('healthy') || description.includes('superfood') || description.includes('organic');
+    default:
+      return true;
+  }
+}
+
+function filterByAmbiance(spot: any, ambiance: string): boolean {
+  const description = spot.description.toLowerCase();
+  const name = spot.name.toLowerCase();
+  
+  switch (ambiance) {
+    case 'trendy':
+      return description.includes('trendy') || description.includes('aesthetic') || description.includes('instagram');
+    case 'cozy':
+      return description.includes('cozy') || name.includes('home') || name.includes('cottage');
+    case 'minimalist':
+      return description.includes('minimalist') || description.includes('clean') || name.includes('simple');
+    case 'vibrant':
+      return description.includes('vibrant') || description.includes('colorful') || description.includes('lively');
+    case 'upscale':
+      return description.includes('artisan') || description.includes('premium') || description.includes('boutique');
+    default:
+      return true;
+  }
+}
+
+function getSpotPriceRange(spot: any): string {
+  const name = spot.name.toLowerCase();
+  const description = spot.description.toLowerCase();
+  
+  if (name.includes('artisan') || name.includes('boutique') || name.includes('premium') ||
+      description.includes('artisan') || description.includes('premium')) {
+    return '$$$';
+  }
+  
+  if (name.includes('quick') || name.includes('grab') || name.includes('juice bar')) {
+    return '$';
+  }
+  
+  return '$$';
+}
+
 // Calculate distance between two points using Haversine formula
 function calculateDistance(
   lat1: number,
@@ -522,10 +584,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // Get nearby spots based on user location using OpenStreetMap
+  // Get nearby spots based on user location using OpenStreetMap with advanced filters
   app.get("/api/spots/nearby", async (req, res) => {
     try {
-      const { lat, lng, radius = 2000 } = req.query;
+      const { 
+        lat, 
+        lng, 
+        radius = 2000,
+        priceRange,
+        dietary,
+        ambiance,
+        category 
+      } = req.query;
       
       if (!lat || !lng) {
         return res.status(400).json({ message: "Latitude and longitude are required" });
@@ -536,7 +606,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const searchRadius = parseInt(radius as string);
       
       // Use OpenStreetMap to find nearby trendy spots (completely free)
-      const nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
+      let nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
+      
+      // Apply advanced filters
+      if (priceRange) {
+        nearbySpots = nearbySpots.filter(spot => filterByPriceRange(spot, priceRange as string));
+      }
+      
+      if (dietary) {
+        nearbySpots = nearbySpots.filter(spot => filterByDietary(spot, dietary as string));
+      }
+      
+      if (ambiance) {
+        nearbySpots = nearbySpots.filter(spot => filterByAmbiance(spot, ambiance as string));
+      }
+      
+      if (category) {
+        nearbySpots = nearbySpots.filter(spot => spot.category === category);
+      }
       
       if (nearbySpots.length === 0) {
         // Fallback to stored spots if OSM returns no results
@@ -807,6 +894,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user reviews" });
+    }
+  });
+
+  // Push Notifications API
+  app.get("/api/user/:id/notifications", async (req, res) => {
+    try {
+      const notifications = await storage.getUserNotifications(req.params.id);
+      res.json(notifications);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get notifications" });
+    }
+  });
+
+  app.post("/api/notifications", async (req, res) => {
+    try {
+      const notification = await storage.createNotification(req.body);
+      res.json(notification);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create notification" });
+    }
+  });
+
+  app.patch("/api/notifications/:id/read", async (req, res) => {
+    try {
+      const notification = await storage.markNotificationAsRead(parseInt(req.params.id));
+      res.json(notification);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  app.patch("/api/user/:id/push-settings", async (req, res) => {
+    try {
+      const user = await storage.updateUserPushSettings(req.params.id, req.body);
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update push settings" });
     }
   });
 
