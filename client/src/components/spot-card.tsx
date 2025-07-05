@@ -83,30 +83,40 @@ export default function SpotCard({ spot }: SpotCardProps) {
   };
 
   const openDirections = () => {
-    const destination = `${spot.latitude},${spot.longitude}`;
+    // Use spot name and address for better navigation instead of just coordinates
     const spotName = encodeURIComponent(spot.name);
+    const spotAddress = spot.address ? encodeURIComponent(spot.address) : '';
+    const searchQuery = spotAddress ? `${spotName}, ${spotAddress}` : spotName;
+    const encodedQuery = encodeURIComponent(searchQuery);
+    
+    // Fallback coordinates for precise location
+    const coordinates = `${spot.latitude},${spot.longitude}`;
 
     // Detect if user is on mobile and prefer native apps
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-      // Try Google Maps app first (works on both iOS and Android)
-      const googleMapsUrl = `https://maps.google.com/maps?q=${destination}&navigate=yes`;
+      // Try to search by name/address first, fallback to coordinates
+      const googleMapsUrl = spotAddress 
+        ? `https://maps.google.com/maps?q=${encodedQuery}&navigate=yes`
+        : `https://maps.google.com/maps?q=${spotName}&ll=${coordinates}&navigate=yes`;
       window.open(googleMapsUrl, '_blank');
     } else {
       // For desktop, open multiple options in new tabs
       const options = [
         {
           name: 'Google Maps',
-          url: `https://maps.google.com/maps?q=${destination}&navigate=yes`
+          url: spotAddress 
+            ? `https://maps.google.com/maps?q=${encodedQuery}&navigate=yes`
+            : `https://maps.google.com/maps?q=${spotName}&ll=${coordinates}&navigate=yes`
         },
         {
           name: 'Apple Maps',
-          url: `https://maps.apple.com/?q=${spotName}&ll=${destination}&dirflg=d`
+          url: `https://maps.apple.com/?q=${encodedQuery}&dirflg=d`
         },
         {
           name: 'OpenStreetMap',
-          url: `https://www.openstreetmap.org/directions?from=${latitude},${longitude}&to=${destination}`
+          url: `https://www.openstreetmap.org/directions?from=${latitude},${longitude}&to=${coordinates}`
         }
       ];
 
@@ -115,7 +125,7 @@ export default function SpotCard({ spot }: SpotCardProps) {
       
       toast({
         title: "Navigation opened! 🗺️",
-        description: "Directions opened in your default maps app",
+        description: `Getting directions to ${spot.name}`,
       });
     }
   };

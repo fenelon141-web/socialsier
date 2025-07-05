@@ -193,6 +193,11 @@ Changelog:
   - All badges feature valley girl themed names and descriptions with cute emojis and rarity levels
   - Seeded database with complete collection and updated memory storage initialization
   - Guest user showcases sample badges: First Hunt Cutie, Boba Princess, Avo Toast Angel, Barre Bestie, Pink Paradise
+- July 05, 2025. Enhanced directions with place names instead of coordinates
+  - Updated directions functionality to use actual place names and addresses for navigation
+  - Navigation now searches for "Chai Spot, King's Road" instead of just latitude/longitude coordinates
+  - Improved user experience with more intuitive and readable navigation queries
+  - Enhanced mobile and desktop direction handling with proper fallbacks
 ```
 
 ## User Preferences
