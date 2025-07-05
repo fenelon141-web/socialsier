@@ -38,12 +38,21 @@ export default function SpotCard({ spot }: SpotCardProps) {
       });
     },
     onSuccess: (data: any) => {
+      const badgeMessage = data.badgeEarned 
+        ? ` New badge: ${data.badgeEarned.name}!` 
+        : '';
+      
       toast({
         title: "Spot hunted! ✨",
-        description: `You earned 50 points! Distance: ${data.distance}m`,
+        description: `You earned ${data.pointsEarned || 50} points! Distance: ${data.distance}m${badgeMessage}`,
       });
+      
+      // Invalidate all relevant caches
       queryClient.invalidateQueries({ queryKey: ["/api/spots"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user/1"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user/1/badges"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/activity"] });
     },
     onError: (error: any) => {
       const errorData = error.response?.data;

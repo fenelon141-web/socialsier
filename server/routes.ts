@@ -845,10 +845,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateChallengeProgress(userId, 1, 2); // Update to current progress
       }
 
+      // Get updated user badges to check if new badges were awarded
+      const userBadges = await storage.getUserBadges(userId);
+      const badgeEarned = userBadges.length > 0 ? userBadges[userBadges.length - 1] : null;
+
       res.json({ 
         ...spotHunt, 
         distance: Math.round(distance),
-        verified: true 
+        verified: true,
+        badgeEarned: badgeEarned?.badge || null,
+        pointsEarned: spotHunt.pointsEarned
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to hunt spot" });

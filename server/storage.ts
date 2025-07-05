@@ -244,15 +244,90 @@ class MemStorage implements IStorage {
   }
 
   async huntSpot(userId: number, spotId: number): Promise<SpotHunt> {
+    const spot = await this.getSpot(spotId);
+    const pointsEarned = 50; // Standard points for hunting a spot
+    
     const newSpotHunt: SpotHunt = {
       id: this.spotHunts.length + 1,
       userId: userId.toString(),
       spotId,
-      pointsEarned: 10,
+      pointsEarned,
       huntedAt: new Date()
     };
     this.spotHunts.push(newSpotHunt);
+
+    // Update user stats - add points and increment spots hunted
+    const user = await this.getUser(userId);
+    if (user) {
+      const updatedUser = await this.updateUser(userId, {
+        totalPoints: user.totalPoints + pointsEarned,
+        spotsHunted: user.spotsHunted + 1
+      });
+      
+      // Check for badge achievements based on hunts
+      const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId.toString());
+      
+      // Award "First Hunt Cutie" badge for first hunt (only if not already earned)
+      if (userHunts.length === 1) {
+        const hasFirstHuntBadge = await this.hasUserBadge(userId, 41);
+        if (!hasFirstHuntBadge) {
+          await this.awardBadge(userId, 41); // First Hunt Cutie badge
+        }
+      }
+      
+      // Award category-specific badges based on spot type
+      if (spot) {
+        if (spot.category === 'cafe' && spot.description.toLowerCase().includes('boba')) {
+          // Check if user has hunted 3+ boba spots
+          const bobaHunts = await this.getUserSpotHuntsByCategory(userId, 'boba');
+          if (bobaHunts.length >= 3) {
+            await this.awardBadge(userId, 1); // Boba Princess
+          }
+        }
+        
+        if (spot.category === 'cafe' && spot.description.toLowerCase().includes('matcha')) {
+          const matchaHunts = await this.getUserSpotHuntsByCategory(userId, 'matcha');
+          if (matchaHunts.length >= 3) {
+            await this.awardBadge(userId, 2); // Matcha Mermaid
+          }
+        }
+        
+        if (spot.category === 'cafe' && (spot.description.toLowerCase().includes('avocado') || spot.description.toLowerCase().includes('avo'))) {
+          const avoHunts = await this.getUserSpotHuntsByCategory(userId, 'avocado');
+          if (avoHunts.length >= 3) {
+            await this.awardBadge(userId, 12); // Avo Toast Angel
+          }
+        }
+        
+        if (spot.category === 'fitness' || spot.category === 'gym') {
+          const fitnessHunts = await this.getUserSpotHuntsByCategory(userId, 'fitness');
+          if (fitnessHunts.length >= 2) {
+            await this.awardBadge(userId, 25); // Barre Bestie
+          }
+        }
+      }
+    }
+
     return newSpotHunt;
+  }
+
+  // Helper method to get user hunts by category/description
+  private async getUserSpotHuntsByCategory(userId: number, keyword: string): Promise<SpotHunt[]> {
+    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId.toString());
+    const categoryHunts: SpotHunt[] = [];
+    
+    for (const hunt of userHunts) {
+      const spot = await this.getSpot(hunt.spotId);
+      if (spot && (
+        spot.category.toLowerCase().includes(keyword) ||
+        spot.description.toLowerCase().includes(keyword) ||
+        spot.name.toLowerCase().includes(keyword)
+      )) {
+        categoryHunts.push(hunt);
+      }
+    }
+    
+    return categoryHunts;
   }
 
   // Badge operations
@@ -352,6 +427,13 @@ class MemStorage implements IStorage {
     };
     this.userBadges.push(newUserBadge);
     return newUserBadge;
+  }
+
+  // Helper method to check if user already has a specific badge
+  async hasUserBadge(userId: number, badgeId: number): Promise<boolean> {
+    return this.userBadges.some(ub => 
+      ub.userId === userId.toString() && ub.badgeId === badgeId
+    );
   }
 
   // Challenge operations
