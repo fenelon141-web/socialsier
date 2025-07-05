@@ -198,6 +198,13 @@ Changelog:
   - Navigation now searches for "Chai Spot, King's Road" instead of just latitude/longitude coordinates
   - Improved user experience with more intuitive and readable navigation queries
   - Enhanced mobile and desktop direction handling with proper fallbacks
+- July 05, 2025. Fixed check-in functionality and enhanced badge system
+  - Enhanced check-in functionality with proper badge awarding and 50 points per check-in
+  - Automatic badge detection based on spot categories (boba, matcha, avocado, fitness)
+  - First Hunt Cutie badge awarded for first check-in with duplicate prevention
+  - Better user feedback showing points earned and new badges
+  - Fixed photo upload functionality for profile pictures and post creation
+  - Enhanced camera integration with proper data URL handling and error management
 ```
 
 ## User Preferences
