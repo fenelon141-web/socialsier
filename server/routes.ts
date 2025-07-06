@@ -838,15 +838,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const spotHunt = await storage.huntSpot(userId, spotId);
+      const spotHunt = await storage.huntSpot(parseInt(userId), spotId);
       
       // Update challenge progress for matcha spots
       if (spot && spot.category === 'cafe') {
-        await storage.updateChallengeProgress(userId, 1, 2); // Update to current progress
+        await storage.updateChallengeProgress(parseInt(userId), 1, 2); // Update to current progress
       }
 
       // Get updated user badges to check if new badges were awarded
-      const userBadges = await storage.getUserBadges(userId);
+      const userBadges = await storage.getUserBadges(parseInt(userId));
       const badgeEarned = userBadges.length > 0 ? userBadges[userBadges.length - 1] : null;
 
       res.json({ 
@@ -857,7 +857,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         pointsEarned: spotHunt.pointsEarned
       });
     } catch (error) {
-      res.status(500).json({ message: "Failed to hunt spot" });
+      console.error("Hunt spot error:", error);
+      res.status(500).json({ message: "Failed to hunt spot", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
