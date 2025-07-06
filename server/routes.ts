@@ -801,7 +801,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/spots/:id/hunt", async (req, res) => {
     try {
       const spotId = parseInt(req.params.id);
-      const { userId, userLatitude, userLongitude } = req.body;
+      const { userId, userLatitude, userLongitude, spotData } = req.body;
       
       if (!userId) {
         return res.status(400).json({ message: "User ID is required" });
@@ -812,8 +812,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Location data required for check-in" });
       }
       
-      // Get spot details to verify location
-      const spot = await storage.getSpot(spotId);
+      // Try to get spot from storage first, if not found and spotData provided, create it
+      let spot = await storage.getSpot(spotId);
+      if (!spot && spotData) {
+        // Create spot from OpenStreetMap data
+        spot = await storage.createSpot({
+          id: spotId,
+          name: spotData.name,
+          description: spotData.description,
+          category: spotData.category,
+          latitude: spotData.latitude,
+          longitude: spotData.longitude,
+          address: spotData.address || "",
+          rating: spotData.rating || 4.5,
+          huntCount: 0,
+          imageUrl: spotData.imageUrl || "",
+          trending: false,
+          priceRange: spotData.priceRange || "$$",
+          dietaryOptions: spotData.dietaryOptions || [],
+          ambiance: spotData.ambiance || [],
+          amenities: spotData.amenities || []
+        });
+      }
+      
       if (!spot) {
         return res.status(404).json({ message: "Spot not found" });
       }

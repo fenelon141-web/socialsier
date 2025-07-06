@@ -224,20 +224,24 @@ class MemStorage implements IStorage {
     return this.spots.find(spot => spot.id === id);
   }
 
-  async createSpot(insertSpot: InsertSpot): Promise<Spot> {
+  async createSpot(insertSpot: any): Promise<Spot> {
     const newSpot: Spot = {
-      id: this.spots.length + 1,
+      id: insertSpot.id || this.spots.length + 1,
       createdAt: new Date(),
       name: insertSpot.name,
       description: insertSpot.description,
       category: insertSpot.category,
       latitude: insertSpot.latitude,
       longitude: insertSpot.longitude,
-      address: insertSpot.address,
+      address: insertSpot.address || "",
       rating: insertSpot.rating || 4.5,
       huntCount: insertSpot.huntCount || 0,
-      imageUrl: insertSpot.imageUrl,
-      trending: insertSpot.trending || false
+      imageUrl: insertSpot.imageUrl || "",
+      trending: insertSpot.trending || false,
+      priceRange: insertSpot.priceRange || "$$",
+      dietaryOptions: insertSpot.dietaryOptions || [],
+      ambiance: insertSpot.ambiance || [],
+      amenities: insertSpot.amenities || []
     };
     this.spots.push(newSpot);
     return newSpot;

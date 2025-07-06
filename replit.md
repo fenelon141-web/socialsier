@@ -205,6 +205,12 @@ Changelog:
   - Better user feedback showing points earned and new badges
   - Fixed photo upload functionality for profile pictures and post creation
   - Enhanced camera integration with proper data URL handling and error management
+- July 06, 2025. Fixed hunt button functionality with OpenStreetMap integration
+  - Resolved hunt button failures when users are within range of real spots
+  - Updated hunt endpoint to dynamically create spots from OpenStreetMap data
+  - Enhanced spot hunting to work with real-time location-based spots
+  - Improved error handling and debugging for hunt operations
+  - Hunt button now successfully awards points and badges for nearby spot check-ins
 ```
 
 ## User Preferences

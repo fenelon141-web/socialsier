@@ -34,7 +34,21 @@ export default function SpotCard({ spot }: SpotCardProps) {
       return apiRequest("POST", `/api/spots/${spot.id}/hunt`, { 
         userId: 1, 
         userLatitude: latitude,
-        userLongitude: longitude
+        userLongitude: longitude,
+        spotData: {
+          name: spot.name,
+          description: spot.description,
+          category: spot.category,
+          latitude: spot.latitude,
+          longitude: spot.longitude,
+          address: spot.address,
+          rating: spot.rating,
+          imageUrl: spot.imageUrl,
+          priceRange: spot.priceRange,
+          dietaryOptions: spot.dietaryOptions,
+          ambiance: spot.ambiance,
+          amenities: spot.amenities
+        }
       });
     },
     onSuccess: (data: any) => {
