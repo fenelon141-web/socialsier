@@ -247,67 +247,136 @@ function getOSMDescription(tags: any): string {
   const leisure = tags.leisure || '';
   const sport = tags.sport || '';
   const name = (tags.name || '').toLowerCase();
+  const brand = tags.brand || '';
   
   let description = '';
   
-  // Fitness and workout classes
-  if (leisure === 'fitness_centre' || leisure === 'sports_centre' || sport === 'fitness') {
-    description = '💪 Trendy fitness studio with Instagram-worthy vibes';
-  } else if (sport === 'yoga' || name.includes('yoga')) {
-    description = '🧘‍♀️ Aesthetic yoga classes & mindful movement';
-  } else if (sport === 'pilates' || name.includes('pilates')) {
-    description = '🤸‍♀️ Hot girl pilates & core strengthening';
-  } else if (sport === 'aerobics' || name.includes('barre')) {
-    description = '💃 Barre classes & dance fitness vibes';
-  } else if (sport === 'gymnastics' || name.includes('gymnastic')) {
-    description = '🤸‍♀️ Aesthetic movement & flexibility training';
-  } else if (shop === 'sports' || name.includes('gym')) {
-    description = '🏋️‍♀️ Boutique fitness with trendy equipment';
-  } 
-  // Specific trendy drink spots
-  else if (name.includes('matcha') || name.includes('boba') || name.includes('bubble') || cuisine === 'bubble_tea' || shop === 'tea') {
-    description = '🍵 Aesthetic matcha lattes, boba tea & trendy drinks';
-  } else if (name.includes('juice') || name.includes('smoothie') || amenity === 'juice_bar') {
-    description = '🥤 Cold-pressed juices, açaí bowls & smoothie bowls';
-  } else if (name.includes('coffee') || amenity === 'cafe') {
-    // Add variety to cafe descriptions to include trendy foods
-    const descriptions = [
-      '☕ Iced oat milk lattes & avocado toast',
-      '🥑 Specialty coffee with açaí bowls & chia pudding',
-      '🍵 Matcha lattes, cold brew & aesthetic pastries',
-      '☕ Third-wave coffee with poke bowls & quinoa salads',
-      '🧋 Specialty drinks with Instagram-worthy presentation'
-    ];
-    const hash = (name || '').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    description = descriptions[hash % descriptions.length];
-  } else if (shop === 'bakery' || name.includes('bakery')) {
-    description = '🥐 Artisan pastries, sourdough & Instagram-worthy treats';
-  } else if (cuisine === 'vegan' || name.includes('vegan') || name.includes('plant')) {
-    description = '🌱 Plant-based açaí bowls, avocado toast & superfood smoothies';
-  } else if (cuisine === 'healthy' || name.includes('bowl') || name.includes('salad')) {
-    description = '🥗 Poke bowls, quinoa salads, buddha bowls & grain bowls';
-  } else if (amenity === 'restaurant' && cuisine) {
-    // Specific cuisine types
-    if (cuisine === 'japanese') {
-      description = '🍣 Aesthetic sushi & poke bowls';
-    } else if (cuisine === 'italian') {
-      description = '🍝 Cauliflower crust pizza & fresh pasta';
-    } else if (cuisine === 'mexican') {
-      description = '🌮 Fresh guac & colorful veggie bowls';
-    } else {
-      description = `🍽️ Trendy ${cuisine} with Instagram appeal`;
-    }
-  } else if (amenity === 'restaurant') {
-    description = '🍽️ Aesthetic dining & photogenic plates';
-  } else {
-    description = '✨ Trendy spot perfect for your feed';
+  // Use actual OSM description if available
+  if (tags.description) {
+    return tags.description;
   }
   
-  // Add special tags
-  if (tags.organic === 'yes') description += ' • Organic';
-  if (tags.fair_trade === 'yes') description += ' • Fair Trade';
-  if (tags.vegan === 'yes' || tags.diet_vegan === 'yes') description += ' • Vegan';
-  if (tags.gluten_free === 'yes') description += ' • Gluten Free';
+  // Brand-specific descriptions for accuracy
+  if (brand) {
+    const brandLower = brand.toLowerCase();
+    if (brandLower.includes('starbucks')) {
+      description = 'Coffee shop serving hot and cold beverages, pastries and light meals';
+    } else if (brandLower.includes('costa')) {
+      description = 'Coffee chain offering espresso drinks, sandwiches and cakes';
+    } else if (brandLower.includes('pret')) {
+      description = 'Fresh sandwiches, salads, wraps and organic coffee';
+    } else if (brandLower.includes('subway')) {
+      description = 'Submarine sandwiches and salads made to order';
+    } else if (brandLower.includes('mcdonald')) {
+      description = 'Fast food restaurant serving burgers, fries and beverages';
+    } else if (brandLower.includes('kfc')) {
+      description = 'Fried chicken restaurant with original recipe';
+    } else if (brandLower.includes('nando')) {
+      description = 'Peri-peri chicken restaurant with Portuguese flavors';
+    } else if (brandLower.includes('wagamama')) {
+      description = 'Asian kitchen serving fresh noodles, rice dishes and curries';
+    } else if (brandLower.includes('leon')) {
+      description = 'Naturally fast food with healthy options';
+    } else {
+      description = `${brand} location`;
+    }
+  } else {
+    // Generate accurate descriptions based on OSM tags
+    if (leisure === 'fitness_centre' || leisure === 'sports_centre') {
+      description = 'Fitness center with exercise equipment and group classes';
+    } else if (sport === 'yoga' || name.includes('yoga')) {
+      description = 'Yoga studio offering various classes and meditation';
+    } else if (sport === 'pilates' || name.includes('pilates')) {
+      description = 'Pilates studio with mat and equipment-based classes';
+    } else if (name.includes('barre') || sport === 'aerobics') {
+      description = 'Barre and dance fitness classes';
+    } else if (sport === 'fitness' || name.includes('gym')) {
+      description = 'Gym with weights, cardio equipment and fitness classes';
+    } else if (amenity === 'cafe' || name.includes('cafe') || name.includes('coffee')) {
+      description = 'Coffee shop serving espresso drinks and light refreshments';
+    } else if (shop === 'bakery' || name.includes('bakery')) {
+      description = 'Bakery selling fresh bread, pastries and baked goods';
+    } else if (amenity === 'restaurant') {
+      if (cuisine === 'japanese') {
+        description = 'Japanese restaurant serving sushi, ramen and traditional dishes';
+      } else if (cuisine === 'italian') {
+        description = 'Italian restaurant with pasta, pizza and Mediterranean cuisine';
+      } else if (cuisine === 'chinese') {
+        description = 'Chinese restaurant with traditional and modern dishes';
+      } else if (cuisine === 'indian') {
+        description = 'Indian restaurant serving curry, tandoor and regional specialties';
+      } else if (cuisine === 'thai') {
+        description = 'Thai restaurant with authentic Southeast Asian cuisine';
+      } else if (cuisine === 'mexican') {
+        description = 'Mexican restaurant serving tacos, burritos and Latin dishes';
+      } else if (cuisine === 'pizza') {
+        description = 'Pizza restaurant with traditional and specialty options';
+      } else if (cuisine === 'burger') {
+        description = 'Burger restaurant with classic and gourmet options';
+      } else if (cuisine === 'sandwich') {
+        description = 'Sandwich shop with fresh ingredients and custom options';
+      } else if (cuisine === 'seafood') {
+        description = 'Seafood restaurant with fresh fish and ocean specialties';
+      } else if (cuisine === 'vegetarian' || cuisine === 'vegan') {
+        description = 'Plant-based restaurant with vegetarian and vegan dishes';
+      } else if (cuisine === 'kebab') {
+        description = 'Kebab shop serving grilled meats and Middle Eastern food';
+      } else if (cuisine === 'fish_and_chips') {
+        description = 'Traditional fish and chips takeaway';
+      } else if (cuisine) {
+        description = `${cuisine.charAt(0).toUpperCase() + cuisine.slice(1)} restaurant`;
+      } else {
+        description = 'Restaurant serving a variety of dishes';
+      }
+    } else if (amenity === 'fast_food') {
+      if (cuisine === 'burger') {
+        description = 'Fast food burger restaurant';
+      } else if (cuisine === 'pizza') {
+        description = 'Fast food pizza restaurant';
+      } else if (cuisine === 'chicken') {
+        description = 'Fast food chicken restaurant';
+      } else {
+        description = 'Fast food restaurant with quick service';
+      }
+    } else if (shop === 'convenience') {
+      description = 'Convenience store with everyday essentials and snacks';
+    } else if (shop === 'supermarket') {
+      description = 'Supermarket with groceries and household items';
+    } else if (amenity === 'bar' || amenity === 'pub') {
+      description = 'Bar serving alcoholic beverages and pub food';
+    } else if (shop === 'clothes' || shop === 'fashion') {
+      description = 'Clothing store with fashion and apparel';
+    } else if (shop === 'beauty' || shop === 'hairdresser') {
+      description = 'Beauty salon offering hair and cosmetic services';
+    } else if (amenity === 'pharmacy') {
+      description = 'Pharmacy providing medications and health products';
+    } else if (amenity === 'bank') {
+      description = 'Bank branch offering financial services';
+    } else if (amenity === 'fuel') {
+      description = 'Petrol station with fuel and convenience items';
+    } else if (shop === 'electronics') {
+      description = 'Electronics store with phones, computers and gadgets';
+    } else if (shop === 'books') {
+      description = 'Bookstore with books, magazines and reading materials';
+    } else {
+      // Generic fallback based on primary tag
+      const primaryTag = amenity || shop || leisure || sport || 'business';
+      description = primaryTag.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
+    }
+  }
+  
+  // Add practical information
+  const features = [];
+  if (tags.outdoor_seating === 'yes') features.push('outdoor seating');
+  if (tags.wifi === 'yes' || tags.internet_access === 'wlan') features.push('WiFi');
+  if (tags.takeaway === 'yes') features.push('takeaway');
+  if (tags.delivery === 'yes') features.push('delivery');
+  if (tags.wheelchair === 'yes') features.push('wheelchair accessible');
+  if (tags.parking === 'yes') features.push('parking available');
+  
+  if (features.length > 0) {
+    description += ` • ${features.join(', ')}`;
+  }
   
   return description;
 }

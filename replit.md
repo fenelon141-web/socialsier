@@ -211,6 +211,12 @@ Changelog:
   - Enhanced spot hunting to work with real-time location-based spots
   - Improved error handling and debugging for hunt operations
   - Hunt button now successfully awards points and badges for nearby spot check-ins
+- July 06, 2025. Enhanced location descriptions with accurate real-world information
+  - Replaced generic "valley girl" themed descriptions with accurate business descriptions
+  - Added brand-specific descriptions for known chains (Starbucks, Costa, Pret, etc.)
+  - Incorporated actual OpenStreetMap tags for precise service descriptions
+  - Enhanced descriptions include practical amenities (WiFi, outdoor seating, takeaway)
+  - Descriptions now accurately reflect what each location actually offers
 ```
 
 ## User Preferences
