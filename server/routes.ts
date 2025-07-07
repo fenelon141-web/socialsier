@@ -928,6 +928,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Get user badges before hunting to compare
+      const badgesBefore = await storage.getUserBadges(parseInt(userId));
+      const badgeCountBefore = badgesBefore.length;
+      
       const spotHunt = await storage.huntSpot(parseInt(userId), spotId);
       
       // Update challenge progress for matcha spots
@@ -936,15 +940,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get updated user badges to check if new badges were awarded
-      const userBadges = await storage.getUserBadges(parseInt(userId));
-      const badgeEarned = userBadges.length > 0 ? userBadges[userBadges.length - 1] : null;
+      const badgesAfter = await storage.getUserBadges(parseInt(userId));
+      const newBadges = badgesAfter.slice(badgeCountBefore); // Get only new badges
+      
+      // Get updated user info with new points
+      const updatedUser = await storage.getUser(parseInt(userId));
 
       res.json({ 
         ...spotHunt, 
         distance: Math.round(distance),
         verified: true,
-        badgeEarned: badgeEarned?.badge || null,
-        pointsEarned: spotHunt.pointsEarned
+        newBadges: newBadges.map(ub => ub.badge),
+        pointsEarned: spotHunt.pointsEarned,
+        totalPoints: updatedUser?.totalPoints || 0,
+        spotsHunted: updatedUser?.spotsHunted || 0
       });
     } catch (error) {
       console.error("Hunt spot error:", error);

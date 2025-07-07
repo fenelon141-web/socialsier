@@ -6,6 +6,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { formatDistance, calculateDistance, isWithinRange } from "@/lib/location-utils";
 import { getSpotIcon } from "@/lib/spot-icons";
+import { CelebrationAnimation } from "./celebration-animation";
+import { useState } from "react";
 import type { Spot } from "@shared/schema";
 
 interface SpotCardProps {
@@ -18,6 +20,8 @@ export default function SpotCard({ spot }: SpotCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationData, setCelebrationData] = useState<any>(null);
 
   // Calculate distance to spot
   const distance = latitude && longitude 
@@ -52,16 +56,17 @@ export default function SpotCard({ spot }: SpotCardProps) {
       });
     },
     onSuccess: (data: any) => {
-      const badgeMessage = data.badgeEarned 
-        ? ` New badge: ${data.badgeEarned.name}!` 
-        : '';
-      
-      toast({
-        title: "Spot hunted! ✨",
-        description: `You earned ${data.pointsEarned || 50} points! Distance: ${data.distance}m${badgeMessage}`,
+      // Store celebration data and trigger amazing animation
+      setCelebrationData({
+        pointsEarned: data.pointsEarned || 50,
+        newBadges: data.newBadges || [],
+        spotName: spot.name,
+        totalPoints: data.totalPoints,
+        spotsHunted: data.spotsHunted
       });
+      setShowCelebration(true);
       
-      // Invalidate all relevant caches
+      // Invalidate all relevant caches to update UI
       queryClient.invalidateQueries({ queryKey: ["/api/spots"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user/1"] });
@@ -224,6 +229,20 @@ export default function SpotCard({ spot }: SpotCardProps) {
           </Button>
         </div>
       </div>
+      
+      {/* Amazing Celebration Animation */}
+      {celebrationData && (
+        <CelebrationAnimation
+          show={showCelebration}
+          onComplete={() => {
+            setShowCelebration(false);
+            setCelebrationData(null);
+          }}
+          pointsEarned={celebrationData.pointsEarned}
+          newBadges={celebrationData.newBadges}
+          spotName={celebrationData.spotName}
+        />
+      )}
     </div>
   );
 }

@@ -281,33 +281,37 @@ class MemStorage implements IStorage {
       
       // Award category-specific badges based on spot type
       if (spot) {
-        if (spot.category === 'cafe' && spot.description.toLowerCase().includes('boba')) {
-          // Check if user has hunted 3+ boba spots
-          const bobaHunts = await this.getUserSpotHuntsByCategory(userId, 'boba');
-          if (bobaHunts.length >= 3) {
-            await this.awardBadge(userId, 1); // Boba Princess
-          }
+        const description = spot.description?.toLowerCase() || '';
+        const name = spot.name?.toLowerCase() || '';
+        
+        // Award immediate badges for specific types
+        if ((description.includes('boba') || name.includes('boba')) && !(await this.hasUserBadge(userId, 1))) {
+          await this.awardBadge(userId, 1); // Boba Princess
         }
         
-        if (spot.category === 'cafe' && spot.description.toLowerCase().includes('matcha')) {
-          const matchaHunts = await this.getUserSpotHuntsByCategory(userId, 'matcha');
-          if (matchaHunts.length >= 3) {
-            await this.awardBadge(userId, 2); // Matcha Mermaid
-          }
+        if ((description.includes('matcha') || name.includes('matcha')) && !(await this.hasUserBadge(userId, 2))) {
+          await this.awardBadge(userId, 2); // Matcha Mermaid
         }
         
-        if (spot.category === 'cafe' && (spot.description.toLowerCase().includes('avocado') || spot.description.toLowerCase().includes('avo'))) {
-          const avoHunts = await this.getUserSpotHuntsByCategory(userId, 'avocado');
-          if (avoHunts.length >= 3) {
-            await this.awardBadge(userId, 12); // Avo Toast Angel
-          }
+        if ((description.includes('avocado') || description.includes('avo') || name.includes('avocado')) && !(await this.hasUserBadge(userId, 12))) {
+          await this.awardBadge(userId, 12); // Avo Toast Angel
         }
         
-        if (spot.category === 'fitness' || spot.category === 'gym') {
-          const fitnessHunts = await this.getUserSpotHuntsByCategory(userId, 'fitness');
-          if (fitnessHunts.length >= 2) {
-            await this.awardBadge(userId, 25); // Barre Bestie
-          }
+        if ((spot.category === 'fitness' || spot.category === 'gym' || description.includes('fitness') || description.includes('yoga') || description.includes('pilates')) && !(await this.hasUserBadge(userId, 25))) {
+          await this.awardBadge(userId, 25); // Barre Bestie
+        }
+        
+        if ((description.includes('coffee') || name.includes('coffee') || name.includes('starbucks') || name.includes('costa')) && !(await this.hasUserBadge(userId, 33))) {
+          await this.awardBadge(userId, 33); // Pink Paradise (aesthetic cafe badge)
+        }
+        
+        // Award milestone badges based on total hunts
+        const totalHunts = userHunts.length;
+        if (totalHunts >= 5 && !(await this.hasUserBadge(userId, 42))) {
+          await this.awardBadge(userId, 42); // Weekend Warrior
+        }
+        if (totalHunts >= 10 && !(await this.hasUserBadge(userId, 46))) {
+          await this.awardBadge(userId, 46); // Local Legend
         }
       }
     }
