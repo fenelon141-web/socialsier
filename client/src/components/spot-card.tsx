@@ -4,6 +4,7 @@ import { Target, Star, Route, MapPin, Navigation } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useGeolocation } from "@/hooks/use-geolocation";
+import { useHaptics } from "@/hooks/use-haptics";
 import { formatDistance, calculateDistance, isWithinRange } from "@/lib/location-utils";
 import { getSpotIcon } from "@/lib/spot-icons";
 import { CelebrationAnimation } from "./celebration-animation";
@@ -20,6 +21,7 @@ export default function SpotCard({ spot }: SpotCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
+  const { triggerHaptic } = useHaptics();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<any>(null);
 
@@ -56,6 +58,9 @@ export default function SpotCard({ spot }: SpotCardProps) {
       });
     },
     onSuccess: (data: any) => {
+      // Trigger success haptic feedback
+      triggerHaptic('success');
+      
       // Store celebration data and trigger amazing animation
       setCelebrationData({
         pointsEarned: data.pointsEarned || 50,
@@ -209,7 +214,10 @@ export default function SpotCard({ spot }: SpotCardProps) {
                 ? "bg-gray-400"
                 : "bg-red-400 hover:bg-red-500"
             } text-white p-2 rounded-full shadow-lg disabled:opacity-50`}
-            onClick={() => huntMutation.mutate()}
+            onClick={() => {
+              triggerHaptic('medium');
+              huntMutation.mutate();
+            }}
             disabled={huntMutation.isPending || !withinRange || !latitude || !longitude}
             title={
               !latitude || !longitude 

@@ -4,6 +4,11 @@ import DailyChallenge from "@/components/daily-challenge";
 import SpotCard from "@/components/spot-card";
 import BadgeCard from "@/components/badge-card";
 import BottomNavigation from "@/components/bottom-navigation";
+import { SpotCardSkeleton, BadgeCardSkeleton, ActivitySkeleton } from "@/components/loading-skeletons";
+import { QuickActions, SearchBar } from "@/components/quick-actions";
+import { NextBadgeHint, StreakProgress } from "@/components/progress-hints";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
+import { PullToRefreshIndicator } from "@/components/pull-to-refresh-indicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Camera, Navigation } from "lucide-react";
@@ -18,6 +23,7 @@ export default function Home() {
   const { latitude, longitude, loading: locationLoading } = useGeolocation();
   const { city, country, loading: locationNameLoading } = useLocation();
   const { testNearby, isTracking, serviceStatus } = usePushNotifications();
+  const { isRefreshing, pullDistance, pullProgress } = usePullToRefresh();
   
   const { data: trendingSpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"]
@@ -49,29 +55,40 @@ export default function Home() {
     queryKey: ["/api/activity"]
   });
 
+  const { data: userStats } = useQuery<any>({
+    queryKey: ["/api/user/1/stats"]
+  });
+
+  const { data: currentUser } = useQuery<any>({
+    queryKey: ["/api/user/1"]
+  });
+
   const recentBadges = userBadges?.slice(-4) || [];
 
   return (
     <div className="min-h-screen bg-white">
+      <PullToRefreshIndicator 
+        pullDistance={pullDistance}
+        pullProgress={pullProgress}
+        isRefreshing={isRefreshing}
+      />
       <TopNavigation />
       <DailyChallenge />
       
       <div className="p-4 space-y-4 pb-20">
+        {/* Smart Search Bar */}
+        <SearchBar />
+
         {/* Quick Actions */}
-        <div className="flex space-x-2">
-          <Link href="/map" asChild>
-            <Button className="flex-1 bg-gradient-to-r from-pink-400 to-pink-500 text-white py-3 rounded-2xl font-semibold text-sm shadow-lg glow-effect">
-              <MapPin className="w-4 h-4 mr-2" />
-              🗺️ Explore Map
-            </Button>
-          </Link>
-          <Link href="/social" asChild>
-            <Button className="flex-1 bg-gradient-to-r from-emerald-300 to-purple-200 text-gray-800 py-3 rounded-2xl font-semibold text-sm shadow-lg">
-              <Camera className="w-4 h-4 mr-2" />
-              📸 Check In
-            </Button>
-          </Link>
-        </div>
+        <QuickActions />
+
+        {/* Progress Hints */}
+        {userStats && (
+          <div className="space-y-2">
+            <NextBadgeHint spotsHunted={userStats.spotsHunted || 0} />
+            <StreakProgress currentStreak={userStats.currentStreak || 0} />
+          </div>
+        )}
 
         {/* Push Notification Test */}
         {latitude && longitude && (
