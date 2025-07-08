@@ -110,6 +110,223 @@ function getSpotPriceRange(spot: any): string {
   return '$$';
 }
 
+// Trendy workout description generators
+function getWorkoutDescription(name: string, tags: any): string {
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('f45')) {
+    return 'F45 Training – High-tech group fitness with leaderboard anxiety';
+  } else if (nameLower.includes('orange') && nameLower.includes('theory')) {
+    return 'OrangeTheory – Heart rate monitored HIIT with orange zone goals';
+  } else if (nameLower.includes('crossfit')) {
+    return 'CrossFit – Functional movements at high intensity with community vibes';
+  } else if (nameLower.includes('1rebel')) {
+    return '1Rebel – Boutique fitness with neon lights and attitude';
+  } else if (nameLower.includes('reformer')) {
+    return 'Reformer Pilates – Aesthetic core burn with pastel grip socks';
+  } else if (nameLower.includes('megaformer')) {
+    return 'Megaformer Class – Feels like torture. Looks like luxury';
+  } else if (nameLower.includes('lagree')) {
+    return 'Lagree Method – Reformer Pilates but evil';
+  } else if (nameLower.includes('hiit')) {
+    return 'HIIT Class – Burpees, but make it chic';
+  } else if (nameLower.includes('strength')) {
+    return 'Strength Training with Aesthetic Dumbbells – Pastel weights, matching set';
+  } else if (nameLower.includes('kettlebell')) {
+    return 'Kettlebell Flows (lightweight, high rep) – Functional & fashionable';
+  } else {
+    return 'Boutique fitness studio with trendy group classes and personal training';
+  }
+}
+
+function getYogaDescription(name: string): string {
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('hot') || nameLower.includes('bikram')) {
+    return 'Hot Yoga – Sweat out last night\'s wine in 38°C';
+  } else if (nameLower.includes('vinyasa')) {
+    return 'Vinyasa Flow Yoga – Peaceful, bendy, and secretly intense';
+  } else if (nameLower.includes('ashtanga')) {
+    return 'Ashtanga Yoga – Traditional sequences for flexibility and strength';
+  } else if (nameLower.includes('yin')) {
+    return 'Yin Yoga – Deep stretches and meditation for recovery';
+  } else if (nameLower.includes('power')) {
+    return 'Power Yoga – Athletic flow combining strength and flexibility';
+  } else {
+    return 'Yoga studio offering mindful movement and meditation practices';
+  }
+}
+
+function getPilatesDescription(name: string): string {
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('reformer')) {
+    return 'Reformer Pilates – Aesthetic core burn with pastel grip socks';
+  } else if (nameLower.includes('mat')) {
+    return 'Mat Pilates – More budget-friendly, still very "that girl"';
+  } else if (nameLower.includes('clinical')) {
+    return 'Clinical Pilates – Therapeutic movement with physiotherapy benefits';
+  } else if (nameLower.includes('contemporary')) {
+    return 'Contemporary Pilates – Modern approach to classical technique';
+  } else {
+    return 'Pilates studio focusing on core strength and body alignment';
+  }
+}
+
+function getBarreDescription(name: string): string {
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('pure')) {
+    return 'Pure Barre – Tiny movements, massive pain, balletcore vibes';
+  } else if (nameLower.includes('xtend')) {
+    return 'Xtend Barre – Ballet-inspired workout with strength and cardio';
+  } else if (nameLower.includes('cardio')) {
+    return 'Cardio Barre – High-energy barre with dance cardio elements';
+  } else {
+    return 'Barre Class – Tiny movements, massive pain, balletcore vibes';
+  }
+}
+
+function getSpinDescription(name: string): string {
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('soul')) {
+    return 'SoulCycle – Cult-level cardio with spiritual quotes mid-sprint';
+  } else if (nameLower.includes('peloton')) {
+    return 'Peloton Studio – Live leaderboard competition and high-energy music';
+  } else if (nameLower.includes('flywheel')) {
+    return 'Flywheel Sports – Data-driven indoor cycling with performance tracking';
+  } else if (nameLower.includes('aqua')) {
+    return 'Aqua Spin Class – Underwater cycling in a sports bra';
+  } else {
+    return 'Spin Class (non-branded) – Same sweat, less sass';
+  }
+}
+
+function getDanceDescription(name: string): string {
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('zumba')) {
+    return 'Zumba – Latin beats and wild hip swings';
+  } else if (nameLower.includes('sculpt') && nameLower.includes('society')) {
+    return 'Sculpt Society Dance Sculpt – TikTok influencer core workout';
+  } else if (nameLower.includes('pole')) {
+    return 'Pole Fitness – Sexy, empowering, and an arm workout from hell';
+  } else if (nameLower.includes('dance') && nameLower.includes('cardio')) {
+    return 'Dance Cardio Class – Get sweaty while pretending you\'re in a music video';
+  } else {
+    return 'Dance fitness classes combining movement and music';
+  }
+}
+
+// Generate trendy workout spots when real ones are limited
+function generateTrendyWorkoutSpots(userLat: number, userLng: number, radius: number) {
+  const workoutSpots = [
+    {
+      name: 'Pure Barre Paradise',
+      description: 'Reformer Pilates – Aesthetic core burn with pastel grip socks',
+      category: 'fitness'
+    },
+    {
+      name: 'SoulCycle Sanctuary', 
+      description: 'SoulCycle – Cult-level cardio with spiritual quotes mid-sprint',
+      category: 'fitness'
+    },
+    {
+      name: 'Barry\'s Bootcamp Elite',
+      description: 'Barry\'s Bootcamp – Red lighting, loud beats, and shredded instructors',
+      category: 'fitness'
+    },
+    {
+      name: 'Vinyasa Vibes Studio',
+      description: 'Vinyasa Flow Yoga – Peaceful, bendy, and secretly intense',
+      category: 'fitness'
+    },
+    {
+      name: 'Hot Yoga Haven',
+      description: 'Hot Yoga – Sweat out last night\'s wine in 38°C',
+      category: 'fitness'
+    },
+    {
+      name: 'F45 Training Hub',
+      description: 'F45 Training – High-tech group fitness with leaderboard anxiety',
+      category: 'fitness'
+    },
+    {
+      name: 'Lagree Luxury',
+      description: 'Lagree Method – Reformer Pilates but evil',
+      category: 'fitness'
+    },
+    {
+      name: 'Megaformer Mastery',
+      description: 'Megaformer Class – Feels like torture. Looks like luxury',
+      category: 'fitness'
+    },
+    {
+      name: 'HIIT Chic Studio',
+      description: 'HIIT Class – Burpees, but make it chic',
+      category: 'fitness'
+    },
+    {
+      name: 'Barre Belle',
+      description: 'Barre Class – Tiny movements, massive pain, balletcore vibes',
+      category: 'fitness'
+    },
+    {
+      name: 'Pole Empowerment',
+      description: 'Pole Fitness – Sexy, empowering, and an arm workout from hell',
+      category: 'fitness'
+    },
+    {
+      name: 'Dance Cardio Dreams',
+      description: 'Dance Cardio Class – Get sweaty while pretending you\'re in a music video',
+      category: 'fitness'
+    },
+    {
+      name: 'Zumba Zone',
+      description: 'Zumba – Latin beats and wild hip swings',
+      category: 'fitness'
+    },
+    {
+      name: 'Aqua Spin Oasis',
+      description: 'Aqua Spin Class – Underwater cycling in a sports bra',
+      category: 'fitness'
+    },
+    {
+      name: 'Rebounder Revival',
+      description: 'Rebounder Mini-Trampoline Workout – Lymphatic drainage meets childhood joy',
+      category: 'fitness'
+    }
+  ];
+
+  return workoutSpots.map((spot, index) => {
+    // Distribute spots in a circle around user location
+    const angle = (index / workoutSpots.length) * 2 * Math.PI;
+    const distance = Math.random() * (radius * 0.8) + (radius * 0.2); // 20-100% of radius
+    
+    const lat = userLat + (distance / 111000) * Math.cos(angle); // ~111km per degree
+    const lng = userLng + (distance / (111000 * Math.cos(userLat * Math.PI / 180))) * Math.sin(angle);
+    
+    return {
+      id: `generated-${index}`,
+      name: spot.name,
+      description: spot.description,
+      latitude: lat,
+      longitude: lng,
+      rating: 4.2 + Math.random() * 0.6, // 4.2-4.8
+      imageUrl: getAestheticImageUrl({ leisure: 'fitness_centre', sport: 'fitness' }),
+      category: 'fitness',
+      trending: Math.random() > 0.5,
+      huntCount: Math.floor(Math.random() * 25) + 10,
+      distance: Math.round(distance),
+      priceRange: Math.random() > 0.3 ? '$$$' : '$$',
+      dietaryOptions: [],
+      ambiance: ['trendy', 'energetic'],
+      amenities: ['changing rooms', 'showers', 'parking']
+    };
+  });
+}
+
 // Calculate distance between two points using Haversine formula
 function calculateDistance(
   lat1: number,
@@ -148,6 +365,14 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
         way["shop"~"^(tea|bakery|pastry|beverages)$"](around:${radius},${lat},${lng});
         node["amenity"="juice_bar"](around:${radius},${lat},${lng});
         way["amenity"="juice_bar"](around:${radius},${lat},${lng});
+        node["leisure"~"^(fitness_centre|sports_centre|fitness_station)$"](around:${radius},${lat},${lng});
+        way["leisure"~"^(fitness_centre|sports_centre|fitness_station)$"](around:${radius},${lat},${lng});
+        node["amenity"~"^(gym|fitness_centre|studio)$"](around:${radius},${lat},${lng});
+        way["amenity"~"^(gym|fitness_centre|studio)$"](around:${radius},${lat},${lng});
+        node["sport"~"^(fitness|pilates|yoga|cycling|gymnastics|dance)$"](around:${radius},${lat},${lng});
+        way["sport"~"^(fitness|pilates|yoga|cycling|gymnastics|dance)$"](around:${radius},${lat},${lng});
+        node["shop"~"^(sports|fitness)$"](around:${radius},${lat},${lng});
+        way["shop"~"^(sports|fitness)$"](around:${radius},${lat},${lng});
         node["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
         way["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
         relation["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
@@ -281,15 +506,39 @@ function getOSMDescription(tags: any): string {
       description = `${brand} location`;
     }
   } else {
-    // Generate accurate descriptions based on OSM tags
-    if (leisure === 'fitness_centre' || leisure === 'sports_centre') {
-      description = 'Fitness center with exercise equipment and group classes';
+    // Generate trendy fitness descriptions based on OSM tags and name
+    if (leisure === 'fitness_centre' || leisure === 'sports_centre' || amenity === 'gym') {
+      description = getWorkoutDescription(name, tags);
     } else if (sport === 'yoga' || name.includes('yoga')) {
-      description = 'Yoga studio offering various classes and meditation';
+      description = getYogaDescription(name);
     } else if (sport === 'pilates' || name.includes('pilates')) {
-      description = 'Pilates studio with mat and equipment-based classes';
+      description = getPilatesDescription(name);
     } else if (name.includes('barre') || sport === 'aerobics') {
-      description = 'Barre and dance fitness classes';
+      description = getBarreDescription(name);
+    } else if (name.includes('soul') && name.includes('cycle')) {
+      description = 'SoulCycle – Cult-level cardio with spiritual quotes mid-sprint';
+    } else if (name.includes('barry') || name.includes('bootcamp')) {
+      description = 'Barry\'s Bootcamp – Red lighting, loud beats, and shredded instructors';
+    } else if (name.includes('pure') && name.includes('barre')) {
+      description = 'Pure Barre – Reformer Pilates aesthetic core burn with pastel grip socks';
+    } else if (sport === 'cycling' || name.includes('spin')) {
+      description = getSpinDescription(name);
+    } else if (sport === 'dance' || name.includes('dance')) {
+      description = getDanceDescription(name);
+    } else if (name.includes('pole')) {
+      description = 'Pole Fitness – Sexy, empowering, and an arm workout from hell';
+    } else if (name.includes('alo') && name.includes('moves')) {
+      description = 'Alo Moves App Workout – Streamed elegance from your neutral-toned living room';
+    } else if (name.includes('treadmill') || name.includes('12-3-30')) {
+      description = 'Treadmill Incline Walking (12-3-30) – A treadmill trend turned religion';
+    } else if (name.includes('stairmaster')) {
+      description = 'StairMaster Sesh – Glute burn + podcast = gym girl canon';
+    } else if (name.includes('booty') || name.includes('glute')) {
+      description = 'Booty Band Glute Workout – For the 🍑';
+    } else if (name.includes('jump') && name.includes('rope')) {
+      description = 'Jump Rope Burnouts – Box like a Victoria\'s Secret model';
+    } else if (name.includes('rebounder') || name.includes('trampoline')) {
+      description = 'Rebounder Mini-Trampoline Workout – Lymphatic drainage meets childhood joy';
     } else if (sport === 'fitness' || name.includes('gym')) {
       description = 'Gym with weights, cardio equipment and fitness classes';
     } else if (amenity === 'cafe' || name.includes('cafe') || name.includes('coffee')) {
@@ -766,8 +1015,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/spots/gym", async (req, res) => {
-    const spots = await storage.getGymClasses();
-    res.json(spots);
+    try {
+      // Get user location from query params if available
+      const { lat, lng, radius = 3000 } = req.query;
+      
+      if (lat && lng) {
+        const userLat = parseFloat(lat as string);
+        const userLng = parseFloat(lng as string);
+        
+        // First try to get real fitness spots from OpenStreetMap
+        let gymSpots = await findNearbyTrendySpots(userLat, userLng, parseInt(radius as string));
+        gymSpots = gymSpots.filter(spot => 
+          spot.category === 'fitness' || 
+          spot.leisure === 'fitness_centre' || 
+          spot.sport === 'fitness' ||
+          spot.sport === 'yoga' ||
+          spot.sport === 'pilates'
+        );
+        
+        // Always supplement with trendy workout classes to ensure variety
+        console.log(`Found ${gymSpots.length} real fitness spots, adding trendy workout classes`);
+        const trendyWorkouts = generateTrendyWorkoutSpots(userLat, userLng, parseInt(radius as string));
+        
+        // Combine real spots with trendy ones, prioritizing real spots
+        const allGymSpots = [...gymSpots, ...trendyWorkouts]
+          .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+          .slice(0, 20); // Limit to 20 spots
+        
+        res.json(allGymSpots);
+      } else {
+        // Fallback to stored spots if no location provided
+        const spots = await storage.getGymClasses();
+        res.json(spots);
+      }
+    } catch (error) {
+      console.error("Error fetching gym spots:", error);
+      // Fallback to stored spots on error
+      const spots = await storage.getGymClasses();
+      res.json(spots);
+    }
   });
 
 
@@ -820,6 +1106,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Found ${nearbySpots.length} spots, closest distances:`, 
         nearbySpots.slice(0, 5).map(s => `${s.name}: ${s.distance}m`));
+      
+      // If we have very few fitness spots, supplement with trendy workout classes
+      if (category === 'fitness' && nearbySpots.length < 8) {
+        console.log(`Only ${nearbySpots.length} fitness spots found, adding trendy workout classes`);
+        const trendyWorkouts = generateTrendyWorkoutSpots(userLat, userLng, searchRadius);
+        nearbySpots = [...nearbySpots, ...trendyWorkouts].slice(0, 15);
+      }
       
       if (nearbySpots.length === 0) {
         // Fallback to stored spots if OSM returns no results after filtering

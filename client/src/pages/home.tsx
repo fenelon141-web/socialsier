@@ -44,7 +44,16 @@ export default function Home() {
   });
 
   const { data: gymClasses, isLoading: gymLoading } = useQuery<Spot[]>({
-    queryKey: ["/api/spots/gym"]
+    queryKey: ["/api/spots/gym", latitude, longitude],
+    queryFn: async () => {
+      if (latitude && longitude) {
+        const response = await fetch(`/api/spots/gym?lat=${latitude}&lng=${longitude}&radius=3000`);
+        return response.json();
+      } else {
+        const response = await fetch('/api/spots/gym');
+        return response.json();
+      }
+    }
   });
 
   const { data: rewards } = useQuery<Reward[]>({
