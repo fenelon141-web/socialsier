@@ -1299,6 +1299,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(activity);
   });
 
+  // Calendar API routes
+  app.get("/api/user/:userId/availability/:month", async (req, res) => {
+    try {
+      const { userId, month } = req.params;
+      const availability = await storage.getUserAvailability(userId, month);
+      res.json(availability);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user availability" });
+    }
+  });
+
+  app.post("/api/user/:userId/availability", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { date, isAvailable, note } = req.body;
+      const availability = await storage.setUserAvailability(userId, date, isAvailable, note);
+      res.json(availability);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to set availability" });
+    }
+  });
+
+  app.get("/api/user/:userId/friends-availability/:date", async (req, res) => {
+    try {
+      const { userId, date } = req.params;
+      const friendsAvailability = await storage.getFriendsAvailability(userId, date);
+      res.json(friendsAvailability);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get friends availability" });
+    }
+  });
+
   // Social API routes
   // Friends
   app.post("/api/friends/request", async (req, res) => {

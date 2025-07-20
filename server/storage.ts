@@ -4,7 +4,7 @@ import {
   type UserChallengeProgress, type Reward, type Friendship, type InsertFriendship,
   type Post, type InsertPost, type PostLike, type InsertPostLike,
   type PostComment, type InsertPostComment, type SpotReview, type InsertSpotReview,
-  type Notification, type InsertNotification
+  type Notification, type InsertNotification, type UserAvailability, type InsertUserAvailability
 } from "@shared/schema";
 
 export interface IStorage {
@@ -81,6 +81,11 @@ export interface IStorage {
   createNotification(notification: InsertNotification): Promise<Notification>;
   markNotificationAsRead(notificationId: number): Promise<Notification>;
   updateUserPushSettings(userId: string, settings: any): Promise<User>;
+
+  // User Availability Calendar
+  getUserAvailability(userId: string, month: string): Promise<UserAvailability[]>;
+  setUserAvailability(userId: string, date: string, isAvailable: boolean, note?: string): Promise<UserAvailability>;
+  getFriendsAvailability(userId: string, date: string): Promise<(UserAvailability & { user: User })[]>;
 }
 
 class MemStorage implements IStorage {
@@ -100,12 +105,14 @@ class MemStorage implements IStorage {
   private postComments: PostComment[] = [];
   private spotReviews: SpotReview[] = [];
   private notifications: Notification[] = [];
+  private userAvailabilities: UserAvailability[] = [];
   private nextPostId = 1;
   private nextFriendshipId = 1;
   private nextCommentId = 1;
   private nextLikeId = 1;
   private nextReviewId = 1;
   private nextNotificationId = 1;
+  private nextAvailabilityId = 1;
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
@@ -896,6 +903,71 @@ class MemStorage implements IStorage {
     return achievements
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 3);
+  }
+
+  // User Availability Calendar methods
+  async getUserAvailability(userId: string, month: string): Promise<UserAvailability[]> {
+    return this.userAvailabilities
+      .filter(availability => 
+        availability.userId === userId && 
+        availability.date.startsWith(month) // YYYY-MM format
+      )
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  async setUserAvailability(userId: string, date: string, isAvailable: boolean, note?: string): Promise<UserAvailability> {
+    // Check if availability already exists for this date
+    const existingIndex = this.userAvailabilities.findIndex(
+      availability => availability.userId === userId && availability.date === date
+    );
+
+    if (existingIndex >= 0) {
+      // Update existing availability
+      this.userAvailabilities[existingIndex] = {
+        ...this.userAvailabilities[existingIndex],
+        isAvailable,
+        note: note || null,
+        updatedAt: new Date()
+      };
+      return this.userAvailabilities[existingIndex];
+    } else {
+      // Create new availability
+      const newAvailability: UserAvailability = {
+        id: this.nextAvailabilityId++,
+        userId,
+        date,
+        isAvailable,
+        note: note || null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.userAvailabilities.push(newAvailability);
+      return newAvailability;
+    }
+  }
+
+  async getFriendsAvailability(userId: string, date: string): Promise<(UserAvailability & { user: User })[]> {
+    // Get user's friends
+    const friends = await this.getFriends(userId);
+    const friendIds = friends.map(friend => friend.id.toString());
+
+    // Get availability for all friends on the specific date
+    const friendsAvailability = this.userAvailabilities
+      .filter(availability => 
+        friendIds.includes(availability.userId) && 
+        availability.date === date &&
+        availability.isAvailable
+      )
+      .map(availability => {
+        const user = this.users.find(u => u.id.toString() === availability.userId);
+        return {
+          ...availability,
+          user: user!
+        };
+      })
+      .filter(item => item.user); // Remove any with missing users
+
+    return friendsAvailability;
   }
 }
 

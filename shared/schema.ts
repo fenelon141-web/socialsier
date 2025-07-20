@@ -165,6 +165,17 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow()
 });
 
+// User availability calendar
+export const userAvailability = pgTable("user_availability", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  date: varchar("date").notNull(), // YYYY-MM-DD format
+  isAvailable: boolean("is_available").default(true),
+  note: varchar("note"), // Optional note for the day
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Insert schemas  
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -218,6 +229,12 @@ export const insertSpotReviewSchema = createInsertSchema(spotReviews).omit({
 export const insertNotificationSchema = createInsertSchema(notifications).omit({
   id: true,
   createdAt: true
+});
+
+export const insertUserAvailabilitySchema = createInsertSchema(userAvailability).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
 });
 
 // Types
@@ -358,6 +375,13 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
   })
 }));
 
+export const userAvailabilityRelations = relations(userAvailability, ({ one }) => ({
+  user: one(users, {
+    fields: [userAvailability.userId],
+    references: [users.id]
+  })
+}));
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -387,3 +411,5 @@ export type SpotReview = typeof spotReviews.$inferSelect;
 export type InsertSpotReview = z.infer<typeof insertSpotReviewSchema>;
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type UserAvailability = typeof userAvailability.$inferSelect;
+export type InsertUserAvailability = z.infer<typeof insertUserAvailabilitySchema>;
