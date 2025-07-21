@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Heart, MessageCircle, Share, BookmarkPlus, Play, ChevronRight, Sparkles, Fire } from "lucide-react";
+import { Heart, MessageCircle, Share, BookmarkPlus, Play, ChevronRight, Sparkles, Flame } from "lucide-react";
 
 // Instagram-style Stories Component
 export function StoriesStrip() {
@@ -217,7 +217,7 @@ export function ExploreGrid({ spots }: { spots: any[] }) {
           {/* Trending indicator */}
           {index < 3 && (
             <div className="absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1">
-              <Fire className="w-3 h-3" />
+              <Flame className="w-3 h-3" />
               <span>HOT</span>
             </div>
           )}
