@@ -237,6 +237,17 @@ Changelog:
   - Squad system supports public/private squads, location-based discovery, and competitive progression
   - Group challenges include time limits, target values, and real-time leaderboard tracking
   - Ready for friend groups to create squads and compete in location-based challenges together
+- July 21, 2025. Taste maker influencer system with social proof and spot discovery influence
+  - Added comprehensive database schema for taste makers, endorsements, follows, and trending influence
+  - Created taste maker tiers: rising, established, elite, legendary based on influence scores and follower counts
+  - Implemented taste maker profiles with specialties, bio, social handles, and verification status
+  - Added endorsement system where taste makers can recommend spots with captions and photos
+  - Created following system for users to follow influential taste makers and get personalized recommendations
+  - Added trending influence tracking to measure how taste maker endorsements drive user visits
+  - Built comprehensive taste makers page with tier filtering, follower counts, and endorsement previews
+  - Integrated taste maker section on home page showcasing top influencers with high leaderboard points
+  - System designed to create social proof and drive spot discovery through influential user recommendations
+  - Taste makers with high points influence others in spot discovery, creating viral discovery loops
 ```
 
 ## User Preferences

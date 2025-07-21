@@ -324,6 +324,82 @@ export const insertCityLeaderboardSchema = createInsertSchema(cityLeaderboards).
   lastUpdated: true
 });
 
+// Taste makers - influential users who set trends
+export const tasteMakers = pgTable("taste_makers", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  tier: varchar("tier", { length: 20 }).notNull(), // 'rising', 'established', 'elite', 'legendary'
+  influenceScore: integer("influence_score").default(0),
+  totalFollowers: integer("total_followers").default(0),
+  spotsDiscovered: integer("spots_discovered").default(0),
+  trendsStarted: integer("trends_started").default(0),
+  verificationStatus: varchar("verification_status", { length: 20 }).default("pending"), // 'pending', 'verified', 'featured'
+  bio: text("bio"),
+  specialties: text("specialties").array(), // ['coffee', 'fitness', 'brunch', 'nightlife']
+  locationCity: varchar("location_city", { length: 100 }),
+  locationCountry: varchar("location_country", { length: 100 }),
+  instagramHandle: varchar("instagram_handle", { length: 50 }),
+  tiktokHandle: varchar("tiktok_handle", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Taste maker endorsements of spots
+export const tasteMakerEndorsements = pgTable("taste_maker_endorsements", {
+  id: serial("id").primaryKey(),
+  tasteMakerId: integer("taste_maker_id").notNull(),
+  spotId: integer("spot_id").notNull(),
+  endorsementType: varchar("endorsement_type", { length: 20 }).notNull(), // 'discovered', 'recommended', 'featured'
+  caption: text("caption"),
+  photos: text("photos").array(),
+  trendingScore: integer("trending_score").default(0),
+  engagement: integer("engagement").default(0), // likes + comments + shares
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User follows for taste makers
+export const tasteMakerFollows = pgTable("taste_maker_follows", {
+  id: serial("id").primaryKey(),
+  followerId: varchar("follower_id").notNull(),
+  tasteMakerId: integer("taste_maker_id").notNull(),
+  notificationsEnabled: boolean("notifications_enabled").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Trending spots influenced by taste makers
+export const trendingInfluence = pgTable("trending_influence", {
+  id: serial("id").primaryKey(),
+  spotId: integer("spot_id").notNull(),
+  tasteMakerId: integer("taste_maker_id").notNull(),
+  influenceWeight: integer("influence_weight").default(1), // Based on taste maker tier
+  userVisits: integer("user_visits").default(0), // Visits influenced by this endorsement
+  engagement: integer("engagement").default(0),
+  trendingPeriod: varchar("trending_period", { length: 20 }).notNull(), // 'daily', 'weekly', 'monthly'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Insert schemas for taste maker tables
+export const insertTasteMakerSchema = createInsertSchema(tasteMakers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
+});
+
+export const insertTasteMakerEndorsementSchema = createInsertSchema(tasteMakerEndorsements).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertTasteMakerFollowSchema = createInsertSchema(tasteMakerFollows).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertTrendingInfluenceSchema = createInsertSchema(trendingInfluence).omit({
+  id: true,
+  createdAt: true
+});
+
 // Types
 // Relations
 import { relations } from "drizzle-orm";

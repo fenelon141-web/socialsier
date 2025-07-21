@@ -134,6 +134,88 @@ export default function Home() {
         {/* Quick Actions */}
         <QuickActions />
 
+        {/* Taste Makers Section */}
+        <Card className="card-gradient rounded-2xl shadow-lg border-0">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-800 flex items-center space-x-2">
+                <span className="text-xl">👑</span>
+                <span>Taste Makers</span>
+              </h2>
+              <Link href="/taste-makers" asChild>
+                <Button size="sm" variant="outline" className="text-xs">
+                  See All
+                </Button>
+              </Link>
+            </div>
+            
+            <p className="text-sm text-gray-600 mb-4">
+              Follow influential spot hunters with high leaderboard points who discover the hottest places first
+            </p>
+            
+            <div className="space-y-3">
+              {/* Mock taste maker preview */}
+              <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">ER</span>
+                    </div>
+                    <div className="absolute -top-1 -right-1 bg-yellow-400 rounded-full p-1">
+                      <span className="text-yellow-800 text-xs">👑</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-semibold text-sm text-gray-900">Emma Rose</h3>
+                      <span className="text-xs bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-1 rounded-full">
+                        Legendary
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600">95K influence • 89 spots discovered</p>
+                    <p className="text-xs text-gray-500 mt-1">Coffee connoisseur finding aesthetic spots ✨</p>
+                  </div>
+                  <Button size="sm" className="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs">
+                    Follow
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-indigo-400 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">SC</span>
+                    </div>
+                    <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
+                      <span className="text-white text-xs">✓</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-semibold text-sm text-gray-900">Sophie Chen</h3>
+                      <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full">
+                        Elite
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600">78K influence • 67 spots discovered</p>
+                    <p className="text-xs text-gray-500 mt-1">Fitness girlie finding hottest workout spots 💪</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="text-xs border-pink-300 text-pink-600">
+                    Following
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            <Link href="/taste-makers" asChild>
+              <Button className="w-full mt-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white">
+                Discover Taste Makers
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Progress Hints */}
         {userStats && (
           <div className="space-y-2">
