@@ -69,6 +69,7 @@ export class NotificationService {
       const hasRecent = await this.hasRecentNotificationForSpot(userId, spot.id);
       if (!hasRecent) {
         await this.sendNearbyTrendingNotification(userId, spot, lat, lng);
+        await this.recordNotificationSent(userId, spot.id);
       }
     }
   }
@@ -200,6 +201,26 @@ export class NotificationService {
       "Popular spot for avocado toast and smoothies 🥑"
     ];
     return descriptions[Math.floor(Math.random() * descriptions.length)];
+  }
+
+  // Record that a notification was sent
+  private async recordNotificationSent(userId: string, spotId: number): Promise<void> {
+    // This could store in a database table for tracking
+    console.log(`Recorded notification sent to user ${userId} for spot ${spotId}`);
+  }
+
+  // Get notification history count
+  async getNotificationHistory(): Promise<{ sent: number; pending: number }> {
+    const allNotifications = await storage.getAllNotifications();
+    return {
+      sent: allNotifications.filter(n => n.sent).length,
+      pending: allNotifications.filter(n => !n.sent).length
+    };
+  }
+
+  // Public method to manually trigger notification check
+  async checkNearbyTrendySpots(userId: string, latitude: number, longitude: number): Promise<void> {
+    await this.checkUserForNearbyTrending(userId, latitude, longitude);
   }
 
   // Stop monitoring service

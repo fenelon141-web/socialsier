@@ -1534,13 +1534,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get notification service status
   app.get("/api/notifications/status", async (req, res) => {
     try {
+      const history = await notificationService.getNotificationHistory();
       res.json({
         isRunning: true,
         activeUsers: notificationService.getActiveUsersCount(),
-        message: "Push notification service is running"
+        message: "Push notification service is running",
+        notificationsSent: history.sent,
+        notificationsPending: history.pending
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to get notification status" });
+    }
+  });
+
+  // Enhanced test endpoint for nearby trendy spot notifications
+  app.post('/api/test-nearby', async (req, res) => {
+    const { latitude, longitude } = req.body;
+    
+    if (!latitude || !longitude) {
+      return res.status(400).json({ message: 'Latitude and longitude required' });
+    }
+
+    try {
+      const userId = "1"; // Guest user
+      
+      // Track location and immediately check for nearby trending spots
+      await notificationService.trackUserLocation(userId, latitude, longitude);
+      await notificationService.checkNearbyTrendySpots(userId, latitude, longitude);
+      
+      // Get recent notifications created in the last 5 minutes
+      const recentNotifications = await storage.getUserNotifications(userId);
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      const newNotifications = recentNotifications.filter(n => 
+        new Date(n.createdAt) > fiveMinutesAgo
+      );
+      
+      // Send WebSocket notification for any new nearby trending spots
+      if (newNotifications.length > 0) {
+        for (const notification of newNotifications) {
+          if (notification.type === 'nearby_trending') {
+            // Broadcast to connected WebSocket clients
+            const connections = activeConnections.get(userId);
+            if (connections && connections.readyState === WebSocket.OPEN) {
+              connections.send(JSON.stringify({
+                type: 'trending_spot_notification',
+                notification: notification,
+                timestamp: new Date().toISOString()
+              }));
+            }
+          }
+        }
+      }
+      
+      res.json({
+        message: 'Location tracked and checked for trending spots',
+        status: 'tracking',
+        coordinates: { latitude, longitude },
+        newNotifications: newNotifications.length,
+        notifications: newNotifications
+      });
+    } catch (error) {
+      console.error('Error checking nearby trendy spots:', error);
+      res.status(500).json({ message: 'Failed to check nearby spots' });
     }
   });
 

@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { formatDistanceToNow } from "date-fns";
 
 export default function NotificationBell() {
@@ -17,8 +17,7 @@ export default function NotificationBell() {
     notifications, 
     unreadCount, 
     trendingNotifications,
-    markAsRead,
-    isMarkingRead 
+    markAsRead 
   } = usePushNotifications();
 
   const handleNotificationClick = (notification: any) => {
@@ -75,7 +74,7 @@ export default function NotificationBell() {
                 <button
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  disabled={isMarkingRead}
+                  disabled={false}
                   className={`w-full p-3 text-left hover:bg-gray-50 border-b border-gray-100 transition-colors ${
                     !notification.read ? 'bg-pink-50' : ''
                   }`}

@@ -305,6 +305,34 @@ class MemStorage implements IStorage {
     return [];
   }
 
+  // Notification methods
+  async createNotification(notification: any): Promise<any> {
+    const newNotification = {
+      id: this.notifications.length + 1,
+      ...notification,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.notifications.push(newNotification);
+    return newNotification;
+  }
+
+  async getUserNotifications(userId: string): Promise<any[]> {
+    return this.notifications.filter(n => n.userId === userId);
+  }
+
+  async getAllNotifications(): Promise<any[]> {
+    return this.notifications;
+  }
+
+  async markNotificationRead(notificationId: number): Promise<void> {
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (notification) {
+      notification.read = true;
+      notification.updatedAt = new Date();
+    }
+  }
+
   async huntSpot(userId: number, spotId: number): Promise<SpotHunt> {
     const spot = await this.getSpot(spotId);
     const pointsEarned = 50; // Standard points for hunting a spot

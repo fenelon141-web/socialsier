@@ -15,16 +15,17 @@ import { MapPin, Camera, Navigation } from "lucide-react";
 import { Link } from "wouter";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useLocation } from "@/hooks/use-location";
-import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
+import NotificationCenter from "@/components/notification-center";
 import { apiRequest } from "@/lib/queryClient";
 import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
 
 export default function Home() {
   const { latitude, longitude, loading: locationLoading } = useGeolocation();
   const { city, country, loading: locationNameLoading } = useLocation();
-  const { testNearby, isTracking, serviceStatus } = usePushNotifications();
+  const { testNearby, checkNearby, isTracking, serviceStatus, unreadCount, trendingNotifications } = usePushNotifications();
   const { isRefreshing, pullDistance, pullProgress } = usePullToRefresh();
   
   // WebSocket for real-time features
@@ -141,32 +142,68 @@ export default function Home() {
           </div>
         )}
 
-        {/* Push Notification Test */}
+        {/* Push Notifications Dashboard */}
         {latitude && longitude && (
           <Card className="card-gradient rounded-2xl shadow-lg border-0">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-bold text-gray-800">Push Notifications 🔔</h2>
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-lg font-bold text-gray-800">Trendy Spot Alerts</h2>
+                  <NotificationCenter />
+                  {unreadCount > 0 && (
+                    <span className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
+                      {unreadCount} new
+                    </span>
+                  )}
+                </div>
                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                   serviceStatus?.isRunning ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                 }`}>
                   {serviceStatus?.isRunning ? 'Active' : 'Inactive'}
                 </div>
               </div>
-              <p className="text-sm text-gray-600 mb-3">
-                Test the push notification system for nearby trending spots.
-              </p>
-              <Button
-                onClick={() => testNearby(latitude, longitude)}
-                disabled={isTracking}
-                className="w-full bg-gradient-to-r from-purple-400 to-pink-400 text-white py-2 rounded-xl font-semibold text-sm"
-              >
-                {isTracking ? 'Testing...' : 'Test Nearby Notifications'}
-              </Button>
-              {serviceStatus && (
-                <p className="text-xs text-gray-500 mt-2 text-center">
-                  {serviceStatus.activeUsers} users currently being tracked
+              
+              {trendingNotifications.length > 0 ? (
+                <div className="mb-3">
+                  <p className="text-sm text-gray-600 mb-2">
+                    {trendingNotifications.length} trending spots discovered recently!
+                  </p>
+                  <div className="space-y-1">
+                    {trendingNotifications.slice(0, 2).map((notification, index) => (
+                      <div key={index} className="text-xs bg-pink-50 text-pink-700 p-2 rounded-lg">
+                        📍 {notification.data?.spotName} - {notification.data?.distance}m away
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-gray-600 mb-3">
+                  Get notified when trendy spots are discovered near you.
                 </p>
+              )}
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => testNearby(latitude, longitude)}
+                  disabled={isTracking}
+                  variant="outline"
+                  className="text-xs"
+                >
+                  {isTracking ? 'Searching...' : 'Find Now'}
+                </Button>
+                <Button
+                  onClick={() => checkNearby(latitude, longitude)}
+                  className="bg-gradient-to-r from-purple-400 to-pink-400 text-white text-xs"
+                >
+                  Check Trending
+                </Button>
+              </div>
+              
+              {serviceStatus && (
+                <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+                  <span>{serviceStatus.activeUsers} users tracking</span>
+                  <span>{serviceStatus.notificationsSent || 0} alerts sent</span>
+                </div>
               )}
             </CardContent>
           </Card>
