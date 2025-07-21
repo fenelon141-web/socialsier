@@ -1561,6 +1561,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Squad competition routes
+  app.post("/api/squads", async (req, res) => {
+    try {
+      const squad = await storage.createSquad(req.body);
+      res.json(squad);
+    } catch (error) {
+      console.error("Error creating squad:", error);
+      res.status(500).json({ error: "Failed to create squad" });
+    }
+  });
+
+  app.get("/api/user/:userId/squads", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const squads = await storage.getUserSquads(userId);
+      res.json(squads);
+    } catch (error) {
+      console.error("Error fetching user squads:", error);
+      res.status(500).json({ error: "Failed to fetch squads" });
+    }
+  });
+
+  app.post("/api/squads/:squadId/join", async (req, res) => {
+    try {
+      const squadId = parseInt(req.params.squadId);
+      const { userId } = req.body;
+      const member = await storage.joinSquad(squadId, userId);
+      res.json(member);
+    } catch (error) {
+      console.error("Error joining squad:", error);
+      res.status(400).json({ error: error.message || "Failed to join squad" });
+    }
+  });
+
+  app.get("/api/squads/:squadId/members", async (req, res) => {
+    try {
+      const squadId = parseInt(req.params.squadId);
+      const members = await storage.getSquadMembers(squadId);
+      res.json(members);
+    } catch (error) {
+      console.error("Error fetching squad members:", error);
+      res.status(500).json({ error: "Failed to fetch squad members" });
+    }
+  });
+
+  app.get("/api/squads/city/:city/:country", async (req, res) => {
+    try {
+      const { city, country } = req.params;
+      const squads = await storage.getSquadsByCity(city, country);
+      res.json(squads);
+    } catch (error) {
+      console.error("Error fetching city squads:", error);
+      res.status(500).json({ error: "Failed to fetch city squads" });
+    }
+  });
+
+  // Group challenges routes
+  app.post("/api/group-challenges", async (req, res) => {
+    try {
+      const challenge = await storage.createGroupChallenge(req.body);
+      res.json(challenge);
+    } catch (error) {
+      console.error("Error creating group challenge:", error);
+      res.status(500).json({ error: "Failed to create challenge" });
+    }
+  });
+
+  app.get("/api/group-challenges", async (req, res) => {
+    try {
+      const { city, country } = req.query;
+      const challenges = await storage.getActiveGroupChallenges(city as string, country as string);
+      res.json(challenges);
+    } catch (error) {
+      console.error("Error fetching group challenges:", error);
+      res.status(500).json({ error: "Failed to fetch challenges" });
+    }
+  });
+
+  app.post("/api/group-challenges/:challengeId/join", async (req, res) => {
+    try {
+      const challengeId = parseInt(req.params.challengeId);
+      const { participantId, participantType } = req.body;
+      const participant = await storage.joinGroupChallenge(challengeId, participantId, participantType);
+      res.json(participant);
+    } catch (error) {
+      console.error("Error joining challenge:", error);
+      res.status(500).json({ error: "Failed to join challenge" });
+    }
+  });
+
+  app.get("/api/group-challenges/:challengeId/leaderboard", async (req, res) => {
+    try {
+      const challengeId = parseInt(req.params.challengeId);
+      const leaderboard = await storage.getChallengeLeaderboard(challengeId);
+      res.json(leaderboard);
+    } catch (error) {
+      console.error("Error fetching challenge leaderboard:", error);
+      res.status(500).json({ error: "Failed to fetch leaderboard" });
+    }
+  });
+
+  // City leaderboards routes
+  app.get("/api/leaderboards/:city/:country", async (req, res) => {
+    try {
+      const { city, country } = req.params;
+      const { period = 'weekly', type = 'individual' } = req.query;
+      const leaderboard = await storage.getCityLeaderboard(city, country, period as any, type as any);
+      res.json(leaderboard);
+    } catch (error) {
+      console.error("Error fetching city leaderboard:", error);
+      res.status(500).json({ error: "Failed to fetch leaderboard" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

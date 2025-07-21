@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, MessageCircle, Share2, Camera, UserPlus, Users, Star, ImageIcon, UserSearch, Calendar } from "lucide-react";
+import { Heart, MessageCircle, Share2, Camera, UserPlus, Users, Star, ImageIcon, UserSearch, Calendar, Trophy, Crown, MapPin, Plus, Target, Medal } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useCamera } from "@/hooks/use-camera";
 import { useToast } from "@/hooks/use-toast";
@@ -142,13 +142,20 @@ export default function Social() {
       <div className="p-4 space-y-4 pb-20">
         {/* Tabs for Feed and Calendar */}
         <Tabs defaultValue="feed" className="w-full mb-4">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-100 rounded-2xl p-1">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-100 rounded-2xl p-1">
             <TabsTrigger 
               value="feed" 
               className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-500 data-[state=active]:text-white"
             >
               <Users className="w-4 h-4 mr-2" />
               Feed
+            </TabsTrigger>
+            <TabsTrigger 
+              value="squads"
+              className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-500 data-[state=active]:text-white"
+            >
+              <Trophy className="w-4 h-4 mr-2" />
+              Squads
             </TabsTrigger>
             <TabsTrigger 
               value="calendar"
@@ -424,6 +431,176 @@ export default function Social() {
                 </Card>
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="squads" className="space-y-4">
+            {/* Squad Header */}
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                Squad Competition
+              </h2>
+              <p className="text-gray-600">Team up and compete in city challenges</p>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <Card className="card-gradient rounded-2xl shadow-lg border-0">
+                <CardContent className="p-4 text-center">
+                  <Users className="w-6 h-6 mx-auto mb-2 text-pink-500" />
+                  <p className="text-xl font-bold text-gray-800">0</p>
+                  <p className="text-xs text-gray-600">My Squads</p>
+                </CardContent>
+              </Card>
+              <Card className="card-gradient rounded-2xl shadow-lg border-0">
+                <CardContent className="p-4 text-center">
+                  <Trophy className="w-6 h-6 mx-auto mb-2 text-purple-500" />
+                  <p className="text-xl font-bold text-gray-800">0</p>
+                  <p className="text-xs text-gray-600">Active Challenges</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Create Squad Section */}
+            <Card className="card-gradient rounded-2xl shadow-lg border-0">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-5 h-5 text-pink-500" />
+                    <h3 className="font-semibold text-gray-800">My Squads</h3>
+                  </div>
+                  <Button size="sm" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Squad
+                  </Button>
+                </div>
+                
+                <div className="text-center py-8 text-gray-500">
+                  <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p className="font-semibold">No squads yet!</p>
+                  <p className="text-sm mb-4">Create or join a squad to start competing with friends</p>
+                  <Button variant="outline" size="sm">
+                    Browse Public Squads
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Active Challenges Section */}
+            <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-0 rounded-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <Target className="w-5 h-5 text-purple-500" />
+                    <h3 className="font-semibold text-gray-800">Group Challenges</h3>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Challenge
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Sample Challenge */}
+                  <Card className="border-purple-200">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-sm">Weekend Spot Hunt</h4>
+                          <p className="text-xs text-gray-600">Hunt 5 new spots this weekend</p>
+                          <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                            <span>Target: 5 spots</span>
+                            <span>Ends: 2 days</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs mb-1">
+                            <Medal className="w-3 h-3 inline mr-1" />
+                            Active
+                          </div>
+                          <Button size="sm" variant="outline" className="text-xs">
+                            Join
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Sample Challenge 2 */}
+                  <Card className="border-pink-200">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-sm">City Leaderboard</h4>
+                          <p className="text-xs text-gray-600">Most aesthetic spots this month</p>
+                          <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                            <span>Target: Most points</span>
+                            <span>Ends: 15 days</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded-full text-xs mb-1">
+                            <Crown className="w-3 h-3 inline mr-1" />
+                            Elite
+                          </div>
+                          <Button size="sm" variant="outline" className="text-xs">
+                            Join
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-600 text-center">
+                    Create or join a squad to participate in group challenges and compete for city rankings!
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* City Leaderboard Preview */}
+            <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-0 rounded-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Trophy className="w-5 h-5 text-yellow-600" />
+                  <h3 className="font-semibold text-gray-800">City Leaderboard</h3>
+                  <div className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">
+                    This Week
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {[
+                    { name: "Pink Panthers", points: 1250, crown: true },
+                    { name: "Aesthetic Squad", points: 980, crown: false },
+                    { name: "Valley Girls", points: 720, crown: false }
+                  ].map((squad, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-white rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-center w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-white text-xs font-bold">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold flex items-center gap-1">
+                            {squad.name}
+                            {squad.crown && <Crown className="w-3 h-3 text-yellow-500" />}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-gray-800">{squad.points}</p>
+                        <p className="text-xs text-gray-500">points</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Button variant="outline" size="sm" className="w-full mt-3">
+                  View Full Leaderboard
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="calendar" className="space-y-4">

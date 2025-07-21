@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import MapView from "@/pages/map";
 import Social from "@/pages/social";
+import Squads from "@/pages/squads";
 import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
 import Login from "@/pages/login";
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/map" component={MapView} />
       <Route path="/social" component={Social} />
+      <Route path="/squads" component={Squads} />
       <Route path="/badges" component={Badges} />
       <Route path="/profile" component={Profile} />
       <Route path="/login" component={Login} />

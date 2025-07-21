@@ -226,6 +226,17 @@ Changelog:
   - Integrated location-aware gym endpoint for personalized workout recommendations
   - Added 5 major UX improvements: smart loading skeletons, haptic feedback, pull-to-refresh, quick actions, and progress hints
   - Created engaging empty states and search functionality for better user experience
+- July 21, 2025. Comprehensive squad competition system with group challenges and city leaderboards
+  - Added complete database schema for squads, squad members, group challenges, challenge participants, and city leaderboards
+  - Implemented comprehensive squad management with creation, joining, leaving, and admin roles
+  - Added group challenge system supporting spot hunting, points collection, badge collection, and social activity challenges
+  - Integrated city-based leaderboards with weekly, monthly, and all-time rankings for individuals and squads
+  - Created comprehensive API endpoints for all squad and leaderboard functionality
+  - Added squad competition tab to social page with three-tab navigation (Feed, Squads, Calendar)
+  - Designed engaging UI for squad creation, challenge participation, and leaderboard viewing
+  - Squad system supports public/private squads, location-based discovery, and competitive progression
+  - Group challenges include time limits, target values, and real-time leaderboard tracking
+  - Ready for friend groups to create squads and compete in location-based challenges together
 ```
 
 ## User Preferences

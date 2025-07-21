@@ -4,7 +4,10 @@ import {
   type UserChallengeProgress, type Reward, type Friendship, type InsertFriendship,
   type Post, type InsertPost, type PostLike, type InsertPostLike,
   type PostComment, type InsertPostComment, type SpotReview, type InsertSpotReview,
-  type Notification, type InsertNotification, type UserAvailability, type InsertUserAvailability
+  type Notification, type InsertNotification, type UserAvailability, type InsertUserAvailability,
+  type Squad, type InsertSquad, type SquadMember, type InsertSquadMember,
+  type GroupChallenge, type InsertGroupChallenge, type GroupChallengeParticipant, type InsertGroupChallengeParticipant,
+  type CityLeaderboard, type InsertCityLeaderboard
 } from "@shared/schema";
 
 export interface IStorage {
@@ -86,6 +89,29 @@ export interface IStorage {
   getUserAvailability(userId: string, month: string): Promise<UserAvailability[]>;
   setUserAvailability(userId: string, date: string, isAvailable: boolean, note?: string): Promise<UserAvailability>;
   getFriendsAvailability(userId: string, date: string): Promise<(UserAvailability & { user: User })[]>;
+
+  // Squad Features
+  createSquad(squad: InsertSquad): Promise<Squad>;
+  joinSquad(squadId: number, userId: string): Promise<SquadMember>;
+  leaveSquad(squadId: number, userId: string): Promise<boolean>;
+  getUserSquads(userId: string): Promise<(SquadMember & { squad: Squad })[]>;
+  getSquadMembers(squadId: number): Promise<(SquadMember & { user: User })[]>;
+  getSquadsByCity(city: string, country: string): Promise<Squad[]>;
+  updateSquadStats(squadId: number, pointsToAdd: number, spotsToAdd: number): Promise<Squad>;
+
+  // Group Challenges
+  createGroupChallenge(challenge: InsertGroupChallenge): Promise<GroupChallenge>;
+  joinGroupChallenge(challengeId: number, participantId: string, participantType: 'user' | 'squad'): Promise<GroupChallengeParticipant>;
+  updateGroupChallengeProgress(challengeId: number, participantId: string, participantType: 'user' | 'squad', progress: number): Promise<GroupChallengeParticipant>;
+  getActiveGroupChallenges(city?: string, country?: string): Promise<GroupChallenge[]>;
+  getChallengeLeaderboard(challengeId: number): Promise<(GroupChallengeParticipant & { 
+    user?: User; 
+    squad?: Squad & { members: SquadMember[] } 
+  })[]>;
+
+  // City Leaderboards
+  updateCityLeaderboard(city: string, country: string, period: 'weekly' | 'monthly' | 'all_time', leaderboardType: 'individual' | 'squad'): Promise<CityLeaderboard>;
+  getCityLeaderboard(city: string, country: string, period: 'weekly' | 'monthly' | 'all_time', leaderboardType: 'individual' | 'squad'): Promise<CityLeaderboard | undefined>;
 }
 
 class MemStorage implements IStorage {
@@ -106,6 +132,13 @@ class MemStorage implements IStorage {
   private spotReviews: SpotReview[] = [];
   private notifications: Notification[] = [];
   private userAvailabilities: UserAvailability[] = [];
+  
+  // Squad and leaderboard storage
+  private squads: Squad[] = [];
+  private squadMembers: SquadMember[] = [];
+  private groupChallenges: GroupChallenge[] = [];
+  private groupChallengeParticipants: GroupChallengeParticipant[] = [];
+  private cityLeaderboards: CityLeaderboard[] = [];
   private nextPostId = 1;
   private nextFriendshipId = 1;
   private nextCommentId = 1;
@@ -113,6 +146,11 @@ class MemStorage implements IStorage {
   private nextReviewId = 1;
   private nextNotificationId = 1;
   private nextAvailabilityId = 1;
+  private nextSquadId = 1;
+  private nextSquadMemberId = 1;
+  private nextGroupChallengeId = 1;
+  private nextGroupChallengeParticipantId = 1;
+  private nextLeaderboardId = 1;
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
@@ -968,6 +1006,179 @@ class MemStorage implements IStorage {
       .filter(item => item.user); // Remove any with missing users
 
     return friendsAvailability;
+  }
+
+  // Squad Features Implementation
+  async createSquad(squad: InsertSquad): Promise<Squad> {
+    const newSquad: Squad = {
+      id: this.nextSquadId++,
+      ...squad,
+      totalPoints: 0,
+      totalSpotsHunted: 0,
+      createdAt: new Date(),
+    };
+    this.squads.push(newSquad);
+    
+    // Add creator as admin member
+    await this.joinSquad(newSquad.id, squad.createdBy);
+    
+    return newSquad;
+  }
+
+  async joinSquad(squadId: number, userId: string): Promise<SquadMember> {
+    const squad = this.squads.find(s => s.id === squadId);
+    if (!squad) throw new Error('Squad not found');
+    
+    const existing = this.squadMembers.find(m => m.squadId === squadId && m.userId === userId);
+    if (existing) throw new Error('Already a member');
+    
+    const role = squad.createdBy === userId ? 'admin' : 'member';
+    const member: SquadMember = {
+      id: this.nextSquadMemberId++,
+      squadId,
+      userId,
+      role,
+      joinedAt: new Date()
+    };
+    
+    this.squadMembers.push(member);
+    return member;
+  }
+
+  async leaveSquad(squadId: number, userId: string): Promise<boolean> {
+    const memberIndex = this.squadMembers.findIndex(m => m.squadId === squadId && m.userId === userId);
+    if (memberIndex === -1) return false;
+    
+    this.squadMembers.splice(memberIndex, 1);
+    return true;
+  }
+
+  async getUserSquads(userId: string): Promise<(SquadMember & { squad: Squad })[]> {
+    return this.squadMembers
+      .filter(m => m.userId === userId)
+      .map(member => ({
+        ...member,
+        squad: this.squads.find(s => s.id === member.squadId)!
+      }));
+  }
+
+  async getSquadMembers(squadId: number): Promise<(SquadMember & { user: User })[]> {
+    return this.squadMembers
+      .filter(m => m.squadId === squadId)
+      .map(member => ({
+        ...member,
+        user: this.users.find(u => u.id.toString() === member.userId)!
+      }));
+  }
+
+  async getSquadsByCity(city: string, country: string): Promise<Squad[]> {
+    return this.squads.filter(s => s.city === city && s.country === country && s.isPublic);
+  }
+
+  async updateSquadStats(squadId: number, pointsToAdd: number, spotsToAdd: number): Promise<Squad> {
+    const squad = this.squads.find(s => s.id === squadId);
+    if (!squad) throw new Error('Squad not found');
+    
+    squad.totalPoints += pointsToAdd;
+    squad.totalSpotsHunted += spotsToAdd;
+    return squad;
+  }
+
+  // Group challenges implementation
+  async createGroupChallenge(challenge: InsertGroupChallenge): Promise<GroupChallenge> {
+    const newChallenge: GroupChallenge = {
+      id: this.nextGroupChallengeId++,
+      ...challenge,
+      createdAt: new Date(),
+    };
+    this.groupChallenges.push(newChallenge);
+    return newChallenge;
+  }
+
+  async joinGroupChallenge(challengeId: number, participantId: string, participantType: 'user' | 'squad'): Promise<GroupChallengeParticipant> {
+    const participant: GroupChallengeParticipant = {
+      id: this.nextGroupChallengeParticipantId++,
+      challengeId,
+      participantId,
+      participantType,
+      currentProgress: 0,
+      rank: 0,
+      joinedAt: new Date()
+    };
+    this.groupChallengeParticipants.push(participant);
+    return participant;
+  }
+
+  async updateGroupChallengeProgress(challengeId: number, participantId: string, participantType: 'user' | 'squad', progress: number): Promise<GroupChallengeParticipant> {
+    const participant = this.groupChallengeParticipants.find(p => 
+      p.challengeId === challengeId && 
+      p.participantId === participantId && 
+      p.participantType === participantType
+    );
+    if (!participant) throw new Error('Participant not found');
+    
+    participant.currentProgress = progress;
+    return participant;
+  }
+
+  async getActiveGroupChallenges(city?: string, country?: string): Promise<GroupChallenge[]> {
+    const now = new Date();
+    return this.groupChallenges.filter(c => 
+      c.isActive && 
+      c.startDate <= now && 
+      c.endDate >= now &&
+      (!city || c.city === city) &&
+      (!country || c.country === country)
+    );
+  }
+
+  async getChallengeLeaderboard(challengeId: number): Promise<(GroupChallengeParticipant & { user?: User; squad?: Squad & { members: SquadMember[] } })[]> {
+    return this.groupChallengeParticipants
+      .filter(p => p.challengeId === challengeId)
+      .sort((a, b) => b.currentProgress - a.currentProgress)
+      .map((participant, index) => {
+        participant.rank = index + 1;
+        return {
+          ...participant,
+          user: participant.participantType === 'user' ? 
+            this.users.find(u => u.id.toString() === participant.participantId) : undefined,
+          squad: participant.participantType === 'squad' ? 
+            {
+              ...this.squads.find(s => s.id.toString() === participant.participantId)!,
+              members: this.squadMembers.filter(m => m.squadId.toString() === participant.participantId)
+            } : undefined
+        };
+      });
+  }
+
+  async updateCityLeaderboard(city: string, country: string, period: 'weekly' | 'monthly' | 'all_time', leaderboardType: 'individual' | 'squad'): Promise<CityLeaderboard> {
+    const leaderboard: CityLeaderboard = {
+      id: this.nextLeaderboardId++,
+      city,
+      country,
+      period,
+      leaderboardType,
+      data: { rankings: [] },
+      lastUpdated: new Date()
+    };
+    
+    const existingIndex = this.cityLeaderboards.findIndex(l => 
+      l.city === city && l.country === country && l.period === period && l.leaderboardType === leaderboardType
+    );
+    
+    if (existingIndex >= 0) {
+      this.cityLeaderboards[existingIndex] = leaderboard;
+    } else {
+      this.cityLeaderboards.push(leaderboard);
+    }
+    
+    return leaderboard;
+  }
+
+  async getCityLeaderboard(city: string, country: string, period: 'weekly' | 'monthly' | 'all_time', leaderboardType: 'individual' | 'squad'): Promise<CityLeaderboard | undefined> {
+    return this.cityLeaderboards.find(l => 
+      l.city === city && l.country === country && l.period === period && l.leaderboardType === leaderboardType
+    );
   }
 }
 

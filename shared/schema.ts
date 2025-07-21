@@ -176,6 +176,68 @@ export const userAvailability = pgTable("user_availability", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Squad system for group challenges and competition
+export const squads = pgTable("squads", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  createdBy: varchar("created_by").notNull(),
+  city: varchar("city"),
+  country: varchar("country"),
+  isPublic: boolean("is_public").default(true),
+  maxMembers: integer("max_members").default(10),
+  totalPoints: integer("total_points").default(0),
+  totalSpotsHunted: integer("total_spots_hunted").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const squadMembers = pgTable("squad_members", {
+  id: serial("id").primaryKey(),
+  squadId: integer("squad_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  role: varchar("role").default("member"), // admin, member
+  joinedAt: timestamp("joined_at").defaultNow(),
+});
+
+// Group challenges for squad vs squad and city-wide competition
+export const groupChallenges = pgTable("group_challenges", {
+  id: serial("id").primaryKey(),
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  type: varchar("type").notNull(), // squad_vs_squad, city_wide, global
+  challengeType: varchar("challenge_type").notNull(), // spots_hunted, points_earned, badges_collected, distance_traveled
+  targetValue: integer("target_value").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  city: varchar("city"), // For city-wide challenges
+  country: varchar("country"),
+  createdBy: varchar("created_by"),
+  isActive: boolean("is_active").default(true),
+  prizeDescription: text("prize_description"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const groupChallengeParticipants = pgTable("group_challenge_participants", {
+  id: serial("id").primaryKey(),
+  challengeId: integer("challenge_id").notNull(),
+  participantId: varchar("participant_id").notNull(), // Can be user ID or squad ID
+  participantType: varchar("participant_type").notNull(), // user, squad
+  currentProgress: integer("current_progress").default(0),
+  rank: integer("rank").default(0),
+  joinedAt: timestamp("joined_at").defaultNow(),
+});
+
+// City leaderboards for location-based competition
+export const cityLeaderboards = pgTable("city_leaderboards", {
+  id: serial("id").primaryKey(),
+  city: varchar("city").notNull(),
+  country: varchar("country").notNull(),
+  period: varchar("period").notNull(), // weekly, monthly, all_time
+  leaderboardType: varchar("leaderboard_type").notNull(), // individual, squad
+  data: jsonb("data").notNull(), // Leaderboard entries with rankings
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
 // Insert schemas  
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -235,6 +297,31 @@ export const insertUserAvailabilitySchema = createInsertSchema(userAvailability)
   id: true,
   createdAt: true,
   updatedAt: true
+});
+
+export const insertSquadSchema = createInsertSchema(squads).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertSquadMemberSchema = createInsertSchema(squadMembers).omit({
+  id: true,
+  joinedAt: true
+});
+
+export const insertGroupChallengeSchema = createInsertSchema(groupChallenges).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertGroupChallengeParticipantSchema = createInsertSchema(groupChallengeParticipants).omit({
+  id: true,
+  joinedAt: true
+});
+
+export const insertCityLeaderboardSchema = createInsertSchema(cityLeaderboards).omit({
+  id: true,
+  lastUpdated: true
 });
 
 // Types
@@ -413,3 +500,15 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type UserAvailability = typeof userAvailability.$inferSelect;
 export type InsertUserAvailability = z.infer<typeof insertUserAvailabilitySchema>;
+
+// Squad and leaderboard types
+export type Squad = typeof squads.$inferSelect;
+export type InsertSquad = z.infer<typeof insertSquadSchema>;
+export type SquadMember = typeof squadMembers.$inferSelect;
+export type InsertSquadMember = z.infer<typeof insertSquadMemberSchema>;
+export type GroupChallenge = typeof groupChallenges.$inferSelect;
+export type InsertGroupChallenge = z.infer<typeof insertGroupChallengeSchema>;
+export type GroupChallengeParticipant = typeof groupChallengeParticipants.$inferSelect;
+export type InsertGroupChallengeParticipant = z.infer<typeof insertGroupChallengeParticipantSchema>;
+export type CityLeaderboard = typeof cityLeaderboards.$inferSelect;
+export type InsertCityLeaderboard = z.infer<typeof insertCityLeaderboardSchema>;
