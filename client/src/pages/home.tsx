@@ -151,7 +151,7 @@ export default function Home() {
                   <h2 className="text-lg font-bold text-gray-800">Trendy Spot Alerts</h2>
                   <NotificationCenter />
                   {unreadCount > 0 && (
-                    <span className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
+                    <span className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full animate-pulse">
                       {unreadCount} new
                     </span>
                   )}
