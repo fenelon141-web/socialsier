@@ -8,11 +8,13 @@ import MapView from "@/pages/map";
 import Social from "@/pages/social";
 import Squads from "@/pages/squads";
 import TasteMakers from "@/pages/taste-makers";
+import DiscoverFeed from "@/pages/discover-feed";
 import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import NotFound from "@/pages/not-found";
+
 import { useCapacitor } from "./hooks/use-capacitor";
 
 function Router() {
@@ -23,6 +25,7 @@ function Router() {
       <Route path="/social" component={Social} />
       <Route path="/squads" component={Squads} />
       <Route path="/taste-makers" component={TasteMakers} />
+      <Route path="/discover" component={DiscoverFeed} />
       <Route path="/badges" component={Badges} />
       <Route path="/profile" component={Profile} />
       <Route path="/login" component={Login} />

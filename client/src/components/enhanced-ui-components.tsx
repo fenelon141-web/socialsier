@@ -1,201 +1,325 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Zap, Sparkles, TrendingUp, Award } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Heart, MessageCircle, Share, Bookmark, User, MapPin, Star, TrendingUp, Clock, Users, Eye } from "lucide-react";
 
-// Success feedback with celebration animation
-export function SuccessFeedback({ message, onClose, autoClose = true }: {
-  message: string;
-  onClose: () => void;
-  autoClose?: boolean;
-}) {
-  useEffect(() => {
-    if (autoClose) {
-      const timer = setTimeout(onClose, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [autoClose, onClose]);
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-      <Card className="success-gradient rounded-3xl shadow-2xl border-0 max-w-sm mx-4 overflow-hidden">
-        <CardContent className="p-6 text-center text-white">
-          <div className="relative">
-            <CheckCircle className="w-16 h-16 mx-auto mb-4 animate-bounce" />
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping"></div>
-            <div className="absolute -top-4 -left-2 w-4 h-4 bg-pink-400 rounded-full animate-ping delay-100"></div>
-          </div>
-          <h3 className="text-lg font-bold mb-2">Success!</h3>
-          <p className="text-sm opacity-90 mb-4">{message}</p>
-          <Button
-            onClick={onClose}
-            variant="outline"
-            className="text-white border-white/30 hover:bg-white/20"
-            size="sm"
-          >
-            Continue
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// Trending indicator with pulse effect
-export function TrendingBadge({ count }: { count: number }) {
-  return (
-    <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white animate-pulse shadow-lg">
-      <TrendingUp className="w-3 h-3 mr-1" />
-      {count} trending
-    </Badge>
-  );
-}
-
-// Enhanced level progress with visual feedback
-export function LevelProgress({ currentXP, nextLevelXP, level }: {
-  currentXP: number;
-  nextLevelXP: number;
-  level: number;
-}) {
-  const progress = (currentXP / nextLevelXP) * 100;
-  
-  return (
-    <Card className="glass-morphism border-white/20 rounded-2xl overflow-hidden">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <Award className="w-5 h-5 text-yellow-400" />
-            <span className="font-bold text-gray-800">Level {level}</span>
-          </div>
-          <span className="text-sm text-gray-600">{currentXP}/{nextLevelXP} XP</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-3 mb-2 overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all duration-500 ease-out relative"
-            style={{ width: `${progress}%` }}
-          >
-            <div className="absolute inset-0 bg-white/30 animate-shimmer"></div>
-          </div>
-        </div>
-        <p className="text-xs text-gray-600 text-center">
-          {nextLevelXP - currentXP} XP until next level
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Interactive achievement celebration
-export function AchievementToast({ badge, onClose }: {
-  badge: { name: string; emoji: string; description: string };
-  onClose: () => void;
-}) {
-  return (
-    <div className="fixed top-4 right-4 z-50 animate-slide-in-right">
-      <Card className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-2xl shadow-2xl border-0 max-w-sm overflow-hidden">
-        <CardContent className="p-4">
-          <div className="flex items-center space-x-3">
-            <div className="text-3xl animate-bounce">{badge.emoji}</div>
-            <div className="flex-1">
-              <h4 className="font-bold text-sm">New Badge Earned!</h4>
-              <p className="text-xs opacity-90">{badge.name}</p>
-            </div>
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/20 p-1"
-            >
-              ×
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// Enhanced floating action button
-export function FloatingActionButton({ 
-  onClick, 
-  icon: Icon, 
-  label, 
-  variant = 'primary' 
-}: {
+// Instagram-style Floating Action Button
+export function FloatingActionButton({ onClick, children, className = "" }: {
   onClick: () => void;
-  icon: any;
-  label: string;
-  variant?: 'primary' | 'secondary';
+  children: React.ReactNode;
+  className?: string;
 }) {
   const [isPressed, setIsPressed] = useState(false);
 
   return (
     <Button
-      onClick={() => {
-        setIsPressed(true);
-        onClick();
-        setTimeout(() => setIsPressed(false), 150);
-      }}
-      className={`fixed bottom-24 right-4 w-14 h-14 rounded-full shadow-2xl transition-all duration-200 z-40 ${
-        variant === 'primary'
-          ? 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600'
-          : 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600'
-      } ${isPressed ? 'scale-90' : 'hover:scale-110'} group`}
+      onClick={onClick}
+      onTouchStart={() => setIsPressed(true)}
+      onTouchEnd={() => setIsPressed(false)}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      className={`
+        fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl
+        bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
+        text-white border-0 transition-all duration-200 ease-out z-50
+        ${isPressed ? 'scale-95 shadow-lg' : 'scale-100 shadow-2xl hover:scale-105'}
+        ${className}
+      `}
     >
-      <Icon className="w-6 h-6 text-white group-hover:animate-pulse" />
-      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-        {label}
-      </div>
+      {children}
     </Button>
   );
 }
 
-// Pulse loading indicator
-export function PulseLoader({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8'
+// TikTok-style Engagement Stats
+export function EngagementStats({ likes, comments, shares, saves }: {
+  likes: number;
+  comments: number;
+  shares: number;
+  saves: number;
+}) {
+  const formatCount = (count: number) => {
+    if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+    if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
+    return count.toString();
   };
 
   return (
-    <div className="flex space-x-1">
-      {[0, 1, 2].map((i) => (
-        <div
-          key={i}
-          className={`${sizeClasses[size]} bg-pink-500 rounded-full animate-pulse`}
-          style={{ animationDelay: `${i * 0.15}s` }}
-        />
-      ))}
+    <div className="flex items-center space-x-6 text-sm text-gray-600">
+      <div className="flex items-center space-x-1">
+        <Heart className="w-4 h-4" />
+        <span className="font-medium">{formatCount(likes)}</span>
+      </div>
+      <div className="flex items-center space-x-1">
+        <MessageCircle className="w-4 h-4" />
+        <span className="font-medium">{formatCount(comments)}</span>
+      </div>
+      <div className="flex items-center space-x-1">
+        <Share className="w-4 h-4" />
+        <span className="font-medium">{formatCount(shares)}</span>
+      </div>
+      <div className="flex items-center space-x-1">
+        <Bookmark className="w-4 h-4" />
+        <span className="font-medium">{formatCount(saves)}</span>
+      </div>
     </div>
   );
 }
 
-// Interactive counter with animation
-export function AnimatedCounter({ value, duration = 1000 }: { value: number; duration?: number }) {
-  const [count, setCount] = useState(0);
+// Instagram-style User Badge
+export function UserBadge({ user, isVerified = false, tier, followerCount }: {
+  user: { username: string; avatar?: string };
+  isVerified?: boolean;
+  tier?: "rising" | "established" | "elite" | "legendary";
+  followerCount?: number;
+}) {
+  const getTierColor = (tier?: string) => {
+    switch (tier) {
+      case "legendary": return "from-yellow-400 to-orange-500";
+      case "elite": return "from-purple-500 to-pink-500";
+      case "established": return "from-blue-500 to-indigo-500";
+      case "rising": return "from-green-400 to-teal-500";
+      default: return "from-gray-400 to-gray-500";
+    }
+  };
 
-  useEffect(() => {
-    const startTime = Date.now();
-    const startValue = count;
-    const endValue = value;
+  const getTierIcon = (tier?: string) => {
+    switch (tier) {
+      case "legendary": return "👑";
+      case "elite": return "💎";
+      case "established": return "⭐";
+      case "rising": return "🌟";
+      default: return "";
+    }
+  };
 
-    const animate = () => {
-      const now = Date.now();
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+  return (
+    <div className="flex items-center space-x-3">
+      <div className="relative">
+        <Avatar className="w-10 h-10">
+          <AvatarImage src={user.avatar} alt={user.username} />
+          <AvatarFallback className="bg-gradient-to-br from-pink-400 to-purple-400 text-white">
+            {user.username.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        {tier && (
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center text-xs shadow-lg">
+            {getTierIcon(tier)}
+          </div>
+        )}
+      </div>
+      <div>
+        <div className="flex items-center space-x-2">
+          <span className="font-semibold text-gray-900">{user.username}</span>
+          {isVerified && (
+            <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs">✓</span>
+            </div>
+          )}
+          {tier && (
+            <Badge className={`text-xs bg-gradient-to-r ${getTierColor(tier)} text-white border-0`}>
+              {tier}
+            </Badge>
+          )}
+        </div>
+        {followerCount && (
+          <p className="text-xs text-gray-500">{followerCount.toLocaleString()} followers</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
-      const currentValue = Math.floor(startValue + (endValue - startValue) * progress);
-      setCount(currentValue);
+// ClassPass-style Time Slot Picker
+export function TimeSlotPicker({ onSelect, selectedTime }: {
+  onSelect: (time: string) => void;
+  selectedTime?: string;
+}) {
+  const timeSlots = [
+    "9:00 AM", "10:30 AM", "12:00 PM", "1:30 PM", 
+    "3:00 PM", "4:30 PM", "6:00 PM", "7:30 PM"
+  ];
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
+  return (
+    <div className="space-y-3">
+      <h4 className="font-medium text-gray-900">Available Times</h4>
+      <div className="grid grid-cols-2 gap-2">
+        {timeSlots.map((time) => (
+          <Button
+            key={time}
+            variant={selectedTime === time ? "default" : "outline"}
+            size="sm"
+            onClick={() => onSelect(time)}
+            className={`${
+              selectedTime === time 
+                ? "bg-purple-600 hover:bg-purple-700" 
+                : "hover:bg-purple-50 hover:border-purple-300"
+            }`}
+          >
+            {time}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Twitter-style Trending Topics
+export function TrendingTopics({ topics }: { topics: Array<{ name: string; count: number }> }) {
+  return (
+    <Card className="bg-gray-50 border-gray-200">
+      <CardContent className="p-4">
+        <h3 className="font-bold text-lg mb-4 flex items-center space-x-2">
+          <TrendingUp className="w-5 h-5 text-purple-600" />
+          <span>Trending Now</span>
+        </h3>
+        <div className="space-y-3">
+          {topics.map((topic, index) => (
+            <div key={topic.name} className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-900">#{topic.name}</div>
+                <div className="text-sm text-gray-500">{topic.count.toLocaleString()} posts</div>
+              </div>
+              <div className="text-xs text-purple-600 font-medium">
+                #{index + 1}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Instagram-style Story Ring
+export function StoryRing({ hasStory, isViewed, children }: {
+  hasStory: boolean;
+  isViewed?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`relative ${hasStory ? 'p-0.5 rounded-full' : ''}`}>
+      {hasStory && (
+        <div className={`absolute inset-0 rounded-full ${
+          isViewed 
+            ? 'bg-gray-300' 
+            : 'bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500'
+        }`} />
+      )}
+      <div className={`relative ${hasStory ? 'bg-white p-0.5 rounded-full' : ''}`}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// TikTok-style Live Indicator
+export function LiveIndicator({ viewerCount }: { viewerCount: number }) {
+  return (
+    <div className="flex items-center space-x-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+      <span>LIVE</span>
+      <div className="flex items-center space-x-1">
+        <Eye className="w-3 h-3" />
+        <span>{viewerCount.toLocaleString()}</span>
+      </div>
+    </div>
+  );
+}
+
+// Instagram-style Activity Status
+export function ActivityStatus({ lastSeen, isOnline }: {
+  lastSeen?: Date;
+  isOnline?: boolean;
+}) {
+  const getTimeAgo = (date: Date) => {
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return "Just now";
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays}d ago`;
+  };
+
+  return (
+    <div className="flex items-center space-x-2 text-xs text-gray-500">
+      <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
+      <span>
+        {isOnline ? "Active now" : lastSeen ? `Active ${getTimeAgo(lastSeen)}` : "Offline"}
+      </span>
+    </div>
+  );
+}
+
+// Swipe Gesture Handler
+export function SwipeGesture({ 
+  onSwipeLeft, 
+  onSwipeRight, 
+  onSwipeUp, 
+  onSwipeDown, 
+  children 
+}: {
+  onSwipeLeft?: () => void;
+  onSwipeRight?: () => void;
+  onSwipeUp?: () => void;
+  onSwipeDown?: () => void;
+  children: React.ReactNode;
+}) {
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const touchEnd = useRef<{ x: number; y: number } | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEnd.current = null;
+    touchStart.current = {
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
     };
+  };
 
-    requestAnimationFrame(animate);
-  }, [value, duration]);
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEnd.current = {
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
+    };
+  };
 
-  return <span className="font-bold tabular-nums">{count.toLocaleString()}</span>;
+  const onTouchEndHandler = () => {
+    if (!touchStart.current || !touchEnd.current) return;
+    
+    const distanceX = touchStart.current.x - touchEnd.current.x;
+    const distanceY = touchStart.current.y - touchEnd.current.y;
+    const isLeftSwipe = distanceX > minSwipeDistance;
+    const isRightSwipe = distanceX < -minSwipeDistance;
+    const isUpSwipe = distanceY > minSwipeDistance;
+    const isDownSwipe = distanceY < -minSwipeDistance;
+
+    if (Math.abs(distanceX) > Math.abs(distanceY)) {
+      // Horizontal swipe
+      if (isLeftSwipe && onSwipeLeft) onSwipeLeft();
+      if (isRightSwipe && onSwipeRight) onSwipeRight();
+    } else {
+      // Vertical swipe
+      if (isUpSwipe && onSwipeUp) onSwipeUp();
+      if (isDownSwipe && onSwipeDown) onSwipeDown();
+    }
+  };
+
+  return (
+    <div
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEndHandler}
+    >
+      {children}
+    </div>
+  );
 }
