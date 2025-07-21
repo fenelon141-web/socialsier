@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { insertSpotHuntSchema } from "@shared/schema";
@@ -1676,5 +1677,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // WebSocket setup for real-time features
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store active WebSocket connections by user ID
+  const activeConnections = new Map<string, WebSocket>();
+  
+  wss.on('connection', (ws: WebSocket, req) => {
+    console.log('New WebSocket connection');
+    
+    // Store user connection when they authenticate
+    ws.on('message', (message: string) => {
+      try {
+        const data = JSON.parse(message);
+        
+        if (data.type === 'authenticate') {
+          const userId = data.userId;
+          if (userId) {
+            activeConnections.set(userId, ws);
+            console.log(`User ${userId} authenticated via WebSocket`);
+            
+            // Send confirmation
+            ws.send(JSON.stringify({
+              type: 'authenticated',
+              userId: userId
+            }));
+            
+            // Broadcast to friends that this user is now online
+            broadcastToFriends(userId, {
+              type: 'friend_online',
+              userId: userId,
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+        
+        if (data.type === 'location_update') {
+          const { userId, latitude, longitude } = data;
+          if (userId && latitude && longitude) {
+            // Check for nearby friends and notify them
+            notifyNearbyFriends(userId, latitude, longitude);
+          }
+        }
+        
+        if (data.type === 'spot_hunt') {
+          const { userId, spotId, points, badge } = data;
+          if (userId) {
+            // Broadcast to friends about this spot hunt
+            broadcastToFriends(userId, {
+              type: 'friend_activity',
+              activity: {
+                userId,
+                type: 'spot_hunt',
+                spotId,
+                points,
+                badge,
+                timestamp: new Date().toISOString()
+              }
+            });
+          }
+        }
+        
+        if (data.type === 'squad_challenge_complete') {
+          const { userId, challengeId, squadId } = data;
+          if (userId && squadId) {
+            // Broadcast to squad members about challenge completion
+            broadcastToSquadMembers(squadId, {
+              type: 'squad_activity',
+              activity: {
+                userId,
+                type: 'challenge_complete',
+                challengeId,
+                timestamp: new Date().toISOString()
+              }
+            });
+          }
+        }
+        
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      // Remove connection when user disconnects
+      for (const [userId, connection] of activeConnections.entries()) {
+        if (connection === ws) {
+          activeConnections.delete(userId);
+          console.log(`User ${userId} disconnected`);
+          
+          // Broadcast to friends that this user is now offline
+          broadcastToFriends(userId, {
+            type: 'friend_offline',
+            userId: userId,
+            timestamp: new Date().toISOString()
+          });
+          break;
+        }
+      }
+    });
+  });
+  
+  // Helper function to broadcast messages to user's friends
+  async function broadcastToFriends(userId: string, message: any) {
+    try {
+      const friends = await storage.getUserFriends(userId);
+      for (const friend of friends) {
+        const friendConnection = activeConnections.get(friend.id.toString());
+        if (friendConnection && friendConnection.readyState === WebSocket.OPEN) {
+          friendConnection.send(JSON.stringify(message));
+        }
+      }
+    } catch (error) {
+      console.error('Error broadcasting to friends:', error);
+    }
+  }
+  
+  // Helper function to broadcast to squad members
+  async function broadcastToSquadMembers(squadId: number, message: any) {
+    try {
+      const squadMembers = await storage.getSquadMembers(squadId);
+      for (const member of squadMembers) {
+        const memberConnection = activeConnections.get(member.userId);
+        if (memberConnection && memberConnection.readyState === WebSocket.OPEN) {
+          memberConnection.send(JSON.stringify(message));
+        }
+      }
+    } catch (error) {
+      console.error('Error broadcasting to squad members:', error);
+    }
+  }
+  
+  // Helper function to notify nearby friends
+  async function notifyNearbyFriends(userId: string, latitude: number, longitude: number) {
+    try {
+      const friends = await storage.getUserFriends(userId);
+      for (const friend of friends) {
+        const friendConnection = activeConnections.get(friend.id.toString());
+        if (friendConnection && friendConnection.readyState === WebSocket.OPEN) {
+          // Calculate distance and notify if within 500m
+          // This would need friend's last known location - simplified for now
+          friendConnection.send(JSON.stringify({
+            type: 'friend_nearby',
+            friendId: userId,
+            latitude: latitude,
+            longitude: longitude,
+            message: `Your friend is nearby! Perfect time to hunt spots together 👯‍♀️`,
+            timestamp: new Date().toISOString()
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error notifying nearby friends:', error);
+    }
+  }
+  
   return httpServer;
 }

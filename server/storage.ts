@@ -292,6 +292,19 @@ class MemStorage implements IStorage {
     return newSpot;
   }
 
+  // Friend-related methods for WebSocket
+  async getUserFriends(userId: string): Promise<User[]> {
+    // In a real implementation, this would query a friends table
+    // For now, return empty array as we're using guest user
+    return [];
+  }
+  
+  async getSquadMembers(squadId: number): Promise<any[]> {
+    // In a real implementation, this would query squad members
+    // For now, return empty array
+    return [];
+  }
+
   async huntSpot(userId: number, spotId: number): Promise<SpotHunt> {
     const spot = await this.getSpot(spotId);
     const pointsEarned = 50; // Standard points for hunting a spot

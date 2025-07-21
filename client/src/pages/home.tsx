@@ -16,6 +16,8 @@ import { Link } from "wouter";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useLocation } from "@/hooks/use-location";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { useWebSocket } from "@/hooks/useWebSocket";
+import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { apiRequest } from "@/lib/queryClient";
 import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
 
@@ -24,6 +26,14 @@ export default function Home() {
   const { city, country, loading: locationNameLoading } = useLocation();
   const { testNearby, isTracking, serviceStatus } = usePushNotifications();
   const { isRefreshing, pullDistance, pullProgress } = usePullToRefresh();
+  
+  // WebSocket for real-time features
+  const { isConnected, sendLocationUpdate, sendSpotHunt } = useWebSocket({
+    userId: "1" // Guest user for now
+  });
+  
+  // Offline storage capabilities
+  const { savedSpots, isOnline, saveSpot, isSaved, getOfflineCapabilities } = useOfflineStorage();
   
   const { data: trendingSpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"]
@@ -85,6 +95,38 @@ export default function Home() {
       <DailyChallenge />
       
       <div className="p-4 space-y-4 pb-20">
+        {/* Connection Status */}
+        {!isOnline && (
+          <Card className="bg-yellow-50 border border-yellow-200 rounded-2xl">
+            <CardContent className="p-3">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                <p className="text-sm font-medium text-yellow-800">Offline Mode</p>
+                <p className="text-xs text-yellow-600">
+                  {getOfflineCapabilities().savedSpotsCount} saved spots available
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Real-time Connection Status */}
+        {isOnline && (
+          <Card className="bg-green-50 border border-green-200 rounded-2xl">
+            <CardContent className="p-3">
+              <div className="flex items-center space-x-2">
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                <p className="text-sm font-medium text-green-800">
+                  {isConnected ? 'Live Updates Active' : 'Connecting...'}
+                </p>
+                <p className="text-xs text-green-600">
+                  Friends can see your activity
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Smart Search Bar */}
         <SearchBar />
 

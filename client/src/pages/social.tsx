@@ -12,6 +12,7 @@ import { Heart, MessageCircle, Share2, Camera, UserPlus, Users, Star, ImageIcon,
 import { apiRequest } from "@/lib/queryClient";
 import { useCamera } from "@/hooks/use-camera";
 import { useToast } from "@/hooks/use-toast";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import AddFriendDialog from "@/components/add-friend-dialog";
 import InviteFriendsDialog from "@/components/invite-friends-dialog";
 import SharedCalendar from "@/components/shared-calendar";
@@ -30,8 +31,20 @@ export default function Social() {
   const [imageUrl, setImageUrl] = useState("");
   const [selectedSpot, setSelectedSpot] = useState<number | null>(null);
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [realtimeActivity, setRealtimeActivity] = useState<any[]>([]);
   const { choosePhotoSource, isLoading: cameraLoading } = useCamera();
   const { toast } = useToast();
+  
+  // WebSocket for live friend activity
+  const { isConnected } = useWebSocket({
+    userId: "1", // Guest user
+    onMessage: (message) => {
+      if (message.type === 'friend_activity') {
+        // Add real-time activity to the feed
+        setRealtimeActivity(prev => [message.activity, ...prev.slice(0, 9)]);
+      }
+    }
+  });
 
   // Get user's social feed
   const { data: feedPosts, isLoading: feedLoading } = useQuery<FeedPost[]>({
@@ -270,6 +283,41 @@ export default function Social() {
               </DialogContent>
             </Dialog>
 
+            {/* Live Friend Activity */}
+            {realtimeActivity.length > 0 && (
+              <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-0 rounded-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <h3 className="font-semibold text-gray-800">Live Activity</h3>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                      Real-time
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {realtimeActivity.slice(0, 3).map((activity, index) => (
+                      <div key={index} className="flex items-center space-x-3 p-2 bg-white rounded-lg">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">F</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-800">
+                            <span className="font-semibold">Friend</span> {activity.type === 'spot_hunt' ? 'hunted a spot' : 'completed a challenge'}
+                          </p>
+                          <p className="text-xs text-gray-500">just now</p>
+                        </div>
+                        {activity.points && (
+                          <div className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                            +{activity.points} XP
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Friends Section */}
             <Card className="bg-gradient-to-r from-pink-50 to-purple-50 border-0 rounded-xl">
               <CardContent className="p-4">
@@ -277,6 +325,9 @@ export default function Social() {
                   <div className="flex items-center space-x-2">
                     <Users className="w-5 h-5 text-pink-500" />
                     <h2 className="font-semibold text-gray-800">Your Squad</h2>
+                    {isConnected && (
+                      <div className="w-2 h-2 bg-green-500 rounded-full" title="Live updates active"></div>
+                    )}
                   </div>
                   <div className="flex space-x-2">
                     <AddFriendDialog>

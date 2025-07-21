@@ -7,13 +7,17 @@ import SpotCard from "@/components/spot-card";
 import LeafletMap from "@/components/leaflet-map";
 import SearchFilters from "@/components/search-filters";
 import { useGeolocation } from "@/hooks/use-geolocation";
-import { ArrowLeft, MapPin, Star, Target, Navigation } from "lucide-react";
+import { useOfflineStorage } from "@/hooks/useOfflineStorage";
+import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link } from "wouter";
 import type { Spot } from "@shared/schema";
 
 export default function MapView() {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
   const [searchFilters, setSearchFilters] = useState({});
+  const { saveSpot, isSaved, savedSpots, isOnline } = useOfflineStorage();
+  const { toast } = useToast();
   
   // Get nearby spots with advanced filters
   const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({
@@ -49,6 +53,27 @@ export default function MapView() {
 
   const spots = nearbySpots || allSpots || [];
   const isLoading = spotsLoading || allSpotsLoading;
+  
+  // Handle saving spots for offline access
+  const handleSaveSpot = (spot: Spot) => {
+    const success = saveSpot({
+      id: spot.id,
+      name: spot.name,
+      description: spot.description,
+      latitude: spot.latitude,
+      longitude: spot.longitude,
+      rating: spot.rating,
+      imageUrl: spot.imageUrl,
+      category: spot.category
+    });
+    
+    if (success) {
+      toast({
+        title: "Spot Saved! 📍",
+        description: `${spot.name} is now available offline`,
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -129,6 +154,39 @@ export default function MapView() {
         {/* Search Filters */}
         <SearchFilters onFiltersChange={setSearchFilters} />
 
+        {/* Offline Saved Spots Section */}
+        {!isOnline && savedSpots.length > 0 && (
+          <Card className="bg-yellow-50 border border-yellow-200 rounded-xl">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Bookmark className="w-5 h-5 text-yellow-600" />
+                  <h3 className="font-semibold text-yellow-800">Offline Spots</h3>
+                  <span className="text-xs bg-yellow-200 text-yellow-700 px-2 py-1 rounded-full">
+                    {savedSpots.length} saved
+                  </span>
+                </div>
+              </div>
+              <p className="text-sm text-yellow-700 mb-3">
+                You have access to {savedSpots.length} saved spots while offline
+              </p>
+              <div className="flex space-x-2 overflow-x-auto">
+                {savedSpots.slice(0, 3).map((spot) => (
+                  <div key={spot.id} className="flex-shrink-0 bg-white rounded-lg p-2 min-w-32">
+                    <h4 className="text-xs font-medium text-gray-800 truncate">{spot.name}</h4>
+                    <p className="text-xs text-gray-500">{spot.category}</p>
+                  </div>
+                ))}
+                {savedSpots.length > 3 && (
+                  <div className="flex-shrink-0 bg-white rounded-lg p-2 min-w-16 flex items-center justify-center">
+                    <span className="text-xs text-gray-500">+{savedSpots.length - 3}</span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {locationError && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
             <p className="text-sm text-yellow-800">
@@ -161,7 +219,67 @@ export default function MapView() {
             </div>
           ) : (
             spots?.map((spot) => (
-              <SpotCard key={spot.id} spot={spot} />
+              <Card key={spot.id} className="card-gradient rounded-xl shadow-lg border-0">
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-pink-200 to-purple-300 flex items-center justify-center">
+                      <Star className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-gray-800">{spot.name}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        {spot.description}
+                      </p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                          <span className="text-xs text-gray-500 ml-1">{spot.rating}</span>
+                        </div>
+                        <span className="text-xs text-gray-400">•</span>
+                        <span className="text-xs text-gray-500">{spot.category}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleSaveSpot(spot)}
+                        disabled={isSaved(spot.id)}
+                        className={`text-xs px-3 py-1 ${
+                          isSaved(spot.id) 
+                            ? 'bg-green-50 text-green-700 border-green-200' 
+                            : 'hover:bg-pink-50'
+                        }`}
+                      >
+                        {isSaved(spot.id) ? (
+                          <>
+                            <BookmarkCheck className="w-3 h-3 mr-1" />
+                            Saved
+                          </>
+                        ) : (
+                          <>
+                            <Bookmark className="w-3 h-3 mr-1" />
+                            Save
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          if (latitude && longitude) {
+                            const mapUrl = `https://www.google.com/maps/dir/${latitude},${longitude}/${spot.name.replace(/\s+/g, '+')},${spot.latitude},${spot.longitude}`;
+                            window.open(mapUrl, '_blank');
+                          }
+                        }}
+                        className="text-xs px-3 py-1 bg-gradient-to-r from-purple-400 to-pink-400 text-white"
+                      >
+                        <Navigation className="w-3 h-3 mr-1" />
+                        Go
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))
           )}
         </div>
