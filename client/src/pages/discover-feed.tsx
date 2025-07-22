@@ -9,7 +9,7 @@ import {
   StoriesStrip, 
   VerticalFeed, 
   ExploreGrid, 
-  LiveUpdatesFeed, 
+  UpdatesFeed, 
   DoubleTapLike,
   PullToRefreshContainer 
 } from "@/components/social-media-patterns";
@@ -212,8 +212,8 @@ export default function DiscoverFeed() {
               {/* Tab Content */}
               <TabsContent value="cards" className="mt-0">
                 <div className="p-4 space-y-4">
-                  {/* Live Updates */}
-                  <LiveUpdatesFeed />
+                  {/* Recent Updates */}
+                  <UpdatesFeed />
                   
                   {/* Main Feed */}
                   {spots.map(renderCard)}

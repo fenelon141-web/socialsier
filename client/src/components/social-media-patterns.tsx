@@ -31,7 +31,7 @@ export function StoriesStrip() {
       setStoryCaption("");
       toast({
         title: "Story posted! ✨",
-        description: "Your story is now live for 24 hours!",
+        description: "Your story is active for 24 hours!",
       });
     },
   });
@@ -76,9 +76,9 @@ export function StoriesStrip() {
   };
 
   const stories = [
-    { id: 1, user: "Emma Rose", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face", hasStory: true, isLive: false },
-    { id: 2, user: "Sophie Chen", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face", hasStory: true, isLive: true },
-    { id: 3, user: "Zoe Martinez", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop&crop=face", hasStory: true, isLive: false },
+    { id: 1, user: "Emma Rose", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face", hasStory: true },
+    { id: 2, user: "Sophie Chen", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face", hasStory: true },
+    { id: 3, user: "Zoe Martinez", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop&crop=face", hasStory: true },
   ];
 
   return (
@@ -106,11 +106,7 @@ export function StoriesStrip() {
                   {story.user.split(' ').map(n => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
-              {story.isLive && (
-                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                  LIVE
-                </div>
-              )}
+
             </div>
             <span className="text-xs text-gray-600 max-w-[60px] truncate">{story.user}</span>
           </div>
@@ -415,11 +411,11 @@ export function ExploreGrid({ spots }: { spots: any[] }) {
 }
 
 // Twitter-style Real-time Updates
-export function LiveUpdatesFeed() {
+export function UpdatesFeed() {
   const [updates, setUpdates] = useState([
     { id: 1, text: "Emma just discovered a new matcha spot in Shoreditch!", time: "2m", type: "discovery" },
     { id: 2, text: "15 people checked into Sketch London in the last hour", time: "5m", type: "trending" },
-    { id: 3, text: "Sophie started a live workout class review", time: "8m", type: "live" }
+    { id: 3, text: "Sophie shared a new workout class review", time: "8m", type: "review" }
   ]);
 
   useEffect(() => {
@@ -441,7 +437,7 @@ export function LiveUpdatesFeed() {
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-gray-900 flex items-center space-x-2">
           <Sparkles className="w-4 h-4 text-purple-500" />
-          <span>Live Updates</span>
+          <span>Recent Updates</span>
         </h3>
         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
       </div>

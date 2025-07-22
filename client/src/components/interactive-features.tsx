@@ -243,7 +243,7 @@ export function AdvancedFilters({
 }
 
 // Real-time activity feed
-export function LiveActivityFeed({ activities = [] }: { activities?: any[] }) {
+export function ActivityFeed({ activities = [] }: { activities?: any[] }) {
   const [newActivity, setNewActivity] = useState<any>(null);
 
   useEffect(() => {
@@ -262,7 +262,7 @@ export function LiveActivityFeed({ activities = [] }: { activities?: any[] }) {
           <CardContent className="p-3">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium">Live Update</span>
+              <span className="text-sm font-medium">New Update</span>
             </div>
             <p className="text-xs mt-1 opacity-90">{newActivity.description}</p>
           </CardContent>
@@ -273,7 +273,7 @@ export function LiveActivityFeed({ activities = [] }: { activities?: any[] }) {
         <CardContent className="p-4">
           <h3 className="font-bold text-gray-800 mb-3 flex items-center">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-            Live Activity
+            Recent Activity
           </h3>
           <div className="space-y-2 max-h-32 overflow-y-auto">
             {activities.slice(0, 5).map((activity, index) => (

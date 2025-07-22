@@ -213,16 +213,18 @@ export function StoryRing({ hasStory, isViewed, children }: {
   );
 }
 
-// TikTok-style Live Indicator
-export function LiveIndicator({ viewerCount }: { viewerCount: number }) {
+// Status indicator component
+export function StatusIndicator({ status, count }: { status: string; count?: number }) {
   return (
-    <div className="flex items-center space-x-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+    <div className="flex items-center space-x-2 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
       <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-      <span>LIVE</span>
-      <div className="flex items-center space-x-1">
-        <Eye className="w-3 h-3" />
-        <span>{viewerCount.toLocaleString()}</span>
-      </div>
+      <span>{status}</span>
+      {count && (
+        <div className="flex items-center space-x-1">
+          <Eye className="w-3 h-3" />
+          <span>{count.toLocaleString()}</span>
+        </div>
+      )}
     </div>
   );
 }

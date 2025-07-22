@@ -194,7 +194,7 @@ function getSpinDescription(name: string): string {
   if (nameLower.includes('soul')) {
     return 'SoulCycle – Cult-level cardio with spiritual quotes mid-sprint';
   } else if (nameLower.includes('peloton')) {
-    return 'Peloton Studio – Live leaderboard competition and high-energy music';
+    return 'Peloton Studio – Real-time leaderboard competition and high-energy music';
   } else if (nameLower.includes('flywheel')) {
     return 'Flywheel Sports – Data-driven indoor cycling with performance tracking';
   } else if (nameLower.includes('aqua')) {

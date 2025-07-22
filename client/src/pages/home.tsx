@@ -118,7 +118,7 @@ export default function Home() {
               <div className="flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-400'}`}></div>
                 <p className="text-sm font-medium text-green-800">
-                  {isConnected ? 'Live Updates Active' : 'Connecting...'}
+                  {isConnected ? 'Updates Active' : 'Connecting...'}
                 </p>
                 <p className="text-xs text-green-600">
                   Friends can see your activity
@@ -329,7 +329,7 @@ export default function Home() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold text-gray-800">Trending RN 🔥</h2>
-              <span className="text-xs bg-valley-pink text-white px-2 py-1 rounded-full">Live</span>
+              <span className="text-xs bg-valley-pink text-white px-2 py-1 rounded-full">Hot</span>
             </div>
             
             <div className="space-y-3">

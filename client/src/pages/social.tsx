@@ -37,7 +37,7 @@ export default function Social() {
   const { choosePhotoSource, isLoading: cameraLoading } = useCamera();
   const { toast } = useToast();
   
-  // WebSocket for live friend activity
+  // WebSocket for real-time friend activity
   const { isConnected } = useWebSocket({
     userId: "1", // Guest user
     onMessage: (message) => {
@@ -85,7 +85,7 @@ export default function Social() {
       setShowCreatePost(false);
       toast({
         title: "Post shared! ✨",
-        description: "Your spot discovery is now live for your squad to see!",
+        description: "Your spot discovery is shared with your squad!",
       });
     },
   });
@@ -150,7 +150,7 @@ export default function Social() {
         
         toast({
           title: "Story created!",
-          description: "Your story is now live for 24 hours 📸"
+          description: "Your story is active for 24 hours 📸"
         });
         setShowCreateStory(false);
       }
@@ -369,7 +369,7 @@ export default function Social() {
               </DialogContent>
             </Dialog>
 
-            {/* Live Friend Activity */}
+            {/* Recent Friend Activity */}
             {realtimeActivity.length > 0 && (
               <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-0 rounded-xl">
                 <CardContent className="p-4">
