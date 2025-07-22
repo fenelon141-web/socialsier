@@ -256,6 +256,15 @@ Changelog:
   - Enhanced map page to parse URL parameters for both filter and search functionality
   - Search now navigates from home page to map with proper query parameters and filtering
   - Improved user feedback with toast notifications confirming each action
+- July 22, 2025. Complete push notifications system for nearby trendy spots
+  - Implemented real-time location tracking with automatic spot discovery every 2 minutes
+  - Smart notification system detecting trendy cafes, restaurants, and fitness spots within 800m radius
+  - WebSocket integration for instant push notifications when trending spots are found
+  - Enhanced notification messages customized for different categories (coffee, food, fitness)
+  - Auto-tracking toggle allowing continuous monitoring or manual spot checks
+  - Beautiful test dashboard showing notification status, recent alerts, and service metrics
+  - Simplified home page by removing cluttered sections (squad activity, latest badges, nearby spots) as they exist in dedicated tabs
+  - Push notification service tracks active users and sends personalized alerts based on location and preferences
 ```
 
 ## User Preferences

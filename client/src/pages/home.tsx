@@ -238,25 +238,7 @@ export default function Home() {
         {/* Enhanced Push Notifications Test Component */}
         {latitude && longitude && <NotificationTest />}
 
-        {/* Nearby Spots */}
-        {nearbySpots && nearbySpots.length > 0 && (
-          <Card className="card-gradient rounded-2xl shadow-lg border-0">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-bold text-gray-800">Nearby Spots 📍</h2>
-                <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">
-                  {nearbySpots.length} found
-                </span>
-              </div>
-              
-              <div className="space-y-3">
-                {nearbySpots.slice(0, 5).map((spot: any) => (
-                  <SpotCard key={spot.id} spot={spot} />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Location Loading State */}
         {locationLoading && (
@@ -335,29 +317,7 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Recent Badges */}
-        {recentBadges.length > 0 && (
-          <Card className="card-gradient rounded-2xl shadow-lg border-0">
-            <CardContent className="p-4">
-              <h2 className="text-lg font-bold text-gray-800 mb-3">Latest Badges 🏆</h2>
-              <div className="flex space-x-3 overflow-x-auto pb-2">
-                {badgesLoading ? (
-                  [1, 2, 3, 4].map(i => (
-                    <div key={i} className="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px] animate-pulse">
-                      <div className="w-8 h-8 bg-gray-200 rounded mx-auto mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded mb-1"></div>
-                      <div className="h-2 bg-gray-200 rounded"></div>
-                    </div>
-                  ))
-                ) : (
-                  recentBadges.map(userBadge => (
-                    <BadgeCard key={userBadge.id} userBadge={userBadge} />
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Rewards Section */}
         {rewards && rewards.length > 0 && (
@@ -396,38 +356,7 @@ export default function Home() {
           </Card>
         )}
 
-        {/* Friends Activity */}
-        {activity && activity.length > 0 && (
-          <Card className="card-gradient rounded-2xl shadow-lg border-0">
-            <CardContent className="p-4">
-              <h2 className="text-lg font-bold text-gray-800 mb-3">Squad Activity 👯‍♀️</h2>
-              <div className="space-y-3">
-                {activity?.map(item => (
-                  <div key={item.id} className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full border-2 border-pink-400 bg-valley-pink flex items-center justify-center">
-                      <span className="text-white text-sm">
-                        {item.type === 'badge_earned' ? '🏆' : item.type === 'spot_hunt' ? '📍' : '✨'}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-800">
-                        <span className="font-semibold">You</span> {item.action}
-                      </p>
-                      <p className="text-xs text-gray-600">{item.timeAgo}</p>
-                    </div>
-                    <div className="text-right">
-                      {item.badge || item.type === 'badge_earned' ? (
-                        <div className="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full">🏆 Badge</div>
-                      ) : (
-                        <div className="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">+{item.points || 10} XP</div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
       </div>
 
       <BottomNavigation />
