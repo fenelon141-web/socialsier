@@ -13,6 +13,29 @@ import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } 
 import { Link } from "wouter";
 import type { Spot } from "@shared/schema";
 
+// Calculate distance between two coordinates using Haversine formula
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
+}
+
+// Format distance for display
+function formatDistance(distance: number): string {
+  if (distance < 1) {
+    return `${Math.round(distance * 1000)}m`;
+  } else {
+    return `${distance.toFixed(1)}km`;
+  }
+}
+
 export default function MapView() {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
   const [searchFilters, setSearchFilters] = useState({});
@@ -218,27 +241,41 @@ export default function MapView() {
               <p className="text-xs text-gray-400">Try expanding your search radius</p>
             </div>
           ) : (
-            spots?.map((spot) => (
-              <Card key={spot.id} className="card-gradient rounded-xl shadow-lg border-0">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-pink-200 to-purple-300 flex items-center justify-center">
-                      <Star className="w-8 h-8 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800">{spot.name}</h3>
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {spot.description}
-                      </p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <div className="flex items-center">
-                          <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                          <span className="text-xs text-gray-500 ml-1">{spot.rating}</span>
-                        </div>
-                        <span className="text-xs text-gray-400">•</span>
-                        <span className="text-xs text-gray-500">{spot.category}</span>
+            spots?.map((spot) => {
+              const distance = latitude && longitude ? 
+                calculateDistance(latitude, longitude, spot.latitude, spot.longitude) : null;
+              
+              return (
+                <Card key={spot.id} className="card-gradient rounded-xl shadow-lg border-0">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-pink-200 to-purple-300 flex items-center justify-center">
+                        <Star className="w-8 h-8 text-white" />
                       </div>
-                    </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-bold text-gray-800">{spot.name}</h3>
+                          {distance !== null && (
+                            <div className="flex items-center space-x-1 bg-gradient-to-r from-pink-100 to-purple-100 px-2 py-1 rounded-full">
+                              <Target className="w-3 h-3 text-pink-600" />
+                              <span className="text-xs font-medium text-pink-700">
+                                {formatDistance(distance)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                          {spot.description}
+                        </p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <div className="flex items-center">
+                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                            <span className="text-xs text-gray-500 ml-1">{spot.rating}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">•</span>
+                          <span className="text-xs text-gray-500">{spot.category}</span>
+                        </div>
+                      </div>
                     <div className="flex flex-col space-y-2">
                       <Button
                         size="sm"
@@ -280,7 +317,8 @@ export default function MapView() {
                   </div>
                 </CardContent>
               </Card>
-            ))
+              );
+            })
           )}
         </div>
       </div>
