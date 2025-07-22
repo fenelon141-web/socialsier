@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import type { Spot } from "@shared/schema";
 
 // Calculate distance between two coordinates using Haversine formula
@@ -41,6 +41,27 @@ export default function MapView() {
   const [searchFilters, setSearchFilters] = useState({});
   const { saveSpot, isSaved, savedSpots, isOnline } = useOfflineStorage();
   const { toast } = useToast();
+  const searchParams = useSearch();
+
+  // Parse URL parameters and set initial filters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(searchParams);
+    const filter = urlParams.get('filter');
+    
+    if (filter === 'coffee') {
+      setSearchFilters({ category: 'cafe', dietary: 'coffee' });
+      toast({
+        title: "Coffee spots filtered! ☕",
+        description: "Showing nearby coffee spots and cafes",
+      });
+    } else if (filter === 'fitness') {
+      setSearchFilters({ category: 'fitness' });
+      toast({
+        title: "Workout spots filtered! 💪",
+        description: "Showing nearby gyms and fitness studios",
+      });
+    }
+  }, [searchParams, toast]);
   
   // Get nearby spots with advanced filters
   const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({

@@ -40,7 +40,7 @@ export function QuickActions() {
               Find Workout
             </Button>
           </Link>
-          <Link href="/social">
+          <Link href="/social?action=create">
             <Button 
               variant="outline" 
               className="w-full justify-start text-sm bg-white/50"

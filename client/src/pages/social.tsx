@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import TopNavigation from "@/components/top-navigation";
 import BottomNavigation from "@/components/bottom-navigation";
@@ -17,6 +17,7 @@ import { useStories, useCreateStory } from '@/hooks/useStories';
 import AddFriendDialog from "@/components/add-friend-dialog";
 import InviteFriendsDialog from "@/components/invite-friends-dialog";
 import SharedCalendar from "@/components/shared-calendar";
+import { useSearch } from "wouter";
 import type { Post, User, Spot } from "@shared/schema";
 
 interface FeedPost extends Post {
@@ -36,6 +37,25 @@ export default function Social() {
   const [showCreateStory, setShowCreateStory] = useState(false);
   const { choosePhotoSource, isLoading: cameraLoading } = useCamera();
   const { toast } = useToast();
+  const searchParams = useSearch();
+
+  // Check if we should auto-open the create post dialog
+  useEffect(() => {
+    const urlParams = new URLSearchParams(searchParams);
+    const action = urlParams.get('action');
+    
+    if (action === 'create') {
+      setShowCreatePost(true);
+      // Auto-trigger photo capture after a short delay
+      setTimeout(() => {
+        handleTakePhoto();
+      }, 1000);
+      toast({
+        title: "Share your moment! 📸",
+        description: "Camera opening to capture your moment",
+      });
+    }
+  }, [searchParams, toast]);
   
   // WebSocket for real-time friend activity
   const { isConnected } = useWebSocket({
