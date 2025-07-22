@@ -12,9 +12,9 @@ import { PullToRefreshIndicator } from "@/components/pull-to-refresh-indicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Camera, Navigation } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useGeolocation } from "@/hooks/use-geolocation";
-import { useLocation } from "@/hooks/use-location";
+import { useLocation as useLocationName } from "@/hooks/use-location";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
@@ -24,9 +24,10 @@ import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
 
 export default function Home() {
   const { latitude, longitude, loading: locationLoading } = useGeolocation();
-  const { city, country, loading: locationNameLoading } = useLocation();
+  const { city, country, loading: locationNameLoading } = useLocationName();
   const { testNearby, checkNearby, isTracking, serviceStatus, unreadCount, trendingNotifications } = usePushNotifications();
   const { isRefreshing, pullDistance, pullProgress } = usePullToRefresh();
+  const [, navigate] = useLocation();
   
   // WebSocket for real-time features
   const { isConnected, sendLocationUpdate, sendSpotHunt } = useWebSocket({
@@ -129,7 +130,7 @@ export default function Home() {
         )}
 
         {/* Smart Search Bar */}
-        <SearchBar />
+        <SearchBar onSearch={(query) => navigate(`/map?search=${encodeURIComponent(query)}`)} />
 
         {/* Quick Actions */}
         <QuickActions />

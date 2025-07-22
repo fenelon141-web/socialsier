@@ -47,6 +47,7 @@ export default function MapView() {
   useEffect(() => {
     const urlParams = new URLSearchParams(searchParams);
     const filter = urlParams.get('filter');
+    const search = urlParams.get('search');
     
     if (filter === 'coffee') {
       setSearchFilters({ category: 'cafe', dietary: 'coffee' });
@@ -59,6 +60,12 @@ export default function MapView() {
       toast({
         title: "Workout spots filtered! 💪",
         description: "Showing nearby gyms and fitness studios",
+      });
+    } else if (search) {
+      setSearchFilters({ search: search.toLowerCase() });
+      toast({
+        title: `Searching for "${search}" 🔍`,
+        description: "Finding spots that match your search",
       });
     }
   }, [searchParams, toast]);

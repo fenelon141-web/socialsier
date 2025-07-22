@@ -248,6 +248,14 @@ Changelog:
   - Integrated taste maker section on home page showcasing top influencers with high leaderboard points
   - System designed to create social proof and drive spot discovery through influential user recommendations
   - Taste makers with high points influence others in spot discovery, creating viral discovery loops
+- July 22, 2025. Enhanced search functionality and Quick Actions improvements
+  - Updated Quick Actions to properly filter map results: Find Coffee shows coffee spots, Find Workout shows fitness spots
+  - Enhanced Share Moment to auto-open camera for instant photo sharing via social page
+  - Implemented comprehensive search bar functionality specifically for spot keywords (matcha, ice coffee, pilates)
+  - Added server-side search filtering across spot names, descriptions, categories, dietary options, and amenities
+  - Enhanced map page to parse URL parameters for both filter and search functionality
+  - Search now navigates from home page to map with proper query parameters and filtering
+  - Improved user feedback with toast notifications confirming each action
 ```
 
 ## User Preferences

@@ -1069,7 +1069,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         priceRange,
         dietary,
         ambiance,
-        category 
+        category,
+        search 
       } = req.query;
       
       if (!lat || !lng) {
@@ -1100,6 +1101,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (category) {
         nearbySpots = nearbySpots.filter(spot => spot.category === category);
+      }
+      
+      // Apply search filter - search in name, description, category, and dietary options
+      if (search) {
+        const searchTerm = (search as string).toLowerCase();
+        nearbySpots = nearbySpots.filter(spot => {
+          const matchesName = spot.name.toLowerCase().includes(searchTerm);
+          const matchesDescription = spot.description?.toLowerCase().includes(searchTerm);
+          const matchesCategory = spot.category?.toLowerCase().includes(searchTerm);
+          const matchesDietary = spot.dietaryOptions?.some(opt => 
+            opt.toLowerCase().includes(searchTerm)
+          );
+          const matchesAmenities = spot.amenities?.some(amenity => 
+            amenity.toLowerCase().includes(searchTerm)
+          );
+          
+          return matchesName || matchesDescription || matchesCategory || matchesDietary || matchesAmenities;
+        });
       }
       
       // Sort by distance first for nearby spots (primary concern is proximity)
@@ -1140,6 +1159,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (category) {
           fallbackSpots = fallbackSpots.filter(spot => spot.category === category);
+        }
+        
+        if (search) {
+          const searchTerm = (search as string).toLowerCase();
+          fallbackSpots = fallbackSpots.filter(spot => {
+            const matchesName = spot.name.toLowerCase().includes(searchTerm);
+            const matchesDescription = spot.description?.toLowerCase().includes(searchTerm);
+            const matchesCategory = spot.category?.toLowerCase().includes(searchTerm);
+            const matchesDietary = spot.dietaryOptions?.some(opt => 
+              opt.toLowerCase().includes(searchTerm)
+            );
+            const matchesAmenities = spot.amenities?.some(amenity => 
+              amenity.toLowerCase().includes(searchTerm)
+            );
+            
+            return matchesName || matchesDescription || matchesCategory || matchesDietary || matchesAmenities;
+          });
         }
         
         return res.json(fallbackSpots.sort((a, b) => a.distance - b.distance));

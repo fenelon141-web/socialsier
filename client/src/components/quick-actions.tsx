@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Coffee, Dumbbell, Camera, MapPin, Search, Zap } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useHaptics } from "@/hooks/use-haptics";
 
 export function QuickActions() {
@@ -66,18 +67,40 @@ export function QuickActions() {
   );
 }
 
-export function SearchBar() {
+interface SearchBarProps {
+  onSearch?: (query: string) => void;
+}
+
+export function SearchBar({ onSearch }: SearchBarProps) {
   const { triggerHaptic } = useHaptics();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim() && onSearch) {
+      onSearch(searchQuery.trim());
+      triggerHaptic('light');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch(e as any);
+    }
+  };
 
   return (
-    <div className="relative">
+    <form onSubmit={handleSearch} className="relative">
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
       <input
         type="text"
-        placeholder="Search spots, badges, friends..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search spots... matcha, ice coffee, pilates"
         className="w-full pl-10 pr-4 py-3 rounded-full border border-purple-100 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent"
         onFocus={() => triggerHaptic('light')}
+        onKeyPress={handleKeyPress}
       />
-    </div>
+    </form>
   );
 }
