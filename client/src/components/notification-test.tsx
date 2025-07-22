@@ -77,10 +77,10 @@ export default function NotificationTest() {
             </div>
           </div>
           <Badge 
-            variant={serviceStatus?.isRunning ? "default" : "destructive"}
-            className={serviceStatus?.isRunning ? "bg-green-500" : "bg-red-500"}
+            variant={(serviceStatus as any)?.isRunning ? "default" : "destructive"}
+            className={(serviceStatus as any)?.isRunning ? "bg-green-500" : "bg-red-500"}
           >
-            {serviceStatus?.isRunning ? 'Active' : 'Inactive'}
+            {(serviceStatus as any)?.isRunning ? 'Active' : 'Inactive'}
           </Badge>
         </div>
 
