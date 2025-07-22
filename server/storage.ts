@@ -7,7 +7,8 @@ import {
   type Notification, type InsertNotification, type UserAvailability, type InsertUserAvailability,
   type Squad, type InsertSquad, type SquadMember, type InsertSquadMember,
   type GroupChallenge, type InsertGroupChallenge, type GroupChallengeParticipant, type InsertGroupChallengeParticipant,
-  type CityLeaderboard, type InsertCityLeaderboard
+  type CityLeaderboard, type InsertCityLeaderboard,
+  type Story, type InsertStory
 } from "@shared/schema";
 
 export interface IStorage {
@@ -112,6 +113,10 @@ export interface IStorage {
   // City Leaderboards
   updateCityLeaderboard(city: string, country: string, period: 'weekly' | 'monthly' | 'all_time', leaderboardType: 'individual' | 'squad'): Promise<CityLeaderboard>;
   getCityLeaderboard(city: string, country: string, period: 'weekly' | 'monthly' | 'all_time', leaderboardType: 'individual' | 'squad'): Promise<CityLeaderboard | undefined>;
+
+  // Stories
+  getActiveStories(): Promise<(Story & { user: User })[]>;
+  createStory(story: InsertStory): Promise<Story>;
 }
 
 class MemStorage implements IStorage {
@@ -139,6 +144,7 @@ class MemStorage implements IStorage {
   private groupChallenges: GroupChallenge[] = [];
   private groupChallengeParticipants: GroupChallengeParticipant[] = [];
   private cityLeaderboards: CityLeaderboard[] = [];
+  private stories: Story[] = [];
   private nextPostId = 1;
   private nextFriendshipId = 1;
   private nextCommentId = 1;
@@ -151,6 +157,7 @@ class MemStorage implements IStorage {
   private nextGroupChallengeId = 1;
   private nextGroupChallengeParticipantId = 1;
   private nextLeaderboardId = 1;
+  private nextStoryId = 1;
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
@@ -1220,6 +1227,34 @@ class MemStorage implements IStorage {
     return this.cityLeaderboards.find(l => 
       l.city === city && l.country === country && l.period === period && l.leaderboardType === leaderboardType
     );
+  }
+
+  // Stories Implementation
+  async getActiveStories(): Promise<(Story & { user: User })[]> {
+    const now = new Date();
+    return this.stories
+      .filter(story => story.expiresAt > now)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map(story => {
+        const user = this.users.find(u => u.id.toString() === story.userId);
+        return {
+          ...story,
+          user: user!
+        };
+      })
+      .filter(story => story.user);
+  }
+
+  async createStory(storyData: InsertStory): Promise<Story> {
+    const story: Story = {
+      id: this.nextStoryId++,
+      ...storyData,
+      createdAt: new Date(),
+      views: 0
+    };
+    
+    this.stories.push(story);
+    return story;
   }
 }
 

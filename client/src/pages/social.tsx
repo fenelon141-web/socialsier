@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useCamera } from "@/hooks/use-camera";
 import { useToast } from "@/hooks/use-toast";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { useStories, useCreateStory } from '@/hooks/useStories';
 import AddFriendDialog from "@/components/add-friend-dialog";
 import InviteFriendsDialog from "@/components/invite-friends-dialog";
 import SharedCalendar from "@/components/shared-calendar";
@@ -32,6 +33,7 @@ export default function Social() {
   const [selectedSpot, setSelectedSpot] = useState<number | null>(null);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [realtimeActivity, setRealtimeActivity] = useState<any[]>([]);
+  const [showCreateStory, setShowCreateStory] = useState(false);
   const { choosePhotoSource, isLoading: cameraLoading } = useCamera();
   const { toast } = useToast();
   
@@ -65,6 +67,10 @@ export default function Social() {
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user/1"]
   });
+
+  // Stories functionality
+  const { data: stories, isLoading: storiesLoading } = useStories();
+  const createStoryMutation = useCreateStory();
 
   // Create post mutation
   const createPostMutation = useMutation({
@@ -131,6 +137,32 @@ export default function Social() {
     }
   };
 
+  const handleCreateStory = async () => {
+    try {
+      const photo = await choosePhotoSource();
+      if (photo) {
+        await createStoryMutation.mutateAsync({
+          userId: "1",
+          imageUrl: photo,
+          caption: "",
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+        });
+        
+        toast({
+          title: "Story created!",
+          description: "Your story is now live for 24 hours 📸"
+        });
+        setShowCreateStory(false);
+      }
+    } catch (error) {
+      toast({
+        title: "Error creating story",
+        description: "Please try again",
+        variant: "destructive"
+      });
+    }
+  };
+
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
     const diffMs = now.getTime() - new Date(date).getTime();
@@ -191,6 +223,66 @@ export default function Social() {
                   <p className="text-xs text-gray-600">Requests</p>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Stories Section */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold text-gray-800">Stories</h3>
+                <Button
+                  onClick={handleCreateStory}
+                  disabled={createStoryMutation.isPending}
+                  size="sm"
+                  className="bg-gradient-to-r from-pink-400 to-purple-500 text-white"
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  Add Story
+                </Button>
+              </div>
+              
+              <div className="flex space-x-4 overflow-x-auto pb-2">
+                {/* Your Story */}
+                <div className="flex flex-col items-center space-y-2 min-w-[80px]">
+                  <div className="relative">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 p-0.5">
+                      <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
+                        <Plus className="w-6 h-6 text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-600 text-center">Your Story</span>
+                </div>
+
+                {/* Active Stories */}
+                {stories && stories.map((story) => (
+                  <div key={story.id} className="flex flex-col items-center space-y-2 min-w-[80px]">
+                    <div className="relative">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 p-0.5">
+                        <img
+                          src={story.imageUrl}
+                          alt={story.user.username}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      </div>
+                    </div>
+                    <span className="text-xs text-gray-600 text-center truncate max-w-[80px]">
+                      {story.user.username}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Loading State */}
+                {storiesLoading && (
+                  <div className="flex space-x-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex flex-col items-center space-y-2">
+                        <div className="w-16 h-16 rounded-full bg-gray-200 animate-pulse"></div>
+                        <div className="w-12 h-3 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Create Post Button */}

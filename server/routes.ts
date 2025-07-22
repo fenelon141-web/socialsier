@@ -1888,5 +1888,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
   
+  // Stories endpoints
+  app.get("/api/stories", async (req, res) => {
+    try {
+      const stories = await storage.getActiveStories();
+      res.json(stories);
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+      res.status(500).json({ message: "Failed to fetch stories" });
+    }
+  });
+
+  app.post("/api/stories", async (req, res) => {
+    try {
+      const storyData = {
+        ...req.body,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+      };
+      const story = await storage.createStory(storyData);
+      res.json(story);
+    } catch (error) {
+      console.error("Error creating story:", error);
+      res.status(500).json({ message: "Failed to create story" });
+    }
+  });
+
   return httpServer;
 }

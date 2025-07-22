@@ -153,6 +153,18 @@ export const spotReviews = pgTable("spot_reviews", {
   createdAt: timestamp("created_at").defaultNow()
 });
 
+// Stories - temporary content that disappears after 24 hours
+export const stories = pgTable("stories", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  imageUrl: text("image_url").notNull(),
+  caption: text("caption"),
+  type: text("type").notNull().default("photo"), // photo, video
+  spotId: integer("spot_id"), // optional - if story is about a specific spot
+  expiresAt: timestamp("expires_at").notNull(), // 24 hours from creation
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull(),
@@ -322,6 +334,11 @@ export const insertGroupChallengeParticipantSchema = createInsertSchema(groupCha
 export const insertCityLeaderboardSchema = createInsertSchema(cityLeaderboards).omit({
   id: true,
   lastUpdated: true
+});
+
+export const insertStorySchema = createInsertSchema(stories).omit({
+  id: true,
+  createdAt: true
 });
 
 // Taste makers - influential users who set trends
@@ -588,3 +605,5 @@ export type GroupChallengeParticipant = typeof groupChallengeParticipants.$infer
 export type InsertGroupChallengeParticipant = z.infer<typeof insertGroupChallengeParticipantSchema>;
 export type CityLeaderboard = typeof cityLeaderboards.$inferSelect;
 export type InsertCityLeaderboard = z.infer<typeof insertCityLeaderboardSchema>;
+export type Story = typeof stories.$inferSelect;
+export type InsertStory = z.infer<typeof insertStorySchema>;

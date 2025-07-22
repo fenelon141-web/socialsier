@@ -2,44 +2,201 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Heart, MessageCircle, Share, BookmarkPlus, Play, ChevronRight, Sparkles, Flame } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Heart, MessageCircle, Share, BookmarkPlus, Play, ChevronRight, Sparkles, Flame, Plus, Camera } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { useCamera } from "@/hooks/useCamera";
 
-// Instagram-style Stories Component
+// Instagram-style Stories Component with Photo Creation
 export function StoriesStrip() {
+  const [showCreateStory, setShowCreateStory] = useState(false);
+  const [storyImage, setStoryImage] = useState<string>("");
+  const [storyCaption, setStoryCaption] = useState("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { choosePhotoSource } = useCamera();
+
+  // Create story mutation
+  const createStoryMutation = useMutation({
+    mutationFn: async (storyData: any) => {
+      return apiRequest("/api/stories", "POST", storyData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
+      setShowCreateStory(false);
+      setStoryImage("");
+      setStoryCaption("");
+      toast({
+        title: "Story posted! ✨",
+        description: "Your story is now live for 24 hours!",
+      });
+    },
+  });
+
+  const handleTakePhoto = async () => {
+    try {
+      const photo = await choosePhotoSource();
+      if (photo) {
+        setStoryImage(photo);
+        toast({
+          title: "Photo captured! 📸",
+          description: "Add a caption and post your story!",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Photo failed 😢",
+        description: "Please try taking a photo again!",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateStory = () => {
+    if (!storyImage) {
+      toast({
+        title: "Photo required!",
+        description: "Take a photo first to create your story.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const storyData = {
+      userId: "1",
+      imageUrl: storyImage,
+      caption: storyCaption,
+      type: "photo"
+    };
+
+    createStoryMutation.mutate(storyData);
+  };
+
   const stories = [
     { id: 1, user: "Emma Rose", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face", hasStory: true, isLive: false },
     { id: 2, user: "Sophie Chen", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face", hasStory: true, isLive: true },
     { id: 3, user: "Zoe Martinez", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop&crop=face", hasStory: true, isLive: false },
-    { id: 4, user: "Add Story", avatar: null, hasStory: false, isLive: false }
   ];
 
   return (
-    <div className="flex space-x-3 p-4 overflow-x-auto scrollbar-hide">
-      {stories.map((story) => (
-        <div key={story.id} className="flex flex-col items-center space-y-1 flex-shrink-0">
-          <div className={`relative ${story.hasStory ? 'ring-2 ring-gradient-to-tr from-pink-500 to-purple-500 ring-offset-2' : ''} rounded-full`}>
-            {story.avatar ? (
+    <>
+      <div className="flex space-x-3 p-4 overflow-x-auto scrollbar-hide">
+        {/* Add Story Button */}
+        <div className="flex flex-col items-center space-y-1 flex-shrink-0">
+          <Button
+            onClick={() => setShowCreateStory(true)}
+            className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center bg-gray-50 hover:bg-gray-100"
+            variant="ghost"
+          >
+            <Plus className="w-6 h-6 text-gray-400" />
+          </Button>
+          <span className="text-xs text-gray-600 max-w-[60px] truncate">Your Story</span>
+        </div>
+
+        {/* Existing Stories */}
+        {stories.map((story) => (
+          <div key={story.id} className="flex flex-col items-center space-y-1 flex-shrink-0">
+            <div className={`relative ${story.hasStory ? 'ring-2 ring-gradient-to-tr from-pink-500 to-purple-500 ring-offset-2' : ''} rounded-full`}>
               <Avatar className="w-16 h-16">
                 <AvatarImage src={story.avatar} alt={story.user} />
                 <AvatarFallback className="bg-gradient-to-br from-pink-400 to-purple-400 text-white">
                   {story.user.split(' ').map(n => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
-            ) : (
-              <div className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center bg-gray-50">
-                <span className="text-2xl">+</span>
-              </div>
-            )}
-            {story.isLive && (
-              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                LIVE
-              </div>
-            )}
+              {story.isLive && (
+                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  LIVE
+                </div>
+              )}
+            </div>
+            <span className="text-xs text-gray-600 max-w-[60px] truncate">{story.user}</span>
           </div>
-          <span className="text-xs text-gray-600 max-w-[60px] truncate">{story.user}</span>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+
+      {/* Create Story Dialog */}
+      <Dialog open={showCreateStory} onOpenChange={setShowCreateStory}>
+        <DialogContent className="w-full max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <Camera className="w-5 h-5 text-purple-600" />
+              <span>Create Your Story</span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Photo Preview */}
+            {storyImage ? (
+              <div className="relative aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden">
+                <img
+                  src={storyImage}
+                  alt="Story preview"
+                  className="w-full h-full object-cover"
+                />
+                <Button
+                  onClick={() => setStoryImage("")}
+                  className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1"
+                  size="sm"
+                  variant="ghost"
+                >
+                  ✕
+                </Button>
+              </div>
+            ) : (
+              <div className="aspect-[9/16] bg-gray-100 rounded-lg flex flex-col items-center justify-center space-y-3">
+                <Camera className="w-12 h-12 text-gray-400" />
+                <p className="text-sm text-gray-500">Take a photo for your story</p>
+                <Button
+                  onClick={handleTakePhoto}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                >
+                  Take Photo
+                </Button>
+              </div>
+            )}
+
+            {/* Caption Input */}
+            {storyImage && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Add a caption (optional)
+                </label>
+                <Textarea
+                  placeholder="Share what's happening..."
+                  value={storyCaption}
+                  onChange={(e) => setStoryCaption(e.target.value)}
+                  rows={3}
+                  className="resize-none"
+                />
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex space-x-3">
+              <Button
+                onClick={() => setShowCreateStory(false)}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              {storyImage && (
+                <Button
+                  onClick={handleCreateStory}
+                  disabled={createStoryMutation.isPending}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                >
+                  {createStoryMutation.isPending ? "Posting..." : "Post Story"}
+                </Button>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
