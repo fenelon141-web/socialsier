@@ -9,7 +9,7 @@ export default function BottomNavigation() {
     { path: "/", icon: Home, label: "Hunt", isActive: location === "/" },
     { path: "/map", icon: Map, label: "Map", isActive: location === "/map" },
     { path: "/discover", icon: Sparkles, label: "Discover", isActive: location === "/discover" },
-    { path: "/badges", icon: Trophy, label: "Badges", isActive: location === "/badges" },
+    { path: "/social", icon: Users, label: "Social", isActive: location === "/social" },
     { path: "/profile", icon: User, label: "Profile", isActive: location === "/profile" },
   ];
 

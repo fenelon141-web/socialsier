@@ -69,10 +69,7 @@ export default function Social() {
   // Create post mutation
   const createPostMutation = useMutation({
     mutationFn: async (postData: any) => {
-      return apiRequest("/api/posts", {
-        method: "POST",
-        body: JSON.stringify(postData)
-      });
+      return apiRequest("/api/posts", "POST", postData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user/1/feed"] });
@@ -90,10 +87,7 @@ export default function Social() {
   // Like post mutation
   const likePostMutation = useMutation({
     mutationFn: async ({ postId, userId }: { postId: number; userId: string }) => {
-      return apiRequest("/api/posts/like", {
-        method: "POST",
-        body: JSON.stringify({ postId, userId })
-      });
+      return apiRequest("/api/posts/like", "POST", { postId, userId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user/1/feed"] });
