@@ -54,15 +54,12 @@ export function usePushNotifications() {
   // Test nearby spots mutation
   const testNearbyMutation = useMutation({
     mutationFn: async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
-      return await apiRequest('/api/test-nearby', {
-        method: 'POST',
-        body: { latitude, longitude }
-      });
+      return await apiRequest('/api/test-nearby', 'POST', { latitude, longitude });
     },
     onMutate: () => {
       setIsTracking(true);
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log('Nearby check result:', data);
       
       if (data.newNotifications > 0) {
@@ -99,9 +96,7 @@ export function usePushNotifications() {
   // Mark notification as read mutation
   const markReadMutation = useMutation({
     mutationFn: async (notificationId: number) => {
-      return await apiRequest(`/api/notifications/${notificationId}/read`, {
-        method: 'POST'
-      });
+      return await apiRequest(`/api/notifications/${notificationId}/read`, 'POST');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
@@ -111,12 +106,13 @@ export function usePushNotifications() {
   // Check for nearby trending spots
   const checkNearbyMutation = useMutation({
     mutationFn: async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
-      return await apiRequest('/api/notifications/check-nearby', {
-        method: 'POST',
-        body: { latitude, longitude }
+      return await apiRequest('/api/notifications/test-nearby', 'POST', { 
+        userId: "1", 
+        latitude, 
+        longitude 
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       if (data.newNotifications > 0) {
         toast({
           title: "Trending Spots Nearby! 🔥",

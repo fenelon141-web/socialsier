@@ -21,10 +21,11 @@ export class NotificationService {
 
   // Start the monitoring service
   private startMonitoring() {
-    // Check for nearby trending spots every 5 minutes
+    console.log('🚀 Starting nearby trending spots monitoring service');
+    // Check for nearby trending spots every 2 minutes for better responsiveness
     this.notificationInterval = setInterval(async () => {
       await this.checkForNearbyTrendingSpots();
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 2 * 60 * 1000); // 2 minutes for better user experience
   }
 
   // Check all active users for nearby trending spots
@@ -55,17 +56,24 @@ export class NotificationService {
       return; // User disabled nearby spot notifications
     }
 
+    console.log(`🔍 Checking nearby trending spots for user ${userId} at ${lat}, ${lng}`);
+
     // Find nearby spots using the same logic as the API
-    const nearbySpots = await this.findNearbyTrendySpots(lat, lng, 1000); // 1km radius
+    const nearbySpots = await this.findNearbyTrendySpots(lat, lng, 800); // 800m radius for better targeting
     
-    // Filter for truly trending spots (high rating and recent activity)
-    const trendingSpots = nearbySpots.filter((spot: any) => 
-      spot.rating >= 4.2 && 
-      spot.huntCount >= 5
-    );
+    // Filter for truly trending spots with more relaxed criteria for better discovery
+    const trendingSpots = nearbySpots.filter((spot: any) => {
+      const isHighRated = spot.rating >= 4.0;
+      const hasActivity = spot.huntCount >= 3;
+      const isClose = spot.distance <= 600; // Within 600m for immediate relevance
+      
+      return isHighRated && (hasActivity || isClose);
+    });
+
+    console.log(`📍 Found ${trendingSpots.length} potentially trending spots nearby`);
 
     // Send notifications for new trending spots
-    for (const spot of trendingSpots.slice(0, 2)) { // Limit to 2 notifications at once
+    for (const spot of trendingSpots.slice(0, 3)) { // Allow up to 3 notifications for better coverage
       const hasRecent = await this.hasRecentNotificationForSpot(userId, spot.id);
       if (!hasRecent) {
         await this.sendNearbyTrendingNotification(userId, spot, lat, lng);
@@ -112,8 +120,8 @@ export class NotificationService {
           latitude: element.lat || element.center?.lat,
           longitude: element.lon || element.center?.lon
         }))
-        .filter(spot => spot.latitude && spot.longitude)
-        .sort((a, b) => a.distance - b.distance);
+        .filter((spot: any) => spot.latitude && spot.longitude)
+        .sort((a: any, b: any) => a.distance - b.distance);
         
     } catch (error) {
       console.error('Error fetching nearby spots:', error);
@@ -121,8 +129,8 @@ export class NotificationService {
     }
   }
 
-  // Check if user already got a notification for this spot recently
-  private async hasRecentNotificationForSpot(userId: string, spotId: number): Promise<boolean> {
+  // Check if user already got a notification for this spot recently (public method)
+  async hasRecentNotificationForSpot(userId: string, spotId: number): Promise<boolean> {
     // Check if notification was sent in the last 24 hours
     const notifications = await storage.getUserNotifications(userId);
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -134,15 +142,30 @@ export class NotificationService {
     );
   }
 
-  // Send nearby trending spot notification
-  private async sendNearbyTrendingNotification(userId: string, spot: any, userLat: number, userLng: number) {
+  // Send nearby trending spot notification (public method)
+  async sendNearbyTrendingNotification(userId: string, spot: any, userLat: number, userLng: number) {
     const distance = Math.round(spot.distance);
+    
+    // Create varied notification messages for different spot types
+    let notificationTitle = '🔥 Trending Spot Nearby!';
+    let notificationMessage = `${spot.name} is trending ${distance}m away! Perfect for your next hunt 📍`;
+    
+    if (spot.category === 'cafe' || spot.description.toLowerCase().includes('coffee')) {
+      notificationTitle = '☕ Trendy Coffee Spot Discovered!';
+      notificationMessage = `${spot.name} is buzzing with activity ${distance}m away! Great for your coffee hunt ☕`;
+    } else if (spot.category === 'fitness' || spot.description.toLowerCase().includes('gym')) {
+      notificationTitle = '💪 Hot Workout Spot Nearby!';
+      notificationMessage = `${spot.name} is the place to be ${distance}m away! Perfect for your fitness hunt 🏃‍♀️`;
+    } else if (spot.category === 'restaurant' || spot.description.toLowerCase().includes('food')) {
+      notificationTitle = '🍽️ Aesthetic Food Spot Found!';
+      notificationMessage = `${spot.name} is trending ${distance}m away! Ideal for your next food adventure 📸`;
+    }
     
     await storage.createNotification({
       userId: userId,
       type: 'nearby_trending',
-      title: '🔥 Trending Spot Nearby!',
-      message: `${spot.name} is trending ${distance}m away! Perfect for your next hunt 📍`,
+      title: notificationTitle,
+      message: notificationMessage,
       data: {
         spotId: spot.id,
         spotName: spot.name,
@@ -150,13 +173,14 @@ export class NotificationService {
         latitude: spot.latitude,
         longitude: spot.longitude,
         category: spot.category,
-        rating: spot.rating
+        rating: spot.rating,
+        description: spot.description
       },
       read: false,
       sent: false
     });
 
-    console.log(`📱 Sent trending notification to user ${userId} for ${spot.name} (${distance}m away)`);
+    console.log(`📱 Sent ${spot.category} trending notification to user ${userId} for ${spot.name} (${distance}m away)`);
   }
 
   // Helper methods
