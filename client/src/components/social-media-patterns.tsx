@@ -65,11 +65,14 @@ export function StoriesStrip() {
       return;
     }
 
+    console.log('Creating story with image:', storyImage.substring(0, 50) + '...');
+    
     const storyData = {
       userId: "1",
       imageUrl: storyImage,
-      caption: storyCaption,
-      type: "photo"
+      caption: storyCaption || "",
+      type: "photo",
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
     };
 
     createStoryMutation.mutate(storyData);

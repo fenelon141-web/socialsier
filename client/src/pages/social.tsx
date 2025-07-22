@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, MessageCircle, Share2, Camera, UserPlus, Users, Star, ImageIcon, UserSearch, Calendar, Trophy, Crown, MapPin, Plus, Target, Medal } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import { useCamera } from "@/hooks/use-camera";
+import { useCamera } from "@/hooks/useCamera";
 import { useToast } from "@/hooks/use-toast";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useStories, useCreateStory } from '@/hooks/useStories';
@@ -159,25 +159,38 @@ export default function Social() {
 
   const handleCreateStory = async () => {
     try {
+      console.log('📸 Starting story creation process...');
       const photo = await choosePhotoSource();
+      
       if (photo) {
-        await createStoryMutation.mutateAsync({
+        console.log('Photo captured, length:', photo.length);
+        console.log('Photo preview:', photo.substring(0, 50) + '...');
+        
+        const storyData = {
           userId: "1",
           imageUrl: photo,
           caption: "",
+          type: "photo",
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
-        });
+        };
+        
+        console.log('Sending story data:', { ...storyData, imageUrl: storyData.imageUrl.substring(0, 50) + '...' });
+        
+        await createStoryMutation.mutateAsync(storyData);
         
         toast({
           title: "Story created!",
           description: "Your story is active for 24 hours 📸"
         });
         setShowCreateStory(false);
+      } else {
+        console.log('No photo captured');
       }
     } catch (error) {
+      console.error('Story creation error:', error);
       toast({
         title: "Error creating story",
-        description: "Please try again",
+        description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive"
       });
     }
