@@ -265,6 +265,12 @@ Changelog:
   - Beautiful test dashboard showing notification status, recent alerts, and service metrics
   - Simplified home page by removing cluttered sections (squad activity, latest badges, nearby spots) as they exist in dedicated tabs
   - Push notification service tracks active users and sends personalized alerts based on location and preferences
+- July 22, 2025. Fixed directions functionality for better Google Maps routing
+  - Updated navigation to use spot names and addresses instead of raw coordinates
+  - Enhanced mobile navigation with native app integration (Apple Maps on iOS, Google Maps on Android)
+  - Improved search queries with city context for better route plotting
+  - Fixed map page directions to use proper place names for accurate routing
+  - Added error handling and user feedback for navigation actions
 ```
 
 ## User Preferences

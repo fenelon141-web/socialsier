@@ -332,8 +332,15 @@ export default function MapView() {
                         size="sm"
                         onClick={() => {
                           if (latitude && longitude) {
-                            const mapUrl = `https://www.google.com/maps/dir/${latitude},${longitude}/${spot.name.replace(/\s+/g, '+')},${spot.latitude},${spot.longitude}`;
+                            // Use spot name for better routing instead of coordinates
+                            const spotQuery = encodeURIComponent(spot.name);
+                            const mapUrl = `https://www.google.com/maps/search/${spotQuery}`;
                             window.open(mapUrl, '_blank');
+                            
+                            toast({
+                              title: "Opening navigation",
+                              description: `Getting directions to ${spot.name}`,
+                            });
                           }
                         }}
                         className="text-xs px-3 py-1 bg-gradient-to-r from-purple-400 to-pink-400 text-white"

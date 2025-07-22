@@ -116,49 +116,61 @@ export default function SpotCard({ spot }: SpotCardProps) {
   };
 
   const openDirections = () => {
-    // Use spot name and address for better navigation instead of just coordinates
-    const spotName = encodeURIComponent(spot.name);
-    const spotAddress = spot.address ? encodeURIComponent(spot.address) : '';
-    const searchQuery = spotAddress ? `${spotName}, ${spotAddress}` : spotName;
+    // Create a comprehensive search query with location details
+    const spotName = spot.name;
+    const spotAddress = spot.address || '';
+    
+    // Build search query prioritizing recognizable place names
+    let searchQuery = spotName;
+    
+    // Add address if available
+    if (spotAddress && spotAddress.trim() !== '') {
+      searchQuery = `${spotName}, ${spotAddress}`;
+    } else {
+      // If no address, add city context for better search results
+      searchQuery = `${spotName}, London`; // Default to London for context
+    }
+
     const encodedQuery = encodeURIComponent(searchQuery);
     
-    // Fallback coordinates for precise location
-    const coordinates = `${spot.latitude},${spot.longitude}`;
-
-    // Detect if user is on mobile and prefer native apps
+    // Detect mobile for native app integration
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     
-    if (isMobile) {
-      // Try to search by name/address first, fallback to coordinates
-      const googleMapsUrl = spotAddress 
-        ? `https://maps.google.com/maps?q=${encodedQuery}&navigate=yes`
-        : `https://maps.google.com/maps?q=${spotName}&ll=${coordinates}&navigate=yes`;
-      window.open(googleMapsUrl, '_blank');
-    } else {
-      // For desktop, open multiple options in new tabs
-      const options = [
-        {
-          name: 'Google Maps',
-          url: spotAddress 
-            ? `https://maps.google.com/maps?q=${encodedQuery}&navigate=yes`
-            : `https://maps.google.com/maps?q=${spotName}&ll=${coordinates}&navigate=yes`
-        },
-        {
-          name: 'Apple Maps',
-          url: `https://maps.apple.com/?q=${encodedQuery}&dirflg=d`
-        },
-        {
-          name: 'OpenStreetMap',
-          url: `https://www.openstreetmap.org/directions?from=${latitude},${longitude}&to=${coordinates}`
+    try {
+      if (isMobile) {
+        if (isIOS) {
+          // iOS - try Apple Maps first, fallback to Google Maps
+          const appleMapsUrl = `https://maps.apple.com/?q=${encodedQuery}&dirflg=d`;
+          window.location.href = appleMapsUrl;
+          
+          // Fallback to Google Maps if Apple Maps doesn't work
+          setTimeout(() => {
+            const googleMapsUrl = `https://maps.google.com/maps?q=${encodedQuery}&navigate=yes`;
+            window.open(googleMapsUrl, '_blank');
+          }, 2000);
+        } else {
+          // Android - use Google Maps directly
+          const googleMapsUrl = `https://maps.google.com/maps?q=${encodedQuery}&navigate=yes`;
+          window.location.href = googleMapsUrl;
         }
-      ];
-
-      // Open Google Maps by default
-      window.open(options[0].url, '_blank');
+      } else {
+        // Desktop - open Google Maps in new tab with proper search query
+        const googleMapsUrl = `https://www.google.com/maps/search/${encodedQuery}`;
+        window.open(googleMapsUrl, '_blank');
+      }
       
       toast({
-        title: "Navigation opened! 🗺️",
-        description: `Getting directions to ${spot.name}`,
+        title: "Opening navigation",
+        description: `Getting directions to ${spotName}`,
+      });
+      
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast({
+        title: "Navigation error",
+        description: "Unable to open directions",
+        variant: "destructive",
       });
     }
   };
