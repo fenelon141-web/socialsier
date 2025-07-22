@@ -77,7 +77,7 @@ export default function TopNavigation() {
           <div className="text-xs opacity-90 font-medium">Explorer</div>
         </div>
         <div className="bg-white/25 backdrop-blur-md rounded-2xl px-4 py-2 flex-1 text-center border border-white/20">
-          <div className="text-lg font-bold">{Math.floor((user?.totalPoints || 0) / 1000)}K</div>
+          <div className="text-lg font-bold">{(user?.totalPoints || 0).toLocaleString()}</div>
           <div className="text-xs opacity-90 font-medium">Points</div>
         </div>
       </div>
