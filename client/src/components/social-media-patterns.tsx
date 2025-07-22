@@ -44,7 +44,7 @@ export function StoriesStrip() {
 }
 
 // TikTok-style Vertical Swipe Feed
-export function VerticalFeed({ spots }: { spots: any[] }) {
+export function VerticalFeed({ spots, onExit }: { spots: any[]; onExit?: () => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -160,6 +160,20 @@ export function VerticalFeed({ spots }: { spots: any[] }) {
           </Button>
         </div>
 
+        {/* Navigation Controls */}
+        <div className="absolute top-4 left-4 z-10">
+          {onExit && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="bg-white/20 backdrop-blur-sm text-white rounded-full p-2 hover:bg-white/30"
+              onClick={onExit}
+            >
+              ←
+            </Button>
+          )}
+        </div>
+
         {/* Swipe Indicators */}
         <div className="absolute top-1/2 right-2 transform -translate-y-1/2 flex flex-col space-y-2">
           {currentIndex > 0 && (
@@ -182,6 +196,22 @@ export function VerticalFeed({ spots }: { spots: any[] }) {
               ↓
             </Button>
           )}
+        </div>
+
+        {/* Story progress indicator */}
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
+          {spots.map((_, index) => (
+            <div
+              key={index}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                index === currentIndex 
+                  ? 'bg-white w-8' 
+                  : index < currentIndex 
+                    ? 'bg-white/80 w-4' 
+                    : 'bg-white/40 w-4'
+              }`}
+            />
+          ))}
         </div>
       </div>
     </div>

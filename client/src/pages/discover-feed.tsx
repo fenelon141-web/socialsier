@@ -168,10 +168,23 @@ export default function DiscoverFeed() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopNavigation />
+      {feedType !== "vertical" && <TopNavigation />}
       
       {feedType === "vertical" ? (
-        <VerticalFeed spots={spots} />
+        <div className="relative h-screen">
+          {/* Back button for vertical feed */}
+          <div className="absolute top-4 left-4 z-20">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFeedType("cards")}
+              className="bg-black/50 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/70"
+            >
+              ←
+            </Button>
+          </div>
+          <VerticalFeed spots={spots} />
+        </div>
       ) : (
         <PullToRefreshContainer onRefresh={handleRefresh}>
           <div className="pb-24">
@@ -208,7 +221,15 @@ export default function DiscoverFeed() {
               </TabsContent>
 
               <TabsContent value="vertical" className="mt-0">
-                <VerticalFeed spots={spots} />
+                {/* This will trigger the full-screen vertical feed */}
+                <div className="h-40 flex items-center justify-center">
+                  <Button 
+                    onClick={() => setFeedType("vertical")}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                  >
+                    Enter Full Screen Stories
+                  </Button>
+                </div>
               </TabsContent>
 
               <TabsContent value="grid" className="mt-0">
@@ -219,7 +240,7 @@ export default function DiscoverFeed() {
         </PullToRefreshContainer>
       )}
 
-      <BottomNavigation />
+      {feedType !== "vertical" && <BottomNavigation />}
     </div>
   );
 }
