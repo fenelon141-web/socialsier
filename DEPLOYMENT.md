@@ -1,7 +1,7 @@
-# Socialise - Mobile App Deployment Guide
+# Socialiser - Mobile App Deployment Guide
 
 ## Overview
-Socialise has been converted into a mobile app using Capacitor, making it ready for deployment to both the Apple App Store and Google Play Store.
+Socialiser has been converted into a mobile app using Capacitor, making it ready for deployment to both the Apple App Store and Google Play Store.
 
 ## What's Been Setup
 
@@ -14,8 +14,8 @@ Socialise has been converted into a mobile app using Capacitor, making it ready 
 - ✅ Mobile-optimized UI and navigation
 
 ### App Store Requirements Met
-- ✅ Unique app ID: `com.socialise.app`
-- ✅ App name: "Socialise"
+- ✅ Unique app ID: `com.socialiser.app`
+- ✅ App name: "Socialiser"
 - ✅ Valley Girl themed branding (#ff69b4 pink gradient)
 - ✅ Location permission handling
 - ✅ Mobile-responsive design

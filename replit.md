@@ -1,8 +1,8 @@
-# Socialise - Location-Based Discovery Mobile App
+# Socialiser - Location-Based Discovery Mobile App
 
 ## Overview
 
-Socialise is a modern mobile-first web application that gamifies location discovery. Built as a "valley girl" themed spot hunting game, users can discover trendy cafes, restaurants, gym classes, and other locations while earning points, badges, and completing daily challenges. The application features a React frontend with Express backend, using PostgreSQL for data persistence.
+Socialiser is a modern mobile-first web application that gamifies location discovery. Built as a "valley girl" themed spot hunting game, users can discover trendy cafes, restaurants, gym classes, and other locations while earning points, badges, and completing daily challenges. The application features a React frontend with Express backend, using PostgreSQL for data persistence.
 
 ## System Architecture
 
@@ -113,6 +113,7 @@ Changelog:
 - July 03, 2025. App renamed to "Hot Girl Hunt" and added gym classes section
 - July 03, 2025. App renamed to "IYKYK" 
 - July 30, 2025. App renamed to "Socialise" - Updated branding across all components and configuration files
+- July 30, 2025. App renamed to "Socialiser" - Final branding update across all platform configurations
   - Added 3 trending gym spots (Pure Barre Paradise, SoulCycle Vibes, Pilates Princess)
   - Added fitness badges (Workout Warrior, Barre Babe, Hot Girl Summer)
   - Added "Hot Girl Workouts" section on home page with trending gym classes
@@ -277,5 +278,5 @@ Changelog:
 ## User Preferences
 ```
 Preferred communication style: Simple, everyday language.
-App name: "Socialise" (finalized name change from "IYKYK")
+App name: "Socialiser" (finalized name change from "Socialise")
 ```
