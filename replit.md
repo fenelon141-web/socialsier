@@ -118,6 +118,13 @@ Changelog:
   - Added fitness badges (Workout Warrior, Barre Babe, Hot Girl Summer)
   - Added "Hot Girl Workouts" section on home page with trending gym classes
   - Added new API endpoint /api/spots/gym for gym class discovery
+- July 30, 2025. Complete authentication system for App Store deployment
+  - Mandatory email and name registration required for all users
+  - Guest access removed in favor of proper user profiles
+  - Authentication required for all app features and API endpoints
+  - Login/register flow with session management using PostgreSQL session store
+  - Profile page includes logout functionality with authentication state management
+  - App Store compliant user registration system
 - July 03, 2025. Added PostgreSQL database with Drizzle ORM
   - Replaced in-memory storage with DatabaseStorage class
   - Created database schema with proper relations

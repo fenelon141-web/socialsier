@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
-import { apiRequest } from "@/lib/queryClient";
 
 export default function Login() {
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
@@ -35,9 +35,11 @@ export default function Login() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate auth query to trigger re-fetch
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       toast({
-        title: "Welcome back! ✨",
-        description: "You're now logged in to IYKYK",
+        title: "Welcome back!",
+        description: "You're now logged in to Socialiser",
       });
       setLocation("/");
     },
@@ -64,12 +66,12 @@ export default function Login() {
       <Card className="w-full max-w-md card-gradient rounded-2xl shadow-2xl border-0">
         <CardHeader className="text-center space-y-2 pb-6">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-4">
-            IY
+            S
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
             Welcome Back
           </CardTitle>
-          <p className="text-gray-600">Sign in to continue your spot hunting adventure</p>
+          <p className="text-gray-600">Sign in to continue discovering amazing spots</p>
         </CardHeader>
         
         <CardContent className="space-y-6">
@@ -119,7 +121,7 @@ export default function Login() {
           <div className="relative">
             <Separator className="my-6" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="bg-white px-4 text-sm text-gray-500">New to IYKYK?</span>
+              <span className="bg-white px-4 text-sm text-gray-500">New to Socialiser?</span>
             </div>
           </div>
           
@@ -128,12 +130,6 @@ export default function Login() {
               Create an Account
             </Button>
           </Link>
-          
-          <div className="text-center">
-            <Link href="/" className="text-sm text-gray-500 hover:text-pink-600 transition-colors">
-              Continue as Guest
-            </Link>
-          </div>
         </CardContent>
       </Card>
     </div>

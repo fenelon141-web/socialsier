@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Link, useLocation } from "wouter";
 
 export default function Register() {
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -36,8 +37,10 @@ export default function Register() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate auth query to trigger re-fetch
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       toast({
-        title: "Welcome to IYKYK! ✨",
+        title: "Welcome to Socialiser!",
         description: "Your account has been created successfully",
       });
       setLocation("/");
@@ -75,22 +78,22 @@ export default function Register() {
       <Card className="w-full max-w-md card-gradient rounded-2xl shadow-2xl border-0">
         <CardHeader className="text-center space-y-2 pb-6">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-4">
-            IY
+            S
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-            Join IYKYK
+            Join Socialiser
           </CardTitle>
-          <p className="text-gray-600">Create your account and start discovering aesthetic spots</p>
+          <p className="text-gray-600">Create your profile and start discovering amazing spots</p>
         </CardHeader>
         
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="name">Full Name</Label>
               <Input
-                id="username"
+                id="name"
                 type="text"
-                placeholder="Choose a unique username"
+                placeholder="Enter your full name"
                 value={formData.username}
                 onChange={(e) => handleInputChange("username", e.target.value)}
                 required

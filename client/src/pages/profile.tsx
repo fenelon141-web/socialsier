@@ -1,16 +1,51 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import BottomNavigation from "@/components/bottom-navigation";
 import EditProfileDialog from "@/components/edit-profile-dialog";
-import { ArrowLeft, Settings, Share, Trophy, MapPin, Star } from "lucide-react";
-import { Link } from "wouter";
+import { ArrowLeft, Settings, Share, Trophy, MapPin, Star, LogOut } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import type { User, UserBadge, Badge } from "@shared/schema";
 
 export default function Profile() {
+  const { user: currentUser } = useAuth();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ["/api/user/1"]
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      // Clear all cached data
+      queryClient.clear();
+      toast({
+        title: "Logged out",
+        description: "You've been logged out successfully",
+      });
+      setLocation("/login");
+    },
+    onError: () => {
+      toast({
+        title: "Logout failed",
+        description: "There was an error logging you out",
+        variant: "destructive",
+      });
+    }
   });
 
   const { data: userBadges, isLoading: badgesLoading } = useQuery<(UserBadge & { badge: Badge })[]>({
@@ -67,8 +102,14 @@ export default function Profile() {
               <p className="text-xs opacity-90">Your valley girl journey</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-            <Settings className="w-4 h-4" />
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-white hover:bg-white/20"
+            onClick={() => logoutMutation.mutate()}
+            disabled={logoutMutation.isPending}
+          >
+            <LogOut className="w-4 h-4" />
           </Button>
         </div>
       </div>
