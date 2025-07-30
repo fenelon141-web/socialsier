@@ -1,4 +1,4 @@
-# IYKYK App Store Launch Checklist
+# Socialise App Store Launch Checklist
 
 ## ✅ Completed Features
 
@@ -30,8 +30,8 @@
 - [ ] Terms of service URL
 
 ### Technical Final Steps
-- [x] Bundle ID configured: `com.iykyk.app`
-- [x] App name: "IYKYK"
+- [x] Bundle ID configured: `com.socialise.app`
+- [x] App name: "Socialise"
 - [ ] Version number (recommend starting with 1.0.0)
 - [ ] Build signing certificates for iOS/Android
 - [ ] Production database environment

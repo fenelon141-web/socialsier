@@ -1,7 +1,7 @@
-# IYKYK - Mobile App Deployment Guide
+# Socialise - Mobile App Deployment Guide
 
 ## Overview
-IYKYK has been converted into a mobile app using Capacitor, making it ready for deployment to both the Apple App Store and Google Play Store.
+Socialise has been converted into a mobile app using Capacitor, making it ready for deployment to both the Apple App Store and Google Play Store.
 
 ## What's Been Setup
 
@@ -14,8 +14,8 @@ IYKYK has been converted into a mobile app using Capacitor, making it ready for 
 - ✅ Mobile-optimized UI and navigation
 
 ### App Store Requirements Met
-- ✅ Unique app ID: `com.hotgirlhunt.app`
-- ✅ App name: "Hot Girl Hunt"
+- ✅ Unique app ID: `com.socialise.app`
+- ✅ App name: "Socialise"
 - ✅ Valley Girl themed branding (#ff69b4 pink gradient)
 - ✅ Location permission handling
 - ✅ Mobile-responsive design

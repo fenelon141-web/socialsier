@@ -27,7 +27,7 @@ export default function TopNavigation() {
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-wide drop-shadow-md">IYKYK ✨</h1>
+            <h1 className="text-xl font-bold tracking-wide drop-shadow-md">Socialise ✨</h1>
             <p className="text-xs opacity-90 font-medium">
               {locationLoading ? (
                 <span className="animate-pulse">Finding location...</span>
