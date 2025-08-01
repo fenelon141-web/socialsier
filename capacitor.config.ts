@@ -5,10 +5,9 @@ const config: CapacitorConfig = {
   appName: 'Socialiser',
   webDir: 'dist/public',
   server: {
-    androidScheme: 'https',
-    // For iOS Simulator - point to your local development server
-    url: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : undefined,
-    cleartext: true
+    androidScheme: 'https'
+    // Remove development server URL - let iOS Simulator use bundled assets
+    // This avoids network connectivity issues between simulator and local server
   },
   plugins: {
     SplashScreen: {
