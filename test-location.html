@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPS Test</title>
+</head>
+<body>
+    <h1>Location Test</h1>
+    <button onclick="getLocation()">Get Location</button>
+    <div id="result"></div>
+    
+    <script>
+    function getLocation() {
+        const result = document.getElementById('result');
+        result.innerHTML = "Getting location...";
+        
+        if (!navigator.geolocation) {
+            result.innerHTML = "Geolocation not supported";
+            return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                result.innerHTML = `
+                    <h3>Success!</h3>
+                    <p>Latitude: ${position.coords.latitude}</p>
+                    <p>Longitude: ${position.coords.longitude}</p>
+                    <p>Accuracy: ${position.coords.accuracy}m</p>
+                `;
+            },
+            function(error) {
+                let msg = "Location error: ";
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        msg += "Permission denied";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        msg += "Position unavailable";
+                        break;
+                    case error.TIMEOUT:
+                        msg += "Timeout";
+                        break;
+                    default:
+                        msg += "Unknown error";
+                        break;
+                }
+                result.innerHTML = msg;
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    }
+    </script>
+</body>
+</html>

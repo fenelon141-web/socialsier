@@ -40,26 +40,69 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
         setNotificationPermission(permission === 'granted' ? 'granted' : permission === 'denied' ? 'denied' : 'pending');
       }
     } else {
-      // For native app, all permissions are handled during app install
-      setPermissionsGranted(true);
+      // For native app, we still need to check and request location permission
+      try {
+        if ('geolocation' in navigator) {
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+          });
+          setLocationPermission('granted');
+          setPermissionsGranted(true);
+        } else {
+          // Use Capacitor for native geolocation
+          const { Geolocation } = await import('@capacitor/geolocation');
+          const permissions = await Geolocation.requestPermissions();
+          
+          if (permissions.location === 'granted') {
+            setLocationPermission('granted');
+            setPermissionsGranted(true);
+          } else {
+            setLocationPermission('pending');
+            setPermissionsGranted(false);
+          }
+        }
+      } catch (error) {
+        console.error('Native location permission error:', error);
+        setLocationPermission('pending');
+        setPermissionsGranted(false);
+      }
     }
   };
 
   const requestLocationPermission = async () => {
-    if (!('geolocation' in navigator)) {
-      setLocationPermission('denied');
-      return;
-    }
-
     try {
-      await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, { 
-          timeout: 10000,
-          enableHighAccuracy: true 
+      if (isNative) {
+        // Use Capacitor for native apps
+        const { Geolocation } = await import('@capacitor/geolocation');
+        const permissions = await Geolocation.requestPermissions();
+        
+        if (permissions.location === 'granted') {
+          // Test actual location access
+          await Geolocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 10000,
+          });
+          setLocationPermission('granted');
+          setPermissionsGranted(true);
+        } else {
+          setLocationPermission('denied');
+        }
+      } else {
+        // Use browser geolocation for web
+        if (!('geolocation' in navigator)) {
+          setLocationPermission('denied');
+          return;
+        }
+
+        await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { 
+            timeout: 10000,
+            enableHighAccuracy: true 
+          });
         });
-      });
-      setLocationPermission('granted');
-      setPermissionsGranted(true);
+        setLocationPermission('granted');
+        setPermissionsGranted(true);
+      }
     } catch (error) {
       console.error('Location permission error:', error);
       setLocationPermission('denied');
