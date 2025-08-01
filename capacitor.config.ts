@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https',
     // For iOS Simulator - point to your local development server
-    url: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : undefined,
+    url: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : undefined,
     cleartext: true
   },
   plugins: {
