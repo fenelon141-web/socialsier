@@ -4,133 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socialiser - Demo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .gradient-bg {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
+            min-height: 100vh;
         }
+        .container { max-width: 448px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .header { background: linear-gradient(90deg, #ec4899 0%, #9333ea 100%); color: white; padding: 16px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 20px; font-weight: bold; }
+        .location { font-size: 14px; }
+        .avatar { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; }
+        .content { padding: 16px; padding-bottom: 80px; }
+        .welcome { background: linear-gradient(90deg, #fce7f3 0%, #f3e8ff 100%); border-radius: 16px; padding: 16px; margin-bottom: 24px; }
+        .welcome h2 { font-size: 18px; font-weight: bold; color: #1f2937; margin-bottom: 8px; }
+        .welcome p { font-size: 14px; color: #6b7280; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .card { background: white; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .icon { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .icon-pink { background: linear-gradient(90deg, #f472b6 0%, #a855f7 100%); }
+        .icon-purple { background: linear-gradient(90deg, #a78bfa 0%, #6366f1 100%); }
+        .card h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .card p { font-size: 12px; color: #6b7280; }
+        .section { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 24px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .section-title { font-size: 18px; font-weight: bold; color: #1f2937; }
+        .badge { font-size: 12px; background: #ec4899; color: white; padding: 4px 8px; border-radius: 9999px; }
+        .spot { background: #f9fafb; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+        .spot-content { display: flex; align-items: center; gap: 12px; }
+        .spot-icon { width: 64px; height: 64px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .spot-pink { background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%); }
+        .spot-purple { background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%); }
+        .spot-info h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .spot-meta { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+        .spot-desc { font-size: 12px; }
+        .spot-desc.pink { color: #ec4899; }
+        .spot-desc.green { color: #10b981; }
+        .badges-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .badge-item { text-align: center; }
+        .badge-icon { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+        .badge-yellow { background: linear-gradient(90deg, #fbbf24 0%, #f97316 100%); }
+        .badge-pink { background: linear-gradient(90deg, #f472b6 0%, #a855f7 100%); }
+        .badge-green { background: linear-gradient(90deg, #34d399 0%, #3b82f6 100%); }
+        .badge-name { font-size: 12px; font-weight: 600; }
+        .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 448px; background: white; border-top: 1px solid #e5e7eb; }
+        .nav-content { display: flex; justify-content: space-around; padding: 8px 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; padding: 8px; }
+        .nav-item.active { color: #ec4899; }
+        .nav-item:not(.active) { color: #9ca3af; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+        .nav-label { font-size: 12px; font-weight: 500; }
     </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <div class="max-w-md mx-auto bg-white shadow-2xl min-h-screen">
-        <!-- Top Navigation -->
-        <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4">
-            <div class="flex items-center justify-between">
-                <h1 class="text-xl font-bold">Socialiser</h1>
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm">London, UK</span>
-                    <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full"></div>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1 class="title">Socialiser</h1>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="location">London, UK</span>
+                    <div class="avatar"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="p-4 space-y-6">
-            <!-- Welcome Banner -->
-            <div class="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4">
-                <h2 class="text-lg font-bold text-gray-800 mb-2">Welcome to Socialiser! ✨</h2>
-                <p class="text-sm text-gray-600">Discover trendy spots, earn badges, and connect with your squad</p>
+        <div class="content">
+            <div class="welcome">
+                <h2>Welcome to Socialiser! ✨</h2>
+                <p>Discover trendy spots, earn badges, and connect with your squad</p>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-white rounded-xl p-4 shadow-md text-center">
-                    <div class="w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                        <span class="text-white text-xl">📍</span>
-                    </div>
-                    <h3 class="font-semibold text-sm">Find Spots</h3>
-                    <p class="text-xs text-gray-600">Discover trendy locations</p>
+            <div class="grid">
+                <div class="card">
+                    <div class="icon icon-pink">📍</div>
+                    <h3>Find Spots</h3>
+                    <p>Discover trendy locations</p>
                 </div>
-                <div class="bg-white rounded-xl p-4 shadow-md text-center">
-                    <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                        <span class="text-white text-xl">💪</span>
-                    </div>
-                    <h3 class="font-semibold text-sm">Hot Workouts</h3>
-                    <p class="text-xs text-gray-600">Find fitness classes</p>
+                <div class="card">
+                    <div class="icon icon-purple">💪</div>
+                    <h3>Hot Workouts</h3>
+                    <p>Find fitness classes</p>
                 </div>
             </div>
 
-            <!-- Trending Spots -->
-            <div class="bg-white rounded-2xl p-4 shadow-lg">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-lg font-bold text-gray-800">Trending RN 🔥</h2>
-                    <span class="text-xs bg-pink-500 text-white px-2 py-1 rounded-full">Hot</span>
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Trending RN 🔥</h2>
+                    <span class="badge">Hot</span>
                 </div>
                 
-                <div class="space-y-3">
-                    <div class="bg-gray-50 rounded-xl p-3">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center">
-                                <span class="text-white text-xl">☕</span>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-sm">Aesthetic Coffee Co.</h3>
-                                <p class="text-xs text-gray-600">📍 Shoreditch • 4.8 ⭐</p>
-                                <p class="text-xs text-pink-600">Perfect for Instagram shots!</p>
-                            </div>
+                <div class="spot">
+                    <div class="spot-content">
+                        <div class="spot-icon spot-pink">☕</div>
+                        <div class="spot-info">
+                            <h3>Aesthetic Coffee Co.</h3>
+                            <p class="spot-meta">📍 Shoreditch • 4.8 ⭐</p>
+                            <p class="spot-desc pink">Perfect for Instagram shots!</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="bg-gray-50 rounded-xl p-3">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center">
-                                <span class="text-white text-xl">🥗</span>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-sm">Clean Eating Cafe</h3>
-                                <p class="text-xs text-gray-600">📍 Camden • 4.9 ⭐</p>
-                                <p class="text-xs text-green-600">Health-conscious vibes</p>
-                            </div>
+                <div class="spot">
+                    <div class="spot-content">
+                        <div class="spot-icon spot-purple">🥗</div>
+                        <div class="spot-info">
+                            <h3>Clean Eating Cafe</h3>
+                            <p class="spot-meta">📍 Camden • 4.9 ⭐</p>
+                            <p class="spot-desc green">Health-conscious vibes</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Badges Section -->
-            <div class="bg-white rounded-2xl p-4 shadow-lg">
-                <h2 class="text-lg font-bold text-gray-800 mb-3">Your Badges 🏆</h2>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mx-auto mb-1 flex items-center justify-center">
-                            <span class="text-white text-lg">☀️</span>
-                        </div>
-                        <p class="text-xs font-semibold">Early Bird</p>
+            <div class="section">
+                <h2 class="section-title">Your Badges 🏆</h2>
+                <div class="badges-grid">
+                    <div class="badge-item">
+                        <div class="badge-icon badge-yellow">☀️</div>
+                        <p class="badge-name">Early Bird</p>
                     </div>
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full mx-auto mb-1 flex items-center justify-center">
-                            <span class="text-white text-lg">📸</span>
-                        </div>
-                        <p class="text-xs font-semibold">Photographer</p>
+                    <div class="badge-item">
+                        <div class="badge-icon badge-pink">📸</div>
+                        <p class="badge-name">Photographer</p>
                     </div>
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full mx-auto mb-1 flex items-center justify-center">
-                            <span class="text-white text-lg">🌟</span>
-                        </div>
-                        <p class="text-xs font-semibold">Trendsetter</p>
+                    <div class="badge-item">
+                        <div class="badge-icon badge-green">🌟</div>
+                        <p class="badge-name">Trendsetter</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
-        <div class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200">
-            <div class="flex justify-around py-2">
-                <button class="flex flex-col items-center py-2 text-pink-500">
-                    <span class="text-xl">🏠</span>
-                    <span class="text-xs font-medium">Home</span>
-                </button>
-                <button class="flex flex-col items-center py-2 text-gray-400">
-                    <span class="text-xl">🗺️</span>
-                    <span class="text-xs">Map</span>
-                </button>
-                <button class="flex flex-col items-center py-2 text-gray-400">
-                    <span class="text-xl">👥</span>
-                    <span class="text-xs">Social</span>
-                </button>
-                <button class="flex flex-col items-center py-2 text-gray-400">
-                    <span class="text-xl">👤</span>
-                    <span class="text-xs">Profile</span>
-                </button>
+        <div class="nav">
+            <div class="nav-content">
+                <div class="nav-item active">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Home</div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">🗺️</div>
+                    <div class="nav-label">Map</div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">👥</div>
+                    <div class="nav-label">Social</div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-label">Profile</div>
+                </div>
             </div>
         </div>
     </div>
