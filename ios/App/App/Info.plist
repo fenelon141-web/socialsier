@@ -56,5 +56,9 @@
                         </array>
                 </dict>
         </array>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Socialiser uses your location to find trendy cafes, restaurants, and fitness spots near you for an amazing discovery experience.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Socialiser uses your location to find trendy cafes, restaurants, and fitness spots near you for an amazing discovery experience.</string>
 </dict>
 </plist>
