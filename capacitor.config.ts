@@ -5,7 +5,10 @@ const config: CapacitorConfig = {
   appName: 'Socialiser',
   webDir: 'dist/public',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    // For iOS Simulator - point to your local development server
+    url: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : undefined,
+    cleartext: true
   },
   plugins: {
     SplashScreen: {
