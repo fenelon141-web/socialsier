@@ -1,217 +1,143 @@
-# Socialiser - Production Build Instructions
+# Socialiser App Store Build Instructions
 
 ## Prerequisites
-- Node.js and npm installed
-- Xcode installed (for iOS builds)
-- Android Studio installed (for Android builds)
-- Apple Developer account (for iOS submission)
-- Google Play Console account (for Android submission)
+- macOS with Xcode 15+ installed
+- Valid Apple Developer account ($99/year)
+- iOS device for testing (optional but recommended)
 
-## Build Process
-
-### 1. Prepare for Production Build
-
+## Step 1: Build iOS App with Capacitor
 ```bash
-# Install dependencies (if not already done)
+# Install dependencies if not done already
 npm install
 
-# Update version number in package.json
-# Change "version": "1.0.0" to your desired version
-
-# Set production environment
-export NODE_ENV=production
-```
-
-### 2. Create Web Build
-
-```bash
-# Build the web application
+# Build the web app
 npm run build
 
-# This creates optimized files in dist/ directory
-# Verify build completed successfully
-ls -la dist/
-```
+# Add iOS platform (if not already added)
+npx cap add ios
 
-### 3. iOS Build Process
-
-```bash
-# Copy web assets to iOS project
-npx cap copy
-
-# Sync changes with iOS project  
+# Sync web assets to iOS project
 npx cap sync ios
 
-# Open iOS project in Xcode
+# Open in Xcode
 npx cap open ios
 ```
 
-**In Xcode:**
-1. Select your project in the navigator
+## Step 2: Xcode Configuration
+
+### A. Set App Identity
+1. In Xcode, select the project root "App"
 2. Go to "Signing & Capabilities" tab
-3. Select your Apple Developer Team
-4. Update Bundle Identifier to: `com.socialiser.app`
-5. Update Display Name to: `Socialiser`
-6. Update Version to: `1.0.0`
-7. Update Build number (increment for each submission)
+3. Set Team: Your Apple Developer Team
+4. Bundle Identifier: `com.yourcompany.socialiser` (must be unique)
+5. Enable "Automatically manage signing"
 
-**Build for App Store:**
-1. Select "Any iOS Device" from the device menu
-2. Product → Archive
-3. When archive completes, click "Distribute App"
-4. Choose "App Store Connect"
-5. Follow prompts to upload
+### B. App Information
+1. Select "Info" tab
+2. Set Display Name: "Socialiser"
+3. Set Version: "1.0"
+4. Set Build: "1"
 
-### 4. Android Build Process
+### C. App Icons & Launch Screen
+1. Assets are already configured in `ios/App/App/Assets.xcassets/`
+2. App icons: 1024x1024 for App Store, various sizes for device
+3. Launch screen: Already configured with Socialiser branding
 
+## Step 3: Build for App Store
+
+### Archive Build
 ```bash
-# Copy web assets to Android project
-npx cap copy
-
-# Sync changes with Android project
-npx cap sync android
-
-# Open Android project in Android Studio
-npx cap open android
+# In Xcode:
+# 1. Select "Any iOS Device (arm64)" as destination
+# 2. Product → Archive
+# 3. Wait for build to complete
 ```
 
-**In Android Studio:**
-1. Open `android/app/build.gradle`
-2. Update `versionCode` (increment for each release)
-3. Update `versionName` to `"1.0.0"`
-4. Update `applicationId` to `"com.socialiser.app"`
-
-**Build for Play Store:**
-1. Build → Generate Signed Bundle / APK
-2. Choose "Android App Bundle"
-3. Create or select signing key
-4. Choose "release" build variant
-5. Generate bundle (produces .aab file)
-
-### 5. Testing Builds
-
-**iOS Testing:**
-- Test on physical iOS device before submission
-- Use TestFlight for beta testing (optional)
-- Verify all features work: location, camera, notifications
-
-**Android Testing:**
-- Test on physical Android device
-- Use Google Play Console internal testing (optional)
-- Test on different Android versions if possible
-
-## Environment Variables
-
-### Production Environment Variables Needed:
+### Upload to App Store Connect
 ```bash
-# Database
-DATABASE_URL=your_production_database_url
-
-# Sessions
-SESSION_SECRET=your_secure_session_secret
-
-# Google Maps (if using)
-GOOGLE_MAPS_API_KEY=your_google_maps_key
-
-# Other production settings
-NODE_ENV=production
+# After archive completes:
+# 1. Click "Distribute App"
+# 2. Select "App Store Connect"
+# 3. Click "Upload"
+# 4. Sign with your Apple ID
+# 5. Wait for upload to complete
 ```
 
-## Database Setup for Production
+## Step 4: App Store Connect Setup
 
-### Option 1: Neon (Recommended)
+### Create App Listing
+1. Go to https://appstoreconnect.apple.com
+2. Create new app with same Bundle ID
+3. Fill in app metadata:
+   - Name: "Socialiser"
+   - Subtitle: "Discover Trendy Spots"
+   - Description: See APP_STORE_DESCRIPTION.md
+   - Keywords: "social,discovery,food,fitness,location,trendy,spots"
+   - Category: "Social Networking" or "Lifestyle"
+
+### App Screenshots (Required)
+- 6.7" iPhone 14 Pro Max: 1290x2796 pixels
+- 6.5" iPhone: 1242x2688 pixels  
+- 5.5" iPhone: 1242x2208 pixels
+- 12.9" iPad Pro: 2048x2732 pixels
+
+### App Review Information
+- Demo Account: Create test account for reviewers
+- Review Notes: "Location permission required for core functionality"
+- Contact Information: Your support email/phone
+
+## Step 5: Submit for Review
+
+### Before Submission Checklist
+- [ ] All screenshots uploaded
+- [ ] App description complete
+- [ ] Privacy policy URL set
+- [ ] Age rating completed
+- [ ] Build uploaded and selected
+- [ ] Pricing set (Free)
+- [ ] Release type selected (Manual/Automatic)
+
+### Submit Commands
 ```bash
-# Create Neon database account at neon.tech
-# Get connection string
-# Update DATABASE_URL in your environment
+# No terminal commands needed - use App Store Connect web interface:
+# 1. Select your uploaded build
+# 2. Complete all required metadata
+# 3. Click "Submit for Review"
 ```
 
-### Option 2: Railway
+## Step 6: Review Process
+- Review time: 24-48 hours typically
+- Apple will test location features, authentication, and core functionality
+- Check email for any rejection feedback
+- Address any issues and resubmit if needed
+
+## Troubleshooting
+
+### Common Build Issues
 ```bash
-# Create Railway account
-# Deploy PostgreSQL database
-# Use provided connection string
+# Clean build folder
+rm -rf ios/App/build/
+
+# Reset Capacitor
+npx cap sync ios --force
+
+# Update iOS platform
+npx cap update ios
 ```
 
-### Option 3: Supabase
-```bash
-# Create Supabase project
-# Use PostgreSQL connection details
-# Update DATABASE_URL
-```
+### Bundle ID Issues
+- Must be unique globally
+- Use reverse domain: com.yourcompany.socialiser
+- Match exactly between Xcode and App Store Connect
 
-## Deployment Checklist
+### Signing Issues
+- Ensure valid Apple Developer membership
+- Check provisioning profiles in Xcode
+- Try manual signing if automatic fails
 
-### Before Building:
-- [ ] Test all features work locally
-- [ ] Update app version number
-- [ ] Set production environment variables
-- [ ] Test database connection
-- [ ] Verify privacy policy and terms URLs work
+## Success! 🎉
+Once approved, your app will be live on the App Store and users can download Socialiser to discover trendy spots in their area!
 
-### iOS Submission:
-- [ ] App built and archived in Xcode
-- [ ] Uploaded to App Store Connect
-- [ ] App metadata filled in (description, keywords, screenshots)
-- [ ] Age rating set to 12+
-- [ ] Privacy policy URL added
-- [ ] App submitted for review
-
-### Android Submission:
-- [ ] App bundle (.aab) generated
-- [ ] Uploaded to Google Play Console
-- [ ] App metadata filled in
-- [ ] Screenshots uploaded
-- [ ] Content rating questionnaire completed
-- [ ] Privacy policy URL added
-- [ ] App submitted for review
-
-## Common Build Issues
-
-### iOS Issues:
-```bash
-# Code signing errors
-# Solution: Ensure proper Apple Developer team selected
-
-# Build failures
-# Solution: Clean build folder (Cmd+Shift+K) and rebuild
-
-# Capacitor sync issues
-# Solution: Delete ios/App/App/public and run npx cap sync ios
-```
-
-### Android Issues:
-```bash
-# Gradle build errors
-# Solution: ./gradlew clean in android/ directory
-
-# Signing key issues  
-# Solution: Generate new signing key following Android documentation
-
-# Capacitor sync issues
-# Solution: Delete android/app/src/main/assets/public and run npx cap sync android
-```
-
-## Post-Submission
-
-### After Submitting to App Stores:
-1. **Monitor Review Status**: Check App Store Connect and Play Console daily
-2. **Respond to Feedback**: Address any reviewer comments quickly  
-3. **Prepare Marketing**: Plan launch announcement and social media
-4. **Monitor Analytics**: Set up app analytics for post-launch insights
-
-### If Rejected:
-1. **Read Feedback Carefully**: Understand specific rejection reasons
-2. **Fix Issues**: Address all mentioned problems
-3. **Test Thoroughly**: Ensure fixes work properly
-4. **Resubmit**: Upload new build and resubmit
-
-## Success Metrics to Track
-- Downloads and installs
-- User registrations  
-- Location permissions granted
-- Active daily/monthly users
-- Spot check-ins completed
-- User retention rates
-
-Your app is ready for production! Follow these steps carefully and you'll have Socialiser live in the App Store and Google Play soon.
+## Support
+- Apple Developer Support: https://developer.apple.com/support/
+- App Store Connect Help: https://help.apple.com/app-store-connect/
