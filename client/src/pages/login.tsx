@@ -45,6 +45,19 @@ export default function Login() {
       setLocation("/");
     },
     onError: (error: Error) => {
+      // Check if it's a "no password set" error
+      if (error.message.includes("Password not set")) {
+        toast({
+          title: "Account Setup Required",
+          description: "This account needs a password. Redirecting to setup...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/set-password");
+        }, 2000);
+        return;
+      }
+      
       toast({
         title: "Login failed",
         description: error.message,
@@ -131,6 +144,12 @@ export default function Login() {
               Create an Account
             </Button>
           </Link>
+          
+          <div className="text-center">
+            <Link href="/set-password" className="text-sm text-purple-600 hover:text-purple-800 underline">
+              Need to set up password for existing account?
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

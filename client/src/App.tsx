@@ -16,6 +16,7 @@ import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
+import SetPassword from "@/pages/set-password";
 import NotFound from "@/pages/not-found";
 
 import { useCapacitor } from "./hooks/use-capacitor";
@@ -42,6 +43,7 @@ function Router() {
     return (
       <Switch>
         <Route path="/register" component={Register} />
+        <Route path="/set-password" component={SetPassword} />
         <Route path="*" component={Login} />
       </Switch>
     );

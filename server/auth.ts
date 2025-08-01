@@ -99,8 +99,16 @@ export async function setupAuth(app: Express) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
+      // Check if user has a password set
+      if (!user.password) {
+        return res.status(401).json({ 
+          message: "Password not set. Please register a new account or contact support.",
+          code: "NO_PASSWORD_SET" 
+        });
+      }
+
       // Check password
-      const isValidPassword = await bcrypt.compare(validatedData.password, user.password!);
+      const isValidPassword = await bcrypt.compare(validatedData.password, user.password);
       if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
@@ -132,6 +140,41 @@ export async function setupAuth(app: Express) {
       res.clearCookie('connect.sid');
       res.json({ message: "Logged out successfully" });
     });
+  });
+
+  // Set password for existing users endpoint
+  app.post("/api/auth/set-password", async (req, res) => {
+    try {
+      const { email, newPassword } = req.body;
+      
+      if (!email || !newPassword) {
+        return res.status(400).json({ message: "Email and new password required" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      
+      // Update user with new password
+      const updatedUser = await storage.updateUser(user.id, { password: hashedPassword });
+      if (!updatedUser) {
+        return res.status(500).json({ message: "Failed to update password" });
+      }
+      
+      // Create session
+      (req.session as any).userId = user.id;
+      
+      // Return success
+      res.json({ message: "Password set successfully" });
+    } catch (error) {
+      console.error("Set password error:", error);
+      res.status(500).json({ message: "Failed to set password" });
+    }
   });
 
   // Get current user endpoint
