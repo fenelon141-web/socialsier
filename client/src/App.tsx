@@ -20,23 +20,19 @@ import NotFound from "@/pages/not-found";
 import { useCapacitor } from "./hooks/use-capacitor";
 
 function Router() {
-  // Demo mode - no authentication required
+  // DEMO MODE: Direct access to all features
   return (
-    <div className="min-h-screen">
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/map" component={MapView} />
-        <Route path="/social" component={Social} />
-        <Route path="/squads" component={Squads} />
-        <Route path="/taste-makers" component={TasteMakers} />
-        <Route path="/discover" component={DiscoverFeed} />
-        <Route path="/badges" component={Badges} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/login" component={Home} />
-        <Route path="/register" component={Home} />
-        <Route path="*" component={Home} />
-      </Switch>
-    </div>
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/map" component={MapView} />
+      <Route path="/social" component={Social} />
+      <Route path="/squads" component={Squads} />
+      <Route path="/taste-makers" component={TasteMakers} />
+      <Route path="/discover" component={DiscoverFeed} />
+      <Route path="/badges" component={Badges} />
+      <Route path="/profile" component={Profile} />
+      <Route component={Home} />
+    </Switch>
   );
 }
 
