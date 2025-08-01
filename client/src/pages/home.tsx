@@ -309,9 +309,13 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                gymClasses?.slice(0, 2).map(gym => (
+                Array.isArray(gymClasses) ? gymClasses.slice(0, 2).map(gym => (
                   <SpotCard key={gym.id} spot={gym} />
-                ))
+                )) : (
+                  <div className="text-center py-4 text-gray-500">
+                    No workouts available right now
+                  </div>
+                )
               )}
             </div>
           </CardContent>
