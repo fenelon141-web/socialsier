@@ -20,25 +20,25 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
 
   const checkPermissions = async () => {
     if (!isNative) {
-      // For web version, check browser permissions
+      // Check location permission
       if ('geolocation' in navigator) {
         try {
           await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
           });
           setLocationPermission('granted');
+          setPermissionsGranted(true);
         } catch {
-          setLocationPermission('denied');
+          setLocationPermission('pending');
+          setPermissionsGranted(false);
         }
       }
 
+      // Check notification permission
       if ('Notification' in window) {
         const permission = Notification.permission;
         setNotificationPermission(permission === 'granted' ? 'granted' : permission === 'denied' ? 'denied' : 'pending');
       }
-
-      // For web, we consider permissions granted if location works
-      setPermissionsGranted(locationPermission === 'granted');
     } else {
       // For native app, all permissions are handled during app install
       setPermissionsGranted(true);
@@ -53,11 +53,15 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
 
     try {
       await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+        navigator.geolocation.getCurrentPosition(resolve, reject, { 
+          timeout: 10000,
+          enableHighAccuracy: true 
+        });
       });
       setLocationPermission('granted');
-      checkPermissions();
+      setPermissionsGranted(true);
     } catch (error) {
+      console.error('Location permission error:', error);
       setLocationPermission('denied');
     }
   };
@@ -71,8 +75,8 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
     try {
       const permission = await Notification.requestPermission();
       setNotificationPermission(permission === 'granted' ? 'granted' : 'denied');
-      checkPermissions();
     } catch (error) {
+      console.error('Notification permission error:', error);
       setNotificationPermission('denied');
     }
   };
@@ -118,25 +122,25 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
             {locationPermission !== 'granted' && (
               <Button
                 onClick={requestLocationPermission}
-                className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-xl py-3 text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-xl py-3 text-lg font-semibold hover:shadow-lg transition-all"
               >
                 Enable Location Access
               </Button>
             )}
 
-            {locationPermission === 'granted' && notificationPermission !== 'granted' && (
+            {locationPermission === 'granted' && notificationPermission === 'pending' && (
               <Button
                 onClick={requestNotificationPermission}
-                className="w-full bg-gradient-to-r from-purple-400 to-pink-500 text-white rounded-xl py-3 text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-purple-400 to-pink-500 text-white rounded-xl py-3 text-lg font-semibold hover:shadow-lg transition-all"
               >
-                Enable Notifications
+                Enable Notifications (Optional)
               </Button>
             )}
 
             {locationPermission === 'granted' && (
               <Button
                 onClick={() => setPermissionsGranted(true)}
-                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-xl py-3 text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-xl py-3 text-lg font-semibold hover:shadow-lg transition-all"
               >
                 Continue to App
               </Button>
