@@ -1,13 +1,11 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.socialiser.app',
-  appName: 'Socialiser',
+  appId: 'com.adamfenelon.iykyk',
+  appName: 'IYKYK',
   webDir: 'dist/public',
   server: {
     androidScheme: 'https'
-    // Remove development server URL - let iOS Simulator use bundled assets
-    // This avoids network connectivity issues between simulator and local server
   },
   plugins: {
     SplashScreen: {
@@ -33,6 +31,9 @@ const config: CapacitorConfig = {
       permissions: {
         location: "always"
       }
+    },
+    App: {
+      urlScheme: "com.adamfenelon.iykyk"
     }
   }
 };
