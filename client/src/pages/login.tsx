@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,80 +6,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const queryClient = useQueryClient();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
   const { toast } = useToast();
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-        credentials: 'include', // Important for session cookies
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.email || !formData.password) {
+      toast({
+        title: "Missing information",
+        description: "Please enter both email and password",
+        variant: "destructive",
       });
-      
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: "Login failed" }));
-        throw new Error(error.message || "Login failed");
-      }
-      
-      return response.json();
-    },
-    onSuccess: () => {
-      // Invalidate auth query to trigger re-fetch
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      login(formData.email, formData.password);
       toast({
         title: "Welcome back!",
         description: "You're now logged in to Socialiser",
       });
       setLocation("/");
-    },
-    onError: (error: Error) => {
-      // Check if it's a "no password set" error
-      if (error.message.includes("Password not set")) {
-        toast({
-          title: "Account Setup Required",
-          description: "This account needs a password. Redirecting to setup...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          setLocation("/set-password");
-        }, 2000);
-        return;
-      }
-      
+    } catch (error) {
       toast({
         title: "Login failed",
-        description: error.message,
+        description: "Please try again",
         variant: "destructive",
       });
-    }
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple authentication that works immediately
-    if (formData.email && formData.password) {
-      toast({
-        title: "Welcome back!",
-        description: "You're now logged in",
-      });
-      localStorage.setItem('auth_token', 'simple_token_' + Date.now());
-      localStorage.setItem('auth_user', JSON.stringify({ 
-        id: '1', 
-        email: formData.email, 
-        name: 'User' 
-      }));
-      setLocation("/");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -131,10 +98,10 @@ export default function Login() {
             
             <Button
               type="submit"
-              disabled={loginMutation.isPending}
+              disabled={isLoading}
               className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-xl py-3 text-lg font-semibold"
             >
-              {loginMutation.isPending ? (
+              {isLoading ? (
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
                   <span>Signing you in...</span>

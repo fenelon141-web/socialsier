@@ -14,7 +14,7 @@ import TasteMakers from "@/pages/taste-makers";
 import DiscoverFeed from "@/pages/discover-feed";
 import Badges from "@/pages/badges";
 import Profile from "@/pages/profile";
-import Login from "@/pages/login";
+import SimpleLogin from "@/pages/simple-login";
 import Register from "@/pages/register";
 import SetPassword from "@/pages/set-password";
 import NotFound from "@/pages/not-found";
@@ -44,7 +44,7 @@ function Router() {
       <Switch>
         <Route path="/register" component={Register} />
         <Route path="/set-password" component={SetPassword} />
-        <Route path="*" component={Login} />
+        <Route path="*" component={SimpleLogin} />
       </Switch>
     );
   }

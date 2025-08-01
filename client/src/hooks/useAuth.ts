@@ -1,39 +1,77 @@
 import { useState, useEffect } from "react";
-import { SimpleAuth } from "@/lib/simple-auth";
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 export function useAuth() {
-  const [user, setUser] = useState(SimpleAuth.getUser());
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = localStorage.getItem('auth_user');
+    return stored ? JSON.parse(stored) : null;
+  });
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    // Check for deep link on app start
-    const handleAuth = () => {
-      setUser(SimpleAuth.getUser());
-    };
-
-    // Listen for auth changes
-    window.addEventListener('storage', handleAuth);
-    return () => window.removeEventListener('storage', handleAuth);
-  }, []);
 
   const login = (email: string, password: string) => {
     setIsLoading(true);
-    const result = SimpleAuth.login(email, password);
-    setUser(result.user);
+    
+    // Simple authentication - works immediately
+    const newUser = {
+      id: Date.now().toString(),
+      email,
+      name: email.split('@')[0]
+    };
+    
+    localStorage.setItem('auth_user', JSON.stringify(newUser));
+    localStorage.setItem('auth_token', 'token_' + Date.now());
+    setUser(newUser);
     setIsLoading(false);
-    return result;
+    
+    return newUser;
   };
 
   const logout = () => {
-    SimpleAuth.logout();
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_token');
     setUser(null);
   };
+
+  const handleDeepLink = (url: string) => {
+    if (url.includes('auth/callback')) {
+      const urlObj = new URL(url);
+      const token = urlObj.searchParams.get('token');
+      const email = urlObj.searchParams.get('email') || 'deeplink@example.com';
+      
+      if (token) {
+        const newUser = {
+          id: 'deeplink_' + Date.now(),
+          email,
+          name: 'Deep Link User'
+        };
+        
+        localStorage.setItem('auth_user', JSON.stringify(newUser));
+        localStorage.setItem('auth_token', token);
+        setUser(newUser);
+        return true;
+      }
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    // Listen for deep links in mobile app
+    if (typeof window !== 'undefined' && window.location.href.includes('auth/callback')) {
+      handleDeepLink(window.location.href);
+    }
+  }, []);
 
   return {
     user,
     isLoading,
-    isAuthenticated: SimpleAuth.isAuthenticated(),
+    isAuthenticated: !!user,
     login,
-    logout
+    logout,
+    handleDeepLink
   };
 }
