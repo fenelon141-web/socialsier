@@ -942,15 +942,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware setup
   await setupAuth(app);
 
-  // Protect all API routes except authentication endpoints
-  app.use("/api", (req, res, next) => {
-    // Skip authentication for auth endpoints
-    if (req.path.startsWith("/api/auth/")) {
-      return next();
-    }
-    // All other API routes require authentication
-    return isAuthenticated(req, res, next);
-  });
+  // Demo mode - no authentication required for any API routes
 
   // Config routes
   app.get("/api/config", (req, res) => {
