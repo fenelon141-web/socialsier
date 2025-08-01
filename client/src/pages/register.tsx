@@ -27,10 +27,11 @@ export default function Register() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: 'include', // Important for session cookies
       });
       
       if (!response.ok) {
-        const error = await response.json();
+        const error = await response.json().catch(() => ({ message: "Registration failed" }));
         throw new Error(error.message || "Registration failed");
       }
       

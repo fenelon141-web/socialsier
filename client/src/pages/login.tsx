@@ -25,10 +25,11 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: 'include', // Important for session cookies
       });
       
       if (!response.ok) {
-        const error = await response.json();
+        const error = await response.json().catch(() => ({ message: "Login failed" }));
         throw new Error(error.message || "Login failed");
       }
       
