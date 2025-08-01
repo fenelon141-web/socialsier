@@ -7,11 +7,11 @@ import EditProfileDialog from "@/components/edit-profile-dialog";
 import { ArrowLeft, Settings, Share, Trophy, MapPin, Star, LogOut } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+// Authentication removed for demo
 import type { User, UserBadge, Badge } from "@shared/schema";
 
 export default function Profile() {
-  const { user: currentUser } = useAuth();
+  // Demo mode - no authentication required
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -37,7 +37,7 @@ export default function Profile() {
         title: "Logged out",
         description: "You've been logged out successfully",
       });
-      setLocation("/login");
+      setLocation("/");
     },
     onError: () => {
       toast({
