@@ -314,7 +314,7 @@ function generateTrendyWorkoutSpots(userLat: number, userLng: number, radius: nu
       description: spot.description,
       latitude: lat,
       longitude: lng,
-      rating: 4.2 + Math.random() * 0.6, // 4.2-4.8
+      rating: Math.floor(4.2 + Math.random() * 0.6), // 4-5 (no decimals)
       imageUrl: getAestheticImageUrl({ leisure: 'fitness_centre', sport: 'fitness' }),
       category: 'fitness',
       trending: Math.random() > 0.5,
@@ -435,9 +435,9 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
   
   const distance = calculateDistance(userLat, userLng, placeLat, placeLng);
   
-  // Generate a consistent but varied rating based on name and type
+  // Generate a consistent but varied rating based on name and type (whole numbers only)
   const nameHash = (tags.name || '').split('').reduce((hash, char) => hash + char.charCodeAt(0), 0);
-  const rating = 3.5 + ((nameHash % 20) / 40); // Range: 3.5 - 4.0
+  const rating = Math.floor(3.5 + ((nameHash % 20) / 40)); // Range: 3-4, whole numbers only
   
   return {
     id: element.id || Math.random().toString(),
@@ -445,7 +445,7 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
     description: getOSMDescription(tags),
     latitude: placeLat,
     longitude: placeLng,
-    rating: Math.round(rating * 10) / 10,
+    rating: Math.max(4, Math.min(5, rating)), // Ensure 4-5 range, whole numbers
     imageUrl: getAestheticImageUrl(tags),
     category: getOSMCategory(tags),
     trending: rating >= 3.8,
@@ -1047,14 +1047,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           spot.sport === 'pilates'
         );
         
-        // Always supplement with trendy workout classes to ensure variety
-        console.log(`Found ${gymSpots.length} real fitness spots, adding trendy workout classes`);
-        const trendyWorkouts = generateTrendyWorkoutSpots(userLat, userLng, parseInt(radius as string));
+        // Only use real fitness spots - no fake generated ones
+        console.log(`Found ${gymSpots.length} real fitness spots`);
         
-        // Combine real spots with trendy ones, prioritizing real spots
-        const allGymSpots = [...gymSpots, ...trendyWorkouts]
+        // Filter and enhance real gym spots only
+        const allGymSpots = gymSpots
           .sort((a, b) => (a.distance || 0) - (b.distance || 0))
-          .slice(0, 20); // Limit to 20 spots
+          .slice(0, 15) // Limit to 15 real spots
+          .map(spot => ({
+            ...spot,
+            rating: Math.floor(spot.rating || 4.2) // Remove decimals from rating
+          }));
         
         res.json(allGymSpots);
       } else {
