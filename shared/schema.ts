@@ -18,11 +18,15 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  dateOfBirth: timestamp("date_of_birth").notNull(),
   password: text("password"), // For email/password authentication
   level: integer("level").notNull().default(1),
   totalPoints: integer("total_points").notNull().default(0),
   spotsHunted: integer("spots_hunted").notNull().default(0),
   avatar: text("avatar"),
+  acceptedTerms: timestamp("accepted_terms").defaultNow(),
   // Push notification preferences
   pushToken: text("push_token"), // Device push notification token
   notifyFriendActivity: boolean("notify_friend_activity").default(true),

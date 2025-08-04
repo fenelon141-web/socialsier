@@ -939,6 +939,53 @@ function sortByTrendiness(spots: any[]): any[] {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Authentication routes
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const { email, firstName, lastName, dateOfBirth, acceptTerms } = req.body;
+      
+      // Validate required fields
+      if (!email || !firstName || !lastName || !dateOfBirth || !acceptTerms) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "Account already exists with this email" });
+      }
+
+      // Validate age (must be 13+)
+      const birthDate = new Date(dateOfBirth);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      if (age < 13) {
+        return res.status(400).json({ message: "You must be at least 13 years old" });
+      }
+
+      // Create user account
+      const user = await storage.createUserAccount({
+        email,
+        firstName,
+        lastName,
+        dateOfBirth: birthDate,
+        username: `${firstName.toLowerCase()}_${Math.random().toString(36).substring(7)}`,
+      });
+
+      res.json({ 
+        success: true, 
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName
+        }
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ message: "Failed to create account" });
+    }
+  });
   // Auth middleware setup
   await setupAuth(app);
 

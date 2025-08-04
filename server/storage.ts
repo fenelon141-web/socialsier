@@ -168,44 +168,76 @@ class MemStorage implements IStorage {
           id: 1,
           username: "Guest User",
           email: "guest@example.com",
+          firstName: "Guest",
+          lastName: "User", 
+          dateOfBirth: new Date("1995-01-01"),
           password: null, // No password for guest account
           level: 1,
           totalPoints: 0,
           spotsHunted: 0,
           avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
+          acceptedTerms: new Date(),
+          pushToken: null,
+          notifyFriendActivity: true,
+          notifyNearbySpots: true,
+          notifyChallengeReminders: true,
           createdAt: new Date()
         },
         {
           id: 2,
           username: "sophie_cafes",
           email: "sophie@example.com",
+          firstName: "Sophie",
+          lastName: "Chen",
+          dateOfBirth: new Date("1998-03-15"),
           password: null, // Demo user
           level: 3,
           totalPoints: 450,
           spotsHunted: 12,
           avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+          acceptedTerms: new Date(),
+          pushToken: null,
+          notifyFriendActivity: true,
+          notifyNearbySpots: true,
+          notifyChallengeReminders: true,
           createdAt: new Date()
         },
         {
           id: 3,
           username: "matcha_lover",
           email: "emma@example.com",
+          firstName: "Emma",
+          lastName: "Wilson",
+          dateOfBirth: new Date("1999-07-20"),
           password: null, // Demo user
           level: 2,
           totalPoints: 280,
           spotsHunted: 8,
           avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+          acceptedTerms: new Date(),
+          pushToken: null,
+          notifyFriendActivity: true,
+          notifyNearbySpots: true,
+          notifyChallengeReminders: true,
           createdAt: new Date()
         },
         {
           id: 4,
           username: "fitness_queen",
           email: "maya@example.com",
+          firstName: "Maya",
+          lastName: "Rodriguez",
+          dateOfBirth: new Date("1997-11-08"),
           password: null, // Demo user
           level: 4,
           totalPoints: 620,
           spotsHunted: 18,
           avatar: "https://images.unsplash.com/photo-1491349174775-aaafddd81942?w=150&h=150&fit=crop&crop=face",
+          acceptedTerms: new Date(),
+          pushToken: null,
+          notifyFriendActivity: true,
+          notifyNearbySpots: true,
+          notifyChallengeReminders: true,
           createdAt: new Date()
         }
       ];
@@ -216,6 +248,36 @@ class MemStorage implements IStorage {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     return this.users.find(user => user.email === email);
+  }
+
+  async createUserAccount(userData: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: Date;
+    username: string;
+  }): Promise<User> {
+    const newUser: User = {
+      id: this.users.length + 1,
+      username: userData.username,
+      email: userData.email,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      dateOfBirth: userData.dateOfBirth,
+      password: null,
+      level: 1,
+      totalPoints: 0,
+      spotsHunted: 0,
+      avatar: null,
+      acceptedTerms: new Date(),
+      pushToken: null,
+      notifyFriendActivity: true,
+      notifyNearbySpots: true,
+      notifyChallengeReminders: true,
+      createdAt: new Date()
+    };
+    this.users.push(newUser);
+    return newUser;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
