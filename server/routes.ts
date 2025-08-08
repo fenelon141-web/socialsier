@@ -436,7 +436,7 @@ function convertOSMToSpot(element: any, userLat: number, userLng: number) {
   const distance = calculateDistance(userLat, userLng, placeLat, placeLng);
   
   // Generate a consistent but varied rating based on name and type (whole numbers only)
-  const nameHash = (tags.name || '').split('').reduce((hash, char) => hash + char.charCodeAt(0), 0);
+  const nameHash = (tags.name || '').split('').reduce((hash: number, char: string) => hash + char.charCodeAt(0), 0);
   const rating = Math.floor(3.5 + ((nameHash % 20) / 40)); // Range: 3-4, whole numbers only
   
   return {
@@ -611,7 +611,7 @@ function getOSMDescription(tags: any): string {
     } else {
       // Generic fallback based on primary tag
       const primaryTag = amenity || shop || leisure || sport || 'business';
-      description = primaryTag.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
+      description = primaryTag.replace(/_/g, ' ').replace(/^\w/, (c: string) => c.toUpperCase());
     }
   }
   
@@ -1908,7 +1908,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     ws.on('close', () => {
       // Remove connection when user disconnects
-      for (const [userId, connection] of activeConnections.entries()) {
+      for (const [userId, connection] of Array.from(activeConnections.entries())) {
         if (connection === ws) {
           activeConnections.delete(userId);
           console.log(`User ${userId} disconnected`);
