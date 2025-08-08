@@ -1165,10 +1165,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const matchesName = spot.name.toLowerCase().includes(searchTerm);
           const matchesDescription = spot.description?.toLowerCase().includes(searchTerm);
           const matchesCategory = spot.category?.toLowerCase().includes(searchTerm);
-          const matchesDietary = spot.dietaryOptions?.some(opt => 
+          const matchesDietary = spot.dietaryOptions?.some((opt: string) => 
             opt.toLowerCase().includes(searchTerm)
           );
-          const matchesAmenities = spot.amenities?.some(amenity => 
+          const matchesAmenities = spot.amenities?.some((amenity: string) => 
             amenity.toLowerCase().includes(searchTerm)
           );
           
