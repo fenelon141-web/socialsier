@@ -132,120 +132,7 @@
     transform-origin: left top;
     transform: scale(1);
   }
-  
-  .trending-gradient {
-    background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #f8b500 100%);
-  }
-  
-  .success-gradient {
-    background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 50%, #6ba3d6 100%);
-  }
-  
-  .glass-morphism {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-  }
-  
-  .card-gradient {
-    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(230,230,250,0.8) 100%);
-  }
-  
-  .glow-effect {
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
-  }
-  
-  .spot-card {
-    transition: all 0.3s ease;
-  }
-  
-  .spot-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .valley-pink {
-    color: var(--valley-pink);
-  }
-  
-  .valley-lavender {
-    color: var(--valley-lavender);
-  }
-  
-  .valley-gold {
-    color: var(--valley-gold);
-  }
-  
-  .valley-peach {
-    color: var(--valley-peach);
-  }
-  
-  .valley-mint {
-    color: var(--valley-mint);
-  }
-  
-  .valley-coral {
-    color: var(--valley-coral);
-  }
-
-  .bg-valley-pink {
-    background-color: var(--valley-pink);
-  }
-  
-  .bg-valley-lavender {
-    background-color: var(--valley-lavender);
-  }
-  
-  .bg-valley-gold {
-    background-color: var(--valley-gold);
-  }
-  
-  .bg-valley-peach {
-    background-color: var(--valley-peach);
-  }
-  
-  .bg-valley-mint {
-    background-color: var(--valley-mint);
-  }
-  
-  .bg-valley-coral {
-    background-color: var(--valley-coral);
-  }
-
-  .animate-bounce-slow {
-    animation: bounce 2s infinite;
-  }
-
-  .animate-slide-in-right {
-    animation: slideInRight 0.3s ease-out;
-  }
-
-  .animate-slide-in-up {
-    animation: slideInUp 0.3s ease-out;
-  }
-
-  .animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    background-size: 200px 100%;
-    animation: shimmer 1.5s infinite;
-  }
-
-  .floating-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .floating-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-  
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
 }
-
 /* Enhanced animations */
 @keyframes slideInRight {
   from {
@@ -285,8 +172,8 @@
   50% {
     opacity: 0.7;
   }
-  
-  .animate-pulse-glow {
-    animation: pulse 1.5s ease-in-out infinite alternate;
-  }
+}
+
+.animate-pulse-glow {
+  animation: pulse 1.5s ease-in-out infinite alternate;
 }

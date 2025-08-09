@@ -27,8 +27,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     }
 
     try {
-      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//${window.location.host}/ws`;
+      // iOS Production WebSocket URL
+      const wsUrl = `wss://hot-girl-hunt-fenelon141.replit.app/ws`;
       
       setConnectionStatus('connecting');
       wsRef.current = new WebSocket(wsUrl);
