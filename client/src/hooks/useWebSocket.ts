@@ -28,7 +28,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
     try {
       // iOS Production WebSocket URL with fallback detection
-      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
       const wsUrl = isCapacitor 
         ? `wss://hot-girl-hunt-fenelon141.replit.app/ws`
         : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;

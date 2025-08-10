@@ -56,7 +56,7 @@ export default function Home() {
     queryKey: ["/api/spots/nearby", latitude, longitude],
     queryFn: async () => {
       // Use production URL for iOS app
-      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
       const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
       
       const response = await fetch(`${baseUrl}/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=1000`);
@@ -77,7 +77,7 @@ export default function Home() {
     queryFn: async () => {
       if (latitude && longitude) {
         // Use production URL for iOS app
-        const isCapacitor = window.Capacitor?.isNativePlatform();
+        const isCapacitor = (window as any).Capacitor?.isNativePlatform();
         const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
         
         const response = await fetch(`${baseUrl}/api/spots/gym?lat=${latitude}&lng=${longitude}&radius=3000`);
@@ -86,7 +86,7 @@ export default function Home() {
         }
         return response.json();
       } else {
-        const isCapacitor = window.Capacitor?.isNativePlatform();
+        const isCapacitor = (window as any).Capacitor?.isNativePlatform();
         const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
         const response = await fetch(`${baseUrl}/api/spots/gym`);
         return response.json();

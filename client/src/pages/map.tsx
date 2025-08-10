@@ -72,7 +72,7 @@ export default function MapView() {
       });
       
       // Use production URL for iOS app
-      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
       const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
       
       const response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`);

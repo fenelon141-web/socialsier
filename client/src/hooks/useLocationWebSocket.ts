@@ -26,7 +26,7 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
 
     try {
       // Detect if running in iOS app
-      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
       const wsUrl = isCapacitor 
         ? 'wss://hot-girl-hunt-fenelon141.replit.app/ws'
         : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
