@@ -207,6 +207,53 @@ input[type="date"]::-webkit-datetime-edit {
   padding: 0.5rem;
 }
 
+.ios-date-picker {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white;
+  min-height: 44px; /* iOS minimum tap target */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(236, 72, 153, 0.3);
+}
+
+.ios-date-picker:focus {
+  outline: none;
+  border-color: rgb(236 72 153);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+/* iOS Calendar Component Optimizations */
+.ios-calendar-container {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-tap-highlight {
+  -webkit-tap-highlight-color: rgba(236, 72, 153, 0.3);
+  touch-action: manipulation;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Enhanced tap targets for iOS */
+.ios-calendar-container button,
+.ios-calendar-container [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(236, 72, 153, 0.3);
+}
+
+/* Prevent iOS rubber band scrolling in calendar */
+.ios-calendar-container {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
 /* Prevent iOS rubber band scrolling on auth pages */
 .auth-container {
   position: fixed;

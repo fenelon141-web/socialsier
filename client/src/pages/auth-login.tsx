@@ -203,9 +203,14 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
                       <Input
                         {...field}
                         type="date"
-                        className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400 text-base"
+                        className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400 text-base ios-date-picker"
                         max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
                         autoComplete="bday"
+                        style={{
+                          WebkitAppearance: 'none',
+                          MozAppearance: 'none',
+                          appearance: 'none'
+                        }}
                       />
                     </FormControl>
                     <FormMessage className="text-red-500" />
