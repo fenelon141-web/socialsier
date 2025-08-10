@@ -1,121 +1,130 @@
 # iOS Setup Guide for Socialiser
 
-## Overview
-This guide will help you set up the iOS version of Socialiser using the pre-configured files in this project.
+## Required Terminal Commands After Export
 
-## Prerequisites
-- macOS with Xcode installed
-- iOS Simulator or physical iOS device
-- Node.js installed
-
-## Quick Setup Steps
-
-### 1. Extract and Navigate
+### 1. Navigate to iOS Project Directory
 ```bash
-# Extract the downloaded zip file
-cd path/to/socialiser
-
-# Install dependencies
-npm install
+cd /path/to/your/exported/Socialiser/ios/App
 ```
 
-### 2. Build for iOS
+### 2. Install CocoaPods Dependencies
 ```bash
-# Build the web application
-npm run build
-
-# Copy files to iOS
-npx cap copy ios
-
-# Sync with iOS project
-npx cap sync ios
-
-# Open in Xcode
-open ios/App/App.xcworkspace
+pod install
 ```
 
-### 3. Run in iOS Simulator
-1. In Xcode, select a simulator (iPhone 14 Pro recommended)
-2. Click the "Play" button to build and run
-3. The app will launch in the iOS Simulator
+This will:
+- Download all iOS dependencies
+- Create the `.xcworkspace` file
+- Generate the missing Pods configuration files
 
-## Pre-Configured Features
+### 3. Open Correct Xcode Project
+```bash
+open App.xcworkspace
+```
 
-### ✅ Network Configuration
-- API calls point to production server: `https://hot-girl-hunt-fenelon141.replit.app`
-- WebSocket connects to: `wss://hot-girl-hunt-fenelon141.replit.app/ws`
-- CORS headers configured for iOS requests
+**IMPORTANT:** Always open the `.xcworkspace` file, NOT the `.xcodeproj` file!
 
-### ✅ iOS Scaling & Layout
-- Proper viewport configuration with `viewport-fit=cover`
-- Safe area handling for notches and Dynamic Island
-- Prevention of unwanted zooming on input focus
-- iOS-specific CSS utilities (`.safe-top`, `.safe-bottom`, etc.)
+## If Pod Install Fails
 
-### ✅ iOS-Specific Optimizations
-- Touch scrolling optimization
-- Proper height handling with `-webkit-fill-available`
-- Prevention of horizontal overflow
-- iOS bounce effect prevention
+### Update CocoaPods First:
+```bash
+sudo gem install cocoapods
+pod repo update
+```
 
-## Key Files Already Updated
+### Then Try Again:
+```bash
+pod install --repo-update
+```
 
-### API Configuration
-- `client/src/lib/queryClient.ts` - API base URL set to production
-- `client/src/lib/config.ts` - iOS-specific configuration
+## Xcode Setup Checklist
 
-### Network & WebSocket
-- `client/src/hooks/useWebSocket.ts` - WebSocket URL configured
-- `client/src/pages/home.tsx` - API endpoints updated
+### Before Building:
+1. **Select Development Team:** 
+   - Go to App target → Signing & Capabilities
+   - Select your Apple Developer account
 
-### Styling & Layout
-- `client/index.html` - iOS viewport meta tags
-- `client/src/index.css` - iOS safe area handling and scaling
+2. **Update Bundle Identifier:**
+   - Change from `io.ionic.starter` to your unique identifier
+   - Example: `com.yourname.socialiser`
 
-## Testing Checklist
+3. **Choose Device Target:**
+   - Select your connected iPhone from device list
+   - Or choose iOS Simulator
 
-### ✅ Core Features to Test
-1. **Location Services**: App should request location permission
-2. **Trendy Spots**: Map should load with nearby spots
-3. **WebSocket**: Real-time features should work
-4. **Touch Interactions**: Smooth scrolling and touch responses
-5. **Layout**: Proper scaling on different iPhone sizes
+4. **Build Settings:**
+   - Ensure iOS Deployment Target is 13.0 or higher
+   - Verify Swift Language Version is Swift 5
 
-### ✅ iOS-Specific Tests
-1. **Safe Areas**: Content doesn't overlap with notch/Dynamic Island
-2. **Rotation**: App handles orientation changes properly
-3. **Background**: App behavior when backgrounded and foregrounded
-4. **Input Focus**: No unwanted zooming when tapping input fields
+### Common Build Issues:
+
+**"Unable to find configuration files"**
+- Solution: Run `pod install` in terminal
+
+**"No such module 'Capacitor'"**  
+- Solution: Clean build folder (Cmd+Shift+K), then rebuild
+
+**"Code signing error"**
+- Solution: Select your development team in signing settings
+
+**"Device not found"**
+- Solution: Ensure iPhone is connected and trusted
+
+## Final Build Commands
+
+### For Testing on Device:
+1. Connect iPhone via USB
+2. Trust computer on iPhone when prompted
+3. In Xcode: Product → Run (Cmd+R)
+
+### For App Store Archive:
+1. Select "Any iOS Device" or your device
+2. Product → Archive
+3. Follow Xcode organizer for upload
 
 ## Troubleshooting
 
-### Common Issues
+### If Capacitor Commands Don't Work:
+```bash
+npm install -g @capacitor/cli
+npx cap sync ios
+```
 
-**Issue**: "Cannot connect to server"
-- **Solution**: Ensure your device/simulator has internet connection
+### If Location Services Fail:
+- Check Info.plist has location usage descriptions
+- Verify location permissions in iOS Settings → Privacy
 
-**Issue**: "Location not working"
-- **Solution**: Grant location permissions in iOS Settings
+### If WebSocket Doesn't Connect:
+- Ensure app has internet permissions
+- Check server URL is accessible from device
+- Verify HTTPS certificate is valid
 
-**Issue**: "App looks zoomed in"
-- **Solution**: Check that `viewport-fit=cover` is in index.html
+## Success Indicators
 
-**Issue**: "WebSocket not connecting"
-- **Solution**: Verify WSS URL in useWebSocket.ts
+Your iOS app is working correctly when:
+- App builds without errors in Xcode
+- Location permission prompt appears on first launch
+- Map loads with nearby spots
+- WebSocket connects (check console logs)
+- Check-in functionality works with proximity verification
 
-## Production Deployment
+## Next Steps After Successful Build
 
-When ready for App Store:
-1. Update bundle identifier in Xcode
-2. Add App Store icons and splash screens
-3. Configure signing certificates
-4. Test on physical devices
-5. Submit through Xcode
+1. **Test Core Features:**
+   - Location permission and GPS accuracy
+   - Map loading with real spots
+   - Hunt page proximity verification
+   - Camera integration for photos
 
-## Server Status
-The production server is live at: https://hot-girl-hunt-fenelon141.replit.app
+2. **Performance Testing:**
+   - Battery usage during location tracking
+   - App responsiveness on cellular vs WiFi
+   - Background behavior
 
-You can verify it's working by visiting the URL in a browser.
+3. **App Store Preparation:**
+   - Screenshots for App Store listing
+   - App description and keywords
+   - Review compliance checklist
+   - Submit for review
 
-## Support
-If you encounter issues, check the console logs in Xcode's debug area for detailed error messages.
+Your iOS app is fully configured and ready for testing!
