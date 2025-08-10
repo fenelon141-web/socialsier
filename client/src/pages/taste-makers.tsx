@@ -43,125 +43,11 @@ export default function TasteMakers() {
   const [selectedTier, setSelectedTier] = useState<string>("all");
   const [followingIds, setFollowingIds] = useState<Set<number>>(new Set());
 
-  // Mock data for taste makers with high influence scores
-  const mockTasteMakers: TasteMakerWithUser[] = [
-    {
-      id: 1,
-      userId: "tm1",
-      tier: "legendary",
-      influenceScore: 95000,
-      totalFollowers: 12500,
-      spotsDiscovered: 89,
-      trendsStarted: 15,
-      verificationStatus: "featured",
-      bio: "Coffee connoisseur & wellness enthusiast ✨ Finding the most aesthetic spots in London 🌸",
-      specialties: ["coffee", "wellness", "aesthetic cafes"],
-      locationCity: "London",
-      locationCountry: "UK",
-      instagramHandle: "emmacoffeevibes",
-      tiktokHandle: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      user: {
-        id: 1,
-        username: "Emma Rose",
-        email: "emma@example.com",
-        password: null,
-        level: 25,
-        totalPoints: 95000,
-        profilePictureUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-        spotsHunted: 89,
-        avatar: null,
-        pushToken: null,
-        notifyFriendActivity: null,
-        notifyNearbySpots: null,
-        notifyChallengeReminders: null,
-        createdAt: new Date(),
-      },
-      followersCount: 12500,
-      isFollowing: false,
-      recentEndorsements: [
-        {
-          spot: { id: 1, name: "Sketch London", category: "brunch", rating: 4.8 } as Spot,
-          caption: "The pink interior is literally a dream! Their matcha lattes are *chef's kiss* 💕",
-          engagement: 1248,
-          createdAt: new Date().toISOString(),
-        }
-      ]
-    },
-    {
-      id: 2,
-      userId: "tm2",
-      tier: "elite",
-      influenceScore: 78000,
-      totalFollowers: 8900,
-      spotsDiscovered: 67,
-      trendsStarted: 12,
-      verificationStatus: "verified",
-      bio: "Fitness girlie finding the hottest workout spots 💪 Pilates & matcha obsessed",
-      specialties: ["fitness", "pilates", "healthy eating"],
-      locationCity: "London",
-      locationCountry: "UK",
-      instagramHandle: "sophiefitvibes",
-      tiktokHandle: "sophiefit",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      user: {
-        id: 2,
-        username: "Sophie Chen",
-        email: "sophie@example.com",
-        password: null,
-        level: 22,
-        totalPoints: 78000,
-        profilePictureUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-        spotsHunted: 67,
-        avatar: null,
-        pushToken: null,
-        notifyFriendActivity: null,
-        notifyNearbySpots: null,
-        notifyChallengeReminders: null,
-        createdAt: new Date(),
-      },
-      followersCount: 8900,
-      isFollowing: true,
-    },
-    {
-      id: 3,
-      userId: "tm3",
-      tier: "established",
-      influenceScore: 52000,
-      totalFollowers: 5200,
-      spotsDiscovered: 45,
-      trendsStarted: 8,
-      verificationStatus: "verified",
-      bio: "Brunch queen & aesthetic enthusiast 🥐 Always hunting for the perfect avocado toast",
-      specialties: ["brunch", "aesthetic cafes", "photography"],
-      locationCity: "London",
-      locationCountry: "UK",
-      instagramHandle: "zoebrunchclub",
-      tiktokHandle: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      user: {
-        id: 3,
-        username: "Zoe Martinez",
-        email: "zoe@example.com",
-        password: null,
-        level: 18,
-        totalPoints: 52000,
-        profilePictureUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
-        spotsHunted: 45,
-        avatar: null,
-        pushToken: null,
-        notifyFriendActivity: null,
-        notifyNearbySpots: null,
-        notifyChallengeReminders: null,
-        createdAt: new Date(),
-      },
-      followersCount: 5200,
-      isFollowing: false,
-    }
-  ];
+  // Fetch real taste makers data from API
+  const { data: tasteMakers = [], isLoading } = useQuery<TasteMakerWithUser[]>({
+    queryKey: ["/api/taste-makers", selectedTier],
+    retry: false
+  });
 
   const getTierColor = (tier: string) => {
     switch (tier) {
@@ -195,9 +81,7 @@ export default function TasteMakers() {
     });
   };
 
-  const filteredTasteMakers = selectedTier === "all" 
-    ? mockTasteMakers 
-    : mockTasteMakers.filter(tm => tm.tier === selectedTier);
+  const filteredTasteMakers = tasteMakers;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-white">
@@ -249,7 +133,22 @@ export default function TasteMakers() {
           </TabsList>
 
           <TabsContent value="top-makers" className="space-y-4 mt-4">
-            {filteredTasteMakers.map((tasteMaker, index) => (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="w-8 h-8 mx-auto mb-4 border-4 border-pink-300 border-t-pink-600 rounded-full animate-spin"></div>
+                <p className="text-gray-500">Loading taste makers...</p>
+              </div>
+            ) : filteredTasteMakers.length === 0 ? (
+              <div className="text-center py-16">
+                <Crown className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">No taste makers found</h3>
+                <p className="text-gray-500 mb-4">Be the first to discover trending spots and become a taste maker!</p>
+                <Button className="bg-gradient-to-r from-pink-500 to-purple-500">
+                  Start Exploring
+                </Button>
+              </div>
+            ) : (
+              filteredTasteMakers.map((tasteMaker, index) => (
               <Card key={tasteMaker.id} className="overflow-hidden shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-0">
                   {/* Rank Badge */}
@@ -389,7 +288,8 @@ export default function TasteMakers() {
                   )}
                 </CardContent>
               </Card>
-            ))}
+              ))
+            )}
           </TabsContent>
 
           <TabsContent value="trending" className="space-y-4 mt-4">
@@ -400,9 +300,7 @@ export default function TasteMakers() {
                 <p className="text-sm text-gray-600 mb-4">
                   See what taste makers are recommending right now
                 </p>
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  Coming Soon
-                </Button>
+                <p className="text-sm text-gray-400">Available when users create endorsements</p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -415,9 +313,7 @@ export default function TasteMakers() {
                 <p className="text-sm text-gray-600 mb-4">
                   Follow taste makers to get personalized spot recommendations
                 </p>
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  Find Taste Makers
-                </Button>
+                <p className="text-sm text-gray-400">Start following taste makers to see them here</p>
               </CardContent>
             </Card>
           </TabsContent>
