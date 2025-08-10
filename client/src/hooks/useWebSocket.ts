@@ -49,6 +49,24 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         onConnect?.();
       };
 
+      wsRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        setConnectionStatus('error');
+        setIsConnected(false);
+      };
+
+      wsRef.current.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
+        setIsConnected(false);
+        setConnectionStatus('disconnected');
+        
+        // Auto-reconnect for iOS (network interruptions are common)
+        if (event.code !== 1000) { // Don't reconnect if closed intentionally
+          console.log('Attempting to reconnect WebSocket...');
+          setTimeout(() => connect(), 3000);
+        }
+      };
+
       wsRef.current.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data) as WebSocketMessage;
