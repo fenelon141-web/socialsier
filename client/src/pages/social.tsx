@@ -485,7 +485,7 @@ export default function Social() {
                     {friends.map((friend) => (
                       <div key={friend.id} className="flex flex-col items-center space-y-1 min-w-[70px]">
                         <img
-                          src={friend.avatar || "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face"}
+                          src={friend.avatar || "/placeholder-avatar.png"}
                           alt={friend.username}
                           className="w-12 h-12 rounded-full border-2 border-pink-300"
                         />
@@ -529,7 +529,7 @@ export default function Social() {
                         {/* Post Header */}
                         <div className="flex items-center space-x-3 mb-3">
                           <img
-                            src={post.user.avatar || "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=40&h=40&fit=crop&crop=face"}
+                            src={post.user.avatar || "/placeholder-avatar.png"}
                             alt={post.user.username}
                             className="w-10 h-10 rounded-full border-2 border-pink-300"
                           />
@@ -740,30 +740,10 @@ export default function Social() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  {[
-                    { name: "Pink Panthers", points: 1250, crown: true },
-                    { name: "Aesthetic Squad", points: 980, crown: false },
-                    { name: "Valley Girls", points: 720, crown: false }
-                  ].map((squad, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-white rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex items-center justify-center w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-white text-xs font-bold">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold flex items-center gap-1">
-                            {squad.name}
-                            {squad.crown && <Crown className="w-3 h-3 text-yellow-500" />}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-gray-800">{squad.points}</p>
-                        <p className="text-xs text-gray-500">points</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="text-center py-8">
+                  <Trophy className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+                  <p className="text-gray-500 mb-2">No squads yet</p>
+                  <p className="text-sm text-gray-400">Join or create a squad to compete with friends</p>
                 </div>
 
                 <Button variant="outline" size="sm" className="w-full mt-3">

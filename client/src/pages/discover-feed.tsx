@@ -20,49 +20,9 @@ export default function DiscoverFeed() {
   const [feedType, setFeedType] = useState<"cards" | "vertical" | "grid">("cards");
   const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set());
 
-  // Mock trending spots data
-  const mockSpots: Spot[] = [
-    {
-      id: 1,
-      name: "Sketch London",
-      category: "aesthetic cafe",
-      description: "Pink paradise with Instagram-worthy interiors and the most divine matcha lattes ✨",
-      address: "9 Conduit St, Mayfair, London",
-      latitude: 51.5074,
-      longitude: -0.1278,
-      rating: 4.8,
-      imageUrl: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=400&h=600&fit=crop",
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      name: "1Rebel Victoria",
-      category: "fitness",
-      description: "High-energy HIIT classes in a premium studio with killer vibes 💪",
-      address: "1 Angel Ln, London",
-      latitude: 51.4975,
-      longitude: -0.1357,
-      rating: 4.7,
-      imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop",
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      name: "The Ivy Chelsea Garden",
-      category: "brunch",
-      description: "Gorgeous garden setting with the most aesthetic avocado toast and bottomless mimosas 🥂",
-      address: "197 King's Rd, Chelsea, London",
-      latitude: 51.4874,
-      longitude: -0.1687,
-      rating: 4.6,
-      imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=600&fit=crop",
-      createdAt: new Date(),
-    }
-  ];
-
-  const { data: spots = mockSpots, refetch } = useQuery<Spot[]>({
+  const { data: spots = [], refetch, isLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"],
-    initialData: mockSpots
+    retry: false
   });
 
   const handleLike = (spotId: number) => {
@@ -85,20 +45,17 @@ export default function DiscoverFeed() {
     <DoubleTapLike key={spot.id} onLike={() => handleLike(spot.id)}>
       <Card className="overflow-hidden shadow-lg border-0 bg-white mb-4">
         <CardContent className="p-0">
-          {/* Header with user info */}
+          {/* Header with spot info */}
           <div className="flex items-center justify-between p-4 pb-2">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">ER</span>
+                <MapPin className="w-5 h-5 text-white" />
               </div>
               <div>
-                <div className="font-semibold text-sm">Emma Rose</div>
-                <div className="text-xs text-gray-500">2h • 📍 {spot.address?.split(',')[0]}</div>
+                <div className="font-semibold text-sm">📍 {spot.address?.split(',')[0]}</div>
+                <div className="text-xs text-gray-500">Trending spot</div>
               </div>
             </div>
-            <Button variant="ghost" size="sm" className="text-purple-600 font-semibold">
-              Follow
-            </Button>
           </div>
 
           {/* Image */}
@@ -137,28 +94,11 @@ export default function DiscoverFeed() {
               </Button>
             </div>
 
-            {/* Likes */}
-            <div className="text-sm font-semibold mb-2">
-              {Math.floor(Math.random() * 1000) + 100 + (likedPosts.has(spot.id) ? 1 : 0)} likes
-            </div>
-
-            {/* Caption */}
-            <div className="space-y-1">
-              <div className="text-sm">
-                <span className="font-semibold">Emma Rose </span>
-                {spot.description}
-              </div>
-              <div className="text-sm text-gray-500">
-                View all {Math.floor(Math.random() * 50) + 10} comments
-              </div>
-            </div>
-
-            {/* Hashtags */}
-            <div className="mt-2 flex flex-wrap gap-1">
-              <span className="text-sm text-purple-600">#aesthetic</span>
-              <span className="text-sm text-purple-600">#matcha</span>
-              <span className="text-sm text-purple-600">#london</span>
-              <span className="text-sm text-purple-600">#hotgirlspot</span>
+            {/* Content */}
+            <div className="space-y-2">
+              <div className="text-lg font-semibold">{spot.name}</div>
+              <div className="text-sm text-gray-600">{spot.description}</div>
+              <div className="text-sm text-gray-500 capitalize">Category: {spot.category}</div>
             </div>
           </div>
         </CardContent>
@@ -216,7 +156,20 @@ export default function DiscoverFeed() {
                   <UpdatesFeed />
                   
                   {/* Main Feed */}
-                  {spots.map(renderCard)}
+                  {isLoading ? (
+                    <div className="text-center py-8">
+                      <div className="w-8 h-8 mx-auto mb-4 border-4 border-pink-300 border-t-pink-600 rounded-full animate-spin"></div>
+                      <p className="text-gray-500">Loading trending spots...</p>
+                    </div>
+                  ) : spots.length === 0 ? (
+                    <div className="text-center py-16">
+                      <MapPin className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">No trending spots</h3>
+                      <p className="text-gray-500 mb-4">Check back soon for new discoveries</p>
+                    </div>
+                  ) : (
+                    spots.map(renderCard)
+                  )}
                 </div>
               </TabsContent>
 
@@ -233,7 +186,26 @@ export default function DiscoverFeed() {
               </TabsContent>
 
               <TabsContent value="grid" className="mt-0">
-                <ExploreGrid spots={spots} />
+                <ExploreGrid>
+                  {spots.length === 0 ? (
+                    <div className="col-span-2 text-center py-16">
+                      <Sparkles className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Explore coming soon</h3>
+                      <p className="text-gray-500">Discover new spots in grid view</p>
+                    </div>
+                  ) : (
+                    spots.map((spot) => (
+                      <Card key={spot.id} className="overflow-hidden">
+                        <div className="aspect-square relative">
+                          <img src={spot.imageUrl} alt={spot.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="p-2">
+                          <h3 className="font-semibold text-sm truncate">{spot.name}</h3>
+                        </div>
+                      </Card>
+                    ))
+                  )}
+                </ExploreGrid>
               </TabsContent>
             </Tabs>
           </div>

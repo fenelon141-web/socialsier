@@ -122,19 +122,7 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
           <span className="text-xs text-gray-600 text-center">Your Story</span>
         </div>
 
-        {/* Placeholder story circles */}
-        {['Sarah', 'Emma', 'Ava', 'Mia'].map((name, index) => (
-          <div key={name} className="flex flex-col items-center space-y-2 min-w-fit">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 p-0.5">
-              <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
-                  {name[0]}
-                </div>
-              </div>
-            </div>
-            <span className="text-xs text-gray-600 text-center">{name}</span>
-          </div>
-        ))}
+        {/* No placeholder content - stories will be loaded from API */}
       </div>
 
       {/* Create Story Dialog */}
