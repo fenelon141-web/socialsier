@@ -21,21 +21,11 @@ import NotFound from "@/pages/not-found";
 
 import { useCapacitor } from "./hooks/use-capacitor";
 
-function Router() {
-  // Authentication now available
-  const [showAuth, setShowAuth] = useState(false);
-  
-  if (showAuth) {
-    const AuthLogin = lazy(() => import("./pages/auth-login"));
-    return (
-      <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-pink-600">Loading...</div>
-      </div>}>
-        <AuthLogin onAuthSuccess={() => setShowAuth(false)} />
-      </Suspense>
-    );
-  }
+// Lazy load components
+const AuthLogin = lazy(() => import("./pages/auth-login"));
+const Login = lazy(() => import("./pages/login"));
 
+function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -48,7 +38,20 @@ function Router() {
       <Route path="/profile" component={Profile} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
-      <Route path="/auth" component={() => { setShowAuth(true); return null; }} />
+      <Route path="/auth" component={() => (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+          <div className="text-pink-600">Loading...</div>
+        </div>}>
+          <AuthLogin onAuthSuccess={() => window.location.href = "/"} />
+        </Suspense>
+      )} />
+      <Route path="/login" component={() => (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+          <div className="text-pink-600">Loading...</div>
+        </div>}>
+          <Login />
+        </Suspense>
+      )} />
       <Route component={Home} />
     </Switch>
   );
