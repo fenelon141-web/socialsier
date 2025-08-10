@@ -56,7 +56,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4 ios-safe-area">
       <Card className="w-full max-w-md card-gradient rounded-2xl shadow-2xl border-0">
         <CardHeader className="text-center space-y-2 pb-6">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-4">
@@ -79,7 +79,12 @@ export default function Login() {
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
-                className="rounded-xl border-gray-200 focus:border-pink-400"
+                className="rounded-xl border-gray-200 focus:border-pink-400 text-base"
+                autoComplete="email"
+                inputMode="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
               />
             </div>
             
@@ -92,7 +97,10 @@ export default function Login() {
                 value={formData.password}
                 onChange={(e) => handleInputChange("password", e.target.value)}
                 required
-                className="rounded-xl border-gray-200 focus:border-pink-400"
+                className="rounded-xl border-gray-200 focus:border-pink-400 text-base"
+                autoComplete="current-password"
+                autoCorrect="off"
+                spellCheck="false"
               />
             </div>
             

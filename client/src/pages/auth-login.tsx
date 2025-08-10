@@ -96,7 +96,7 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4 ios-safe-area">
       <Card className="w-full max-w-md card-gradient rounded-2xl shadow-2xl border-0">
         <CardHeader className="text-center space-y-4 pb-8">
           <div className="mx-auto w-20 h-20 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-3xl mb-4">
@@ -128,8 +128,12 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
                         {...field}
                         type="email"
                         placeholder="Enter your email"
-                        className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+                        className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400 text-base"
                         autoComplete="email"
+                        inputMode="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck="false"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500" />
@@ -152,8 +156,10 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
                         <Input
                           {...field}
                           placeholder="First name"
-                          className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+                          className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400 text-base"
                           autoComplete="given-name"
+                          autoCapitalize="words"
+                          autoCorrect="off"
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />
@@ -171,8 +177,10 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
                         <Input
                           {...field}
                           placeholder="Last name"
-                          className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+                          className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400 text-base"
                           autoComplete="family-name"
+                          autoCapitalize="words"
+                          autoCorrect="off"
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />
@@ -195,8 +203,9 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
                       <Input
                         {...field}
                         type="date"
-                        className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+                        className="rounded-xl border-gray-200 focus:border-pink-400 focus:ring-pink-400 text-base"
                         max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
+                        autoComplete="bday"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500" />
