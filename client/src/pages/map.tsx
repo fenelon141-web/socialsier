@@ -85,12 +85,12 @@ export default function MapView() {
       }
       const data = await response.json();
       
-      console.log(`[MapView] API returned ${data.length} spots:`, data.slice(0, 3).map((s: any) => s.name));
+      console.log(`[MapView] API returned ${data.length} spots`);
       
       if (data.length === 0) {
         console.log(`[MapView] No spots found for ${latitude}, ${longitude} within ${params.get('radius')}m`);
       } else {
-        console.log(`[MapView] First spot: ${data[0]?.name} at ${data[0]?.distance}m`);
+        console.log(`[MapView] First 3 spots:`, data.slice(0, 3).map((s: any) => `${s.name} (${s.distance}m)`));
       }
       
       // Sort by distance for better UX

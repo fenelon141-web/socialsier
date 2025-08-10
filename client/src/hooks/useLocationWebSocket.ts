@@ -20,8 +20,15 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
 
   // WebSocket connection with iOS-specific handling
   const connect = () => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
+    if (wsRef.current?.readyState === WebSocket.OPEN || wsRef.current?.readyState === WebSocket.CONNECTING) {
+      console.log('[LocationWebSocket] Connection already exists, skipping');
       return;
+    }
+
+    // Clean up existing connection first
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
     }
 
     try {
@@ -102,10 +109,14 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
         console.log('[LocationWebSocket] Connection closed:', event.code, event.reason);
         setIsConnected(false);
         
-        // Auto-reconnect for iOS (network switching is common)
-        if (event.code !== 1000 && enabled) {
-          console.log('[LocationWebSocket] Attempting to reconnect in 3 seconds...');
-          setTimeout(() => connect(), 3000);
+        // Prevent multiple reconnection attempts
+        if (event.code !== 1000 && enabled && !wsRef.current) {
+          console.log('[LocationWebSocket] Attempting to reconnect in 5 seconds...');
+          setTimeout(() => {
+            if (!wsRef.current || wsRef.current.readyState === WebSocket.CLOSED) {
+              connect();
+            }
+          }, 5000);
         }
       };
 
