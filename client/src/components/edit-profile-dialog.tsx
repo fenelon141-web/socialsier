@@ -4,30 +4,32 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { useCamera } from "@/hooks/use-camera";
 import { apiRequest } from "@/lib/queryClient";
-import { Camera, ImageIcon, Images } from "lucide-react";
-import type { User } from "@shared/schema";
+import { Camera, Image, User } from "lucide-react";
+import type { User as UserType } from "@shared/schema";
 
 interface EditProfileDialogProps {
-  user: User;
+  user: UserType;
   children: React.ReactNode;
 }
 
 export default function EditProfileDialog({ user, children }: EditProfileDialogProps) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    username: user.username,
-    email: user.email,
+    username: user.username || "",
+    email: user.email || "",
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
     avatar: user.avatar || "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { choosePhotoSource, selectFromGallery, takePhoto, isLoading: cameraLoading } = useCamera();
 
   const updateMutation = useMutation({
-    mutationFn: async (updates: Partial<User>) => {
+    mutationFn: async (updates: Partial<UserType>) => {
       return apiRequest("PATCH", `/api/user/${user.id}`, updates);
     },
     onSuccess: () => {
@@ -56,41 +58,128 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSelectFromGallery = async () => {
-    try {
-      const photo = await selectFromGallery();
-      if (photo) {
-        handleChange('avatar', photo);
-        toast({
-          title: "Photo selected! 📸",
-          description: "Your new profile picture looks amazing!",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Photo selection failed 😢",
-        description: "Couldn't select photo. Try again!",
-        variant: "destructive",
-      });
-    }
-  };
-
+  // iOS-compatible photo capture using Capacitor Camera
   const handleTakePhoto = async () => {
     try {
-      const photo = await takePhoto();
-      if (photo) {
-        handleChange('avatar', photo);
-        toast({
-          title: "Photo captured! 📸",
-          description: "Your new profile picture looks amazing!",
+      setIsLoading(true);
+      
+      // Check if we're in Capacitor (iOS app)
+      if (typeof window !== 'undefined' && (window as any).Capacitor) {
+        const { Camera } = await import('@capacitor/camera');
+        const { CameraResultType, CameraSource } = await import('@capacitor/camera');
+        
+        const image = await Camera.getPhoto({
+          quality: 90,
+          allowEditing: true,
+          resultType: CameraResultType.DataUrl,
+          source: CameraSource.Camera,
         });
+        
+        if (image.dataUrl) {
+          handleChange('avatar', image.dataUrl);
+          toast({
+            title: "Photo captured! 📸",
+            description: "Your new profile picture looks amazing!",
+          });
+        }
+      } else {
+        // Web fallback - file input
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.capture = 'environment';
+        
+        input.onchange = (e) => {
+          const file = (e.target as HTMLInputElement).files?.[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const dataUrl = e.target?.result as string;
+              if (dataUrl) {
+                handleChange('avatar', dataUrl);
+                toast({
+                  title: "Photo captured! 📸",
+                  description: "Your new profile picture looks amazing!",
+                });
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        
+        input.click();
       }
     } catch (error) {
+      console.error('Photo capture error:', error);
       toast({
         title: "Photo capture failed 😢",
         description: "Couldn't capture photo. Try again!",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // iOS-compatible gallery selection
+  const handleSelectFromGallery = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Check if we're in Capacitor (iOS app)
+      if (typeof window !== 'undefined' && (window as any).Capacitor) {
+        const { Camera } = await import('@capacitor/camera');
+        const { CameraResultType, CameraSource } = await import('@capacitor/camera');
+        
+        const image = await Camera.getPhoto({
+          quality: 90,
+          allowEditing: true,
+          resultType: CameraResultType.DataUrl,
+          source: CameraSource.Photos,
+        });
+        
+        if (image.dataUrl) {
+          handleChange('avatar', image.dataUrl);
+          toast({
+            title: "Photo selected! 📸",
+            description: "Your new profile picture looks amazing!",
+          });
+        }
+      } else {
+        // Web fallback - file input
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        
+        input.onchange = (e) => {
+          const file = (e.target as HTMLInputElement).files?.[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const dataUrl = e.target?.result as string;
+              if (dataUrl) {
+                handleChange('avatar', dataUrl);
+                toast({
+                  title: "Photo selected! 📸",
+                  description: "Your new profile picture looks amazing!",
+                });
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        
+        input.click();
+      }
+    } catch (error) {
+      console.error('Photo selection error:', error);
+      toast({
+        title: "Photo selection failed 😢",
+        description: "Couldn't select photo. Try again!",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,101 +188,112 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-md mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-center">Edit Profile ✨</DialogTitle>
+          <DialogTitle className="text-center text-xl font-bold text-pink-600">
+            Edit Profile ✨
+          </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="text-center">
-            <div className="relative inline-block">
-              <img 
-                src={formData.avatar || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"} 
-                alt="Profile"
-                className="w-24 h-24 rounded-full mx-auto border-4 border-pink-200 object-cover"
-              />
-            </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Profile Picture */}
+          <div className="flex flex-col items-center space-y-4">
+            <Avatar className="w-24 h-24">
+              <AvatarImage src={formData.avatar} alt={formData.username} />
+              <AvatarFallback className="bg-pink-100 text-pink-600 text-2xl">
+                {formData.firstName?.charAt(0)}{formData.lastName?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
             
-            {/* Photo Selection Buttons */}
-            <div className="flex justify-center gap-2 mt-3">
+            <div className="flex space-x-2">
               <Button
                 type="button"
-                size="sm"
-                onClick={handleSelectFromGallery}
-                disabled={cameraLoading}
-                className="bg-purple-400 hover:bg-purple-500 text-white px-3 py-2 rounded-lg flex items-center gap-2"
-              >
-                {cameraLoading ? (
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                ) : (
-                  <Images className="w-4 h-4" />
-                )}
-                Photo Library
-              </Button>
-              
-              <Button
-                type="button"
+                variant="outline"
                 size="sm"
                 onClick={handleTakePhoto}
-                disabled={cameraLoading}
-                className="bg-pink-400 hover:bg-pink-500 text-white px-3 py-2 rounded-lg flex items-center gap-2"
+                disabled={isLoading}
+                className="flex items-center space-x-1"
               >
-                {cameraLoading ? (
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                ) : (
-                  <Camera className="w-4 h-4" />
-                )}
-                Take Photo
+                <Camera className="w-4 h-4" />
+                <span>Camera</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleSelectFromGallery}
+                disabled={isLoading}
+                className="flex items-center space-x-1"
+              >
+                <Image className="w-4 h-4" />
+                <span>Gallery</span>
               </Button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Choose from your photo library or take a new photo</p>
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              value={formData.username}
-              onChange={(e) => handleChange("username", e.target.value)}
-              placeholder="Enter your username"
-              required
-            />
+
+          {/* Form Fields */}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                value={formData.firstName}
+                onChange={(e) => handleChange('firstName', e.target.value)}
+                placeholder="Enter your first name"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                value={formData.lastName}
+                onChange={(e) => handleChange('lastName', e.target.value)}
+                placeholder="Enter your last name"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                value={formData.username}
+                onChange={(e) => handleChange('username', e.target.value)}
+                placeholder="Enter your username"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                placeholder="Enter your email"
+                className="mt-1"
+              />
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="avatar">Avatar URL</Label>
-            <Input
-              id="avatar"
-              value={formData.avatar}
-              onChange={(e) => handleChange("avatar", e.target.value)}
-              placeholder="Enter image URL"
-            />
-          </div>
-          
-          <div className="flex space-x-2 pt-4">
-            <Button 
-              type="button" 
-              variant="outline" 
+
+          {/* Submit Buttons */}
+          <div className="flex space-x-3">
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => setOpen(false)}
               className="flex-1"
+              disabled={updateMutation.isPending}
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
+              className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500"
               disabled={updateMutation.isPending}
-              className="flex-1 bg-pink-400 hover:bg-pink-500"
             >
               {updateMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>

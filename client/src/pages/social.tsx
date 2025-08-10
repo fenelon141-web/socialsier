@@ -170,7 +170,7 @@ export default function Social() {
           userId: "1",
           imageUrl: photo,
           caption: "",
-          type: "photo",
+          type: "photo" as const,
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
         };
         
@@ -460,7 +460,7 @@ export default function Social() {
                       </Button>
                     </AddFriendDialog>
                     
-                    <InviteFriendsDialog user={user || { id: 1, username: "Guest User", email: "guest@example.com", level: 1, totalPoints: 0, spotsHunted: 0, avatar: null, createdAt: new Date() }}>
+                    <InviteFriendsDialog>
                       <Button
                         size="sm"
                         className="bg-gradient-to-r from-pink-400 to-purple-500 text-white"
@@ -774,7 +774,7 @@ export default function Social() {
           </TabsContent>
 
           <TabsContent value="calendar" className="space-y-4">
-            <SharedCalendar userId="1" />
+            <SharedCalendar />
           </TabsContent>
         </Tabs>
       </div>
