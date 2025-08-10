@@ -1,66 +1,55 @@
-# Fixed iOS Simulator Commands
+# iOS Simulator Debugging Commands
 
-## The Problem
-The server port configuration was causing a conflict. Here's the fix:
+## Why Simulator Shows "No Spots Found"
 
-## Step 1: Kill Any Existing Processes
-```bash
-# Kill any process using port 5000
-sudo kill -9 $(sudo lsof -t -i:5000) 2>/dev/null || echo "No process on port 5000"
+The iOS Simulator and your real iPhone work differently:
 
-# Alternative: use a different port
-PORT=3001 npm run dev
+### Real iPhone (Working):
+- **Location:** 51.511, -0.273 (Acton, UK)
+- **Server Response:** 20 spots found (Chai Spot, Morrisons Cafe, etc.)
+- **Result:** Spots displayed correctly
+
+### iOS Simulator (Different):
+- **Location:** Often defaults to Apple Park, California or fake coordinates
+- **Server Response:** No spots found for that location
+- **Result:** "No spots found nearby"
+
+## Debug the Simulator Location:
+
+### 1. Check Console Logs
+Look for these logs in Xcode console when running simulator:
+```
+[MapView] Location state: {latitude: X, longitude: Y}
+[MapView] Fetching spots for location: X, Y
+[MapView] API returned N spots
 ```
 
-## Step 2: Start Development Server
-```bash
-# Method 1: Use default port (now fixed)
-npm run dev
+### 2. Set Custom Location in Simulator
+In iOS Simulator:
+1. **Device Menu** → **Location** → **Custom Location**
+2. Enter your coordinates:
+   - **Latitude:** 51.511
+   - **Longitude:** -0.273
+3. This will simulate your Acton location
 
-# Method 2: Use alternative port if needed
-PORT=3001 npm run dev
+### 3. Alternative: Use London Coordinates
+Try these popular London locations:
+- **Shoreditch:** 51.525, -0.078
+- **Covent Garden:** 51.512, -0.123
+- **Camden:** 51.539, -0.143
+
+## Expected Simulator Behavior After Location Fix:
+```
+[MapView] Location state: {latitude: 51.511, longitude: -0.273}
+[MapView] API returned 20 spots
+[MapView] Processing 20 spots for display
+[MapView] Processed spots ready for render: 20
 ```
 
-## Step 3: Update Capacitor for Alternative Port (if using PORT=3001)
-If you used PORT=3001, update capacitor.config.ts temporarily:
-```typescript
-url: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:3001' : undefined,
-```
+## Key Insight:
+Your real iPhone app works perfectly. The simulator just needs the correct location coordinates to find spots in the UK rather than defaulting to California coordinates.
 
-## Step 4: Sync and Open iOS
-```bash
-# Sync with updated config
-npx cap sync ios
-
-# Open in Xcode
-npx cap open ios
-```
-
-## Step 5: Test Authentication in iOS Simulator
-1. **Create Account:**
-   - Username: testuser
-   - Email: test@example.com
-   - Password: password123
-
-2. **Login:**
-   - Email: test@example.com
-   - Password: password123
-
-## Alternative: Build for Physical Device
-If simulator continues having issues, build for physical device:
-
-```bash
-# In Xcode:
-# 1. Connect iPhone via USB
-# 2. Select your iPhone as target (not simulator)
-# 3. Product → Run
-# 4. Authentication will work perfectly on real device
-```
-
-## Why This Fixes It
-- Removed `reusePort` option (not supported on macOS)
-- Simplified server listening configuration
-- Alternative port option if 5000 is blocked
-- Custom auth system works on both simulator and device
-
-The authentication error will be resolved once the server starts properly.
+## Test on Real Device vs Simulator:
+- **Real iPhone:** Production ready ✅
+- **Simulator:** Geographic testing only
+- **App Store Submission:** Based on real device testing ✅

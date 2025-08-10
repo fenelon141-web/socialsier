@@ -112,6 +112,8 @@ export default function MapView() {
   const spots = useMemo(() => {
     const currentSpots = nearbySpots || allSpots || [];
     console.log(`[MapView] Processing ${currentSpots.length} spots for display`);
+    console.log(`[MapView] nearbySpots:`, nearbySpots?.length || 0, `allSpots:`, allSpots?.length || 0);
+    console.log(`[MapView] Location state:`, {latitude, longitude, locationError});
     
     // Add calculated distances if missing and sort by distance
     const processedSpots = currentSpots
@@ -126,8 +128,11 @@ export default function MapView() {
       .sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
     
     console.log(`[MapView] Processed spots ready for render:`, processedSpots.length);
+    if (processedSpots.length > 0) {
+      console.log(`[MapView] First spot details:`, processedSpots[0]);
+    }
     return processedSpots;
-  }, [nearbySpots, allSpots, latitude, longitude]);
+  }, [nearbySpots, allSpots, latitude, longitude, locationError]);
 
   const isLoading = spotsLoading || allSpotsLoading;
   
@@ -298,11 +303,13 @@ export default function MapView() {
                 </CardContent>
               </Card>
             ))
-          ) : spots?.length === 0 ? (
+          ) : !spots || spots.length === 0 ? (
             <div className="text-center py-8">
               <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500">No spots found nearby</p>
-              <p className="text-xs text-gray-400">Try expanding your search radius</p>
+              <p className="text-xs text-gray-400">
+                {!latitude || !longitude ? 'Location needed for spot discovery' : 'Try expanding your search radius'}
+              </p>
             </div>
           ) : (
             // Limit to top 15 spots for better performance
