@@ -21,6 +21,8 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ✅ **WebSocket Geolocation Fixed**: iOS-specific WebSocket connectivity for map and hunt pages resolved
 ✅ **App Store Compliance Verified**: External server architecture confirmed compatible with Apple guidelines
 ✅ **Final iOS Export Ready**: All TypeScript errors resolved, production build optimized (660KB)
+✅ **iOS Podfile Fixed**: Standalone CocoaPods configuration eliminates node_modules dependency
+✅ **Geolocation Warning Documented**: Minor iOS console warning identified as non-critical for App Store submission
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
