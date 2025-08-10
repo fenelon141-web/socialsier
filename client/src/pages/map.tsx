@@ -58,18 +58,22 @@ export default function MapView() {
     queryFn: async () => {
       if (!latitude || !longitude) return [];
       
+      console.log(`[MapView] Fetching spots for location: ${latitude}, ${longitude}`);
+      
       // Build query string with filters
       const params = new URLSearchParams({
         lat: latitude.toString(),
         lng: longitude.toString(),
-        radius: "1500", // Reduced radius for faster API response
-        limit: "20" // Limit results to improve performance
+        radius: "2500", // Increased radius for Acton area
+        limit: "25" // More results for wider search
       });
       
       // Add filters to query params
       Object.entries(searchFilters).forEach(([key, value]) => {
         if (value) params.append(key, value as string);
       });
+      
+      console.log(`[MapView] API params: ${params.toString()}`);
       
       // Use production URL for iOS app
       const isCapacitor = (window as any).Capacitor?.isNativePlatform();
@@ -80,6 +84,14 @@ export default function MapView() {
         throw new Error(`Failed to fetch spots: ${response.status}`);
       }
       const data = await response.json();
+      
+      console.log(`[MapView] API returned ${data.length} spots:`, data.slice(0, 3).map((s: any) => s.name));
+      
+      if (data.length === 0) {
+        console.log(`[MapView] No spots found for ${latitude}, ${longitude} within ${params.get('radius')}m`);
+      } else {
+        console.log(`[MapView] First spot: ${data[0]?.name} at ${data[0]?.distance}m`);
+      }
       
       // Sort by distance for better UX
       return data.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
@@ -99,9 +111,10 @@ export default function MapView() {
   // Memoize spots processing for performance
   const spots = useMemo(() => {
     const currentSpots = nearbySpots || allSpots || [];
+    console.log(`[MapView] Processing ${currentSpots.length} spots for display`);
     
     // Add calculated distances if missing and sort by distance
-    return currentSpots
+    const processedSpots = currentSpots
       .map((spot: any) => ({
         ...spot,
         distance: spot.distance || (
@@ -111,6 +124,9 @@ export default function MapView() {
         )
       }))
       .sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
+    
+    console.log(`[MapView] Processed spots ready for render:`, processedSpots.length);
+    return processedSpots;
   }, [nearbySpots, allSpots, latitude, longitude]);
 
   const isLoading = spotsLoading || allSpotsLoading;

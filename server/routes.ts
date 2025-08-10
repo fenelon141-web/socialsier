@@ -1169,6 +1169,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Use OpenStreetMap to find nearby trendy spots (completely free)
       let nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
       
+      console.log(`Found ${nearbySpots.length} spots from OSM for ${userLat}, ${userLng}`);
+      
       // Apply advanced filters
       if (priceRange) {
         nearbySpots = nearbySpots.filter(spot => filterByPriceRange(spot, priceRange as string));
