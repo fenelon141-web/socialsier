@@ -24,6 +24,9 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ✅ **iOS Podfile Fixed**: Standalone CocoaPods configuration eliminates node_modules dependency
 ✅ **Geolocation Warning Documented**: Minor iOS console warning identified as non-critical for App Store submission
 ✅ **Build Warnings Identified**: CocoaPods and geolocation warnings documented as standard and non-blocking
+✅ **WebSocket Stability Fixed**: Multiple connection issue resolved, spot data now displays correctly on iPhone
+✅ **Location Data Confirmed**: App successfully showing 20 spots (Chai Spot 348m, Morrisons Cafe 349m, etc.)
+✅ **iPhone Display Working**: All debugging confirms data flows from location → API → UI successfully
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
