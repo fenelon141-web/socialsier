@@ -52,88 +52,77 @@ export default function MapView() {
     }
   }, [searchParams, toast]);
   
-  // Get nearby spots with advanced filters and performance optimization
-  const { data: nearbySpots, isLoading: spotsLoading, error: nearbyError } = useQuery<Spot[]>({
-    queryKey: ["/api/spots/nearby", latitude, longitude, searchFilters],
-    queryFn: async () => {
-      if (!latitude || !longitude) return [];
-      
-      console.log(`[MapView] Fetching spots for location: ${latitude}, ${longitude}`);
-      
-      // Build query string with filters
-      const params = new URLSearchParams({
-        lat: latitude.toString(),
-        lng: longitude.toString(),
-        radius: "2500", // Increased radius for Acton area
-        limit: "25" // More results for wider search
-      });
-      
-      // Add filters to query params
-      Object.entries(searchFilters).forEach(([key, value]) => {
-        if (value) params.append(key, value as string);
-      });
-      
-      console.log(`[MapView] API params: ${params.toString()}`);
-      
-      // Use production URL for iOS app - ensure HTTPS connectivity
-      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
-      const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
-      
-      console.log(`[MapView] Making API request to: ${baseUrl}/api/spots/nearby?${params.toString()}`);
-      
-      let response;
-      try {
-        // Try with credentials first
-        response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          credentials: 'include',
-          signal: AbortSignal.timeout(15000)
-        });
-      } catch (error) {
-        console.log(`[MapView] Retrying without credentials due to:`, error);
-        // Fallback without credentials for iOS
-        response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          signal: AbortSignal.timeout(15000)
-        });
-      }
-      
-      console.log(`[MapView] Response status: ${response.status}`);
-      
-      if (!response.ok) {
-        console.error(`[MapView] API error: ${response.status} ${response.statusText}`);
-        throw new Error(`Failed to fetch spots: ${response.status}`);
-      }
-      const data = await response.json();
-      
-      console.log(`[MapView] API returned ${data.length} spots`);
-      
-      if (data.length === 0) {
-        console.log(`[MapView] No spots found for ${latitude}, ${longitude} within ${params.get('radius')}m`);
-      } else {
-        console.log(`[MapView] First 3 spots:`, data.slice(0, 3).map((s: any) => `${s.name} (${s.distance}m)`));
-      }
-      
-      // Sort by distance for better UX
-      return data.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
-    },
-    enabled: !!latitude && !!longitude,
-    refetchOnWindowFocus: false,
-    staleTime: 10 * 60 * 1000, // 10 minutes cache
-    gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
-    retry: (failureCount, error) => {
-      console.error(`[MapView] Query attempt ${failureCount} failed:`, error);
-      return failureCount < 2; // Only retry once
+  // WebSocket-based spots fetching to bypass iOS HTTP issues
+  const [nearbySpots, setNearbySpots] = useState<Spot[]>([]);
+  const [spotsLoading, setSpotsLoading] = useState(false);
+  const [nearbyError, setNearbyError] = useState<Error | null>(null);
+  
+  // WebSocket spots fetching effect
+  useEffect(() => {
+    if (!latitude || !longitude) return;
+    
+    console.log(`[MapView] Using WebSocket to fetch spots for ${latitude}, ${longitude}`);
+    setSpotsLoading(true);
+    setNearbyError(null);
+    
+    const requestId = Date.now().toString();
+    const requestData = {
+      type: 'getSpotsNearby',
+      requestId,
+      latitude,
+      longitude,
+      radius: 2500,
+      limit: 25,
+      filters: searchFilters
+    };
+    
+    console.log(`[MapView] Sending WebSocket request:`, requestData);
+    // Send message via WebSocket if connected
+    if ((window as any).webSocket?.readyState === WebSocket.OPEN) {
+      (window as any).webSocket.send(JSON.stringify(requestData));
+    } else {
+      setNearbyError(new Error('WebSocket not connected'));
+      setSpotsLoading(false);
     }
-  });
+    
+    // Set timeout for request
+    const timeout = setTimeout(() => {
+      setSpotsLoading(false);
+      setNearbyError(new Error('WebSocket request timeout'));
+    }, 15000);
+    
+    // Listen for WebSocket response directly
+    const handleMessage = (event: MessageEvent) => {
+      try {
+        const message = JSON.parse(event.data);
+        if (message.type === 'spotsNearbyResponse' && message.requestId === requestId) {
+          clearTimeout(timeout);
+          setSpotsLoading(false);
+          
+          if (message.error) {
+            setNearbyError(new Error(message.error));
+          } else {
+            console.log(`[MapView] WebSocket returned ${message.spots?.length || 0} spots`);
+            setNearbySpots(message.spots || []);
+          }
+        }
+      } catch (error) {
+        console.error('WebSocket message parsing error:', error);
+      }
+    };
+    
+    // Add WebSocket message listener
+    if ((window as any).webSocket) {
+      (window as any).webSocket.addEventListener('message', handleMessage);
+    }
+    
+    return () => {
+      clearTimeout(timeout);
+      if ((window as any).webSocket) {
+        (window as any).webSocket.removeEventListener('message', handleMessage);
+      }
+    };
+  }, [latitude, longitude, searchFilters]);
 
   // Fallback to stored spots if location is not available
   const { data: allSpots, isLoading: allSpotsLoading } = useQuery<Spot[]>({

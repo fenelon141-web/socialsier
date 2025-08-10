@@ -1902,6 +1902,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
+        // Handle spots request via WebSocket for iOS compatibility
+        if (data.type === 'getSpotsNearby') {
+          try {
+            console.log(`WebSocket spots request for ${data.latitude}, ${data.longitude}`);
+            
+            const spots = await findNearbySpots(data.latitude, data.longitude, {
+              radius: data.radius || 1000,
+              limit: data.limit || 20,
+              category: data.filters?.category,
+              search: data.filters?.search,
+              dietary: data.filters?.dietary,
+              price: data.filters?.price,
+              ambiance: data.filters?.ambiance
+            });
+            
+            console.log(`WebSocket returning ${spots.length} spots to client`);
+            
+            ws.send(JSON.stringify({
+              type: 'spotsNearbyResponse',
+              requestId: data.requestId,
+              spots: spots
+            }));
+          } catch (error) {
+            console.error('WebSocket spots error:', error);
+            ws.send(JSON.stringify({
+              type: 'spotsNearbyResponse',
+              requestId: data.requestId,
+              error: error.message
+            }));
+          }
+        }
+        
         if (data.type === 'spot_hunt') {
           const { userId, spotId, points, badge } = data;
           if (userId) {
