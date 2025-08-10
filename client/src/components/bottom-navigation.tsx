@@ -33,11 +33,16 @@ export default function BottomNavigation() {
               <Link key={item.path} href={item.path} asChild>
                 <Button 
                   variant="ghost" 
-                  className={`flex flex-col items-center space-y-1 p-2 relative z-10 transition-all duration-200 ${
+                  className={`flex flex-col items-center space-y-1 p-3 relative z-10 transition-all duration-200 min-h-[56px] min-w-[56px] ${
                     item.isActive 
                       ? 'text-pink-500 transform scale-110' 
                       : 'text-gray-400 hover:text-gray-600'
                   }`}
+                  style={{
+                    WebkitTapHighlightColor: 'rgba(236, 72, 153, 0.3)',
+                    touchAction: 'manipulation',
+                    WebkitUserSelect: 'none'
+                  }}
                 >
                   <div className={`p-2 rounded-xl transition-all duration-200 ${
                     item.isActive 

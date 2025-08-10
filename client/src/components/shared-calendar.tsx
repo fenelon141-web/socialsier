@@ -61,10 +61,11 @@ export default function SharedCalendar() {
           </CardTitle>
           <Button
             size="sm"
-            className="bg-pink-500 hover:bg-pink-600 text-white ios-tap-highlight"
+            className="bg-pink-500 hover:bg-pink-600 text-white ios-tap-highlight min-h-[44px] transition-transform active:scale-95"
             style={{
               WebkitTapHighlightColor: 'rgba(236, 72, 153, 0.3)',
-              touchAction: 'manipulation'
+              touchAction: 'manipulation',
+              WebkitUserSelect: 'none'
             }}
           >
             <Plus className="w-4 h-4 mr-1" />
@@ -87,14 +88,15 @@ export default function SharedCalendar() {
         <div className="space-y-3">
           {events.length > 0 ? (
             events.map((event) => (
-              <div
+              <button
                 key={event.id}
-                className="bg-white border border-gray-100 rounded-lg p-4 ios-tap-highlight hover:shadow-sm transition-shadow"
+                className="bg-white border border-gray-100 rounded-lg p-4 ios-tap-highlight hover:shadow-sm transition-all duration-150 w-full text-left min-h-[60px] active:scale-98"
                 style={{
                   WebkitTapHighlightColor: 'rgba(236, 72, 153, 0.1)',
                   touchAction: 'manipulation',
-                  cursor: 'pointer'
+                  WebkitUserSelect: 'none'
                 }}
+                aria-label={`Event: ${event.title} at ${event.time} on ${event.date}`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -118,7 +120,7 @@ export default function SharedCalendar() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </button>
             ))
           ) : (
             <div className="text-center py-8">

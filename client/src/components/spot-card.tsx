@@ -176,7 +176,13 @@ export default function SpotCard({ spot }: SpotCardProps) {
   };
 
   return (
-    <div className="spot-card bg-white rounded-xl p-3 shadow-md border border-purple-100">
+    <div 
+      className="spot-card bg-white rounded-xl p-3 shadow-md border border-purple-100"
+      style={{
+        WebkitTapHighlightColor: 'rgba(236, 72, 153, 0.1)',
+        touchAction: 'manipulation'
+      }}
+    >
       <div className="flex items-center space-x-3">
         <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
           {getSpotIcon(spot)}
@@ -209,10 +215,14 @@ export default function SpotCard({ spot }: SpotCardProps) {
         <div className="flex space-x-2">
           {/* Directions Button */}
           <Button 
-            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full shadow-lg"
+            className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg min-h-[44px] min-w-[44px] transition-transform active:scale-95"
             onClick={openDirections}
             disabled={!latitude || !longitude}
             title="Get directions"
+            style={{
+              WebkitTapHighlightColor: 'rgba(59, 130, 246, 0.3)',
+              touchAction: 'manipulation'
+            }}
           >
             <Route className="w-4 h-4" />
           </Button>
@@ -225,12 +235,16 @@ export default function SpotCard({ spot }: SpotCardProps) {
                 : !latitude || !longitude
                 ? "bg-gray-400"
                 : "bg-red-400 hover:bg-red-500"
-            } text-white p-2 rounded-full shadow-lg disabled:opacity-50`}
+            } text-white p-3 rounded-full shadow-lg disabled:opacity-50 min-h-[44px] min-w-[44px] transition-transform active:scale-95`}
             onClick={() => {
               triggerHaptic('medium');
               huntMutation.mutate();
             }}
             disabled={huntMutation.isPending || !withinRange || !latitude || !longitude}
+            style={{
+              WebkitTapHighlightColor: withinRange ? 'rgba(34, 197, 94, 0.3)' : 'rgba(248, 113, 113, 0.3)',
+              touchAction: 'manipulation'
+            }}
             title={
               !latitude || !longitude 
                 ? "Location needed" 

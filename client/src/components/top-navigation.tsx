@@ -45,24 +45,40 @@ export default function TopNavigation() {
         
         <div className="flex items-center space-x-3">
           <NotificationCenter />
-          <div className="relative">
-            <div className="bg-yellow-400/20 p-2 rounded-full backdrop-blur-sm">
+          <button 
+            className="relative min-h-[44px] min-w-[44px] p-2 rounded-full backdrop-blur-sm transition-transform hover:scale-105 active:scale-95"
+            style={{
+              WebkitTapHighlightColor: 'rgba(236, 72, 153, 0.3)',
+              touchAction: 'manipulation',
+              WebkitUserSelect: 'none'
+            }}
+            aria-label={`Trophy - ${user?.spotsHunted || 0} spots hunted`}
+          >
+            <div className="bg-yellow-400/20 p-2 rounded-full backdrop-blur-sm pointer-events-none">
               <Trophy className="text-yellow-300 text-lg drop-shadow-sm" />
             </div>
             {user && user.spotsHunted > 0 && (
-              <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
+              <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse pointer-events-none">
                 {Math.min(user.spotsHunted, 99)}
               </span>
             )}
-          </div>
-          <div className="relative">
+          </button>
+          <button
+            className="relative min-h-[44px] min-w-[44px] p-1 rounded-full transition-transform hover:scale-105 active:scale-95"
+            style={{
+              WebkitTapHighlightColor: 'rgba(236, 72, 153, 0.3)',
+              touchAction: 'manipulation',
+              WebkitUserSelect: 'none'
+            }}
+            aria-label="User profile"
+          >
             <img 
               src={user?.avatar || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"} 
               alt="User Avatar" 
-              className="w-11 h-11 rounded-full border-3 border-white shadow-xl transition-transform hover:scale-105"
+              className="w-11 h-11 rounded-full border-3 border-white shadow-xl pointer-events-none"
             />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></div>
-          </div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full pointer-events-none"></div>
+          </button>
         </div>
       </div>
       
