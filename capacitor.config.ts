@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'Socialiser',
   webDir: 'dist/public',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    allowNavigation: ['https://hot-girl-hunt-fenelon141.replit.app']
   },
   plugins: {
     SplashScreen: {

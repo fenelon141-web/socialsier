@@ -81,16 +81,30 @@ export default function MapView() {
       
       console.log(`[MapView] Making API request to: ${baseUrl}/api/spots/nearby?${params.toString()}`);
       
-      const response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        credentials: 'include',
-        // iOS network timeout
-        signal: AbortSignal.timeout(15000)
-      });
+      let response;
+      try {
+        // Try with credentials first
+        response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          credentials: 'include',
+          signal: AbortSignal.timeout(15000)
+        });
+      } catch (error) {
+        console.log(`[MapView] Retrying without credentials due to:`, error);
+        // Fallback without credentials for iOS
+        response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          signal: AbortSignal.timeout(15000)
+        });
+      }
       
       console.log(`[MapView] Response status: ${response.status}`);
       
