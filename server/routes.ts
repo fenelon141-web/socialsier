@@ -1869,7 +1869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('New WebSocket connection');
     
     // Store user connection when they authenticate
-    ws.on('message', (message: string) => {
+    ws.on('message', async (message: string) => {
       try {
         const data = JSON.parse(message);
         
