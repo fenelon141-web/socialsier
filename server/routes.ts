@@ -28,7 +28,7 @@ function setInCache(key: string, data: any, ttlMs: number): void {
   // Clean up old entries periodically
   if (apiCache.size > 50) {
     const now = Date.now();
-    for (const [k, v] of apiCache.entries()) {
+    for (const [k, v] of Array.from(apiCache.entries())) {
       if (now > v.expiry) {
         apiCache.delete(k);
       }
@@ -402,8 +402,7 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `data=${encodeURIComponent(query)}`,
-      timeout: 10000 // 10 second timeout
+      body: `data=${encodeURIComponent(query)}`
     });
 
     if (!response.ok) {
@@ -1691,7 +1690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const recentNotifications = await storage.getUserNotifications(userId);
       const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
       const newNotifications = recentNotifications.filter(n => 
-        new Date(n.createdAt) > fiveMinutesAgo
+        n.createdAt && new Date(n.createdAt) > fiveMinutesAgo
       );
       
       // Send WebSocket notification for any new nearby trending spots
@@ -1772,7 +1771,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(member);
     } catch (error) {
       console.error("Error joining squad:", error);
-      res.status(400).json({ error: error.message || "Failed to join squad" });
+      res.status(400).json({ error: (error as Error).message || "Failed to join squad" });
     }
   });
 
