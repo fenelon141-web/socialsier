@@ -22,20 +22,35 @@ export function useGeolocation() {
 
   const getCurrentPosition = async () => {
     try {
+      console.log('[Geolocation] Starting location request...');
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
       if (isNative) {
-        // Use Capacitor for mobile apps
-        const permissions = await Geolocation.requestPermissions();
+        console.log('[Geolocation] Using Capacitor for native app');
         
-        if (permissions.location !== 'granted') {
-          throw new Error('Location permission denied');
+        // Check current permissions first
+        const currentPermissions = await Geolocation.checkPermissions();
+        console.log('[Geolocation] Current permissions:', currentPermissions);
+        
+        // Request permissions if not granted
+        if (currentPermissions.location !== 'granted') {
+          console.log('[Geolocation] Requesting location permissions...');
+          const permissions = await Geolocation.requestPermissions();
+          console.log('[Geolocation] Permission result:', permissions);
+          
+          if (permissions.location !== 'granted') {
+            throw new Error('Location permission denied by user');
+          }
         }
 
+        console.log('[Geolocation] Getting current position...');
         const position = await Geolocation.getCurrentPosition({
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 15000, // Increased timeout for iPhone
+          maximumAge: 10000, // Accept cached location up to 10 seconds old
         });
+        
+        console.log('[Geolocation] Position received:', position.coords);
 
         setLocation({
           latitude: position.coords.latitude,
@@ -44,7 +59,15 @@ export function useGeolocation() {
           loading: false,
           error: null,
         });
+        
+        console.log('[Geolocation] Location state updated:', {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        });
       } else {
+        console.log('[Geolocation] Using browser geolocation API for web');
+        
         // Use browser geolocation API for web
         if (!navigator.geolocation) {
           throw new Error('Geolocation is not supported by this browser');
@@ -87,10 +110,14 @@ export function useGeolocation() {
         );
       }
     } catch (error) {
+      console.error('[Geolocation] Error getting location:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Location error';
+      console.log('[Geolocation] Setting error state:', errorMessage);
+      
       setLocation(prev => ({
         ...prev,
         loading: false,
-        error: error instanceof Error ? error.message : 'Location error',
+        error: errorMessage,
       }));
     }
   };
