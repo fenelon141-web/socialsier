@@ -57,8 +57,14 @@
                 </dict>
         </array>
         <key>NSLocationWhenInUseUsageDescription</key>
-        <string>Socialiser uses your location to find trendy cafes, restaurants, and fitness spots near you for an amazing discovery experience.</string>
+        <string>Socialiser uses your location to discover trendy cafes, restaurants, and fitness spots near you. Location access is required to verify check-ins and show personalized recommendations based on your current area.</string>
         <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>Socialiser uses your location to find trendy cafes, restaurants, and fitness spots near you for an amazing discovery experience.</string>
+        <string>Socialiser uses your location to discover trendy cafes, restaurants, and fitness spots near you. Location access is required to verify check-ins and show personalized recommendations based on your current area.</string>
+        <key>NSCameraUsageDescription</key>
+        <string>Socialiser needs camera access to let you capture and share photos of amazing spots you discover. Photos help other users find great places in your area.</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Socialiser needs photo library access to let you share existing photos from your gallery when posting about spots you've visited.</string>
+        <key>NSUserNotificationsUsageDescription</key>
+        <string>Socialiser sends notifications about trending spots near you, friend activity, and daily challenges to enhance your discovery experience.</string>
 </dict>
 </plist>
