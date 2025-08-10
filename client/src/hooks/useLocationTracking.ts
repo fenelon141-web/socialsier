@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePushNotifications } from './usePushNotifications';
 import { useToast } from './use-toast';
+import { useGeolocation } from './use-geolocation';
 
 interface LocationTrackingState {
   isTracking: boolean;
@@ -20,97 +21,70 @@ export function useLocationTracking() {
   const { checkNearby } = usePushNotifications();
   const { toast } = useToast();
 
+  const { latitude, longitude } = useGeolocation();
+
   const startTracking = useCallback(() => {
-    if (!navigator.geolocation) {
+    if (!latitude || !longitude) {
       toast({
-        title: "Location Not Supported",
-        description: "Your device doesn't support location tracking",
+        title: "Location Required",
+        description: "Please allow location access to enable tracking",
         variant: "destructive",
       });
       return;
     }
 
     setState(prev => ({ ...prev, isTracking: true, error: null }));
-
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setState(prev => ({
-          ...prev,
-          position,
-          error: null,
-          lastUpdate: new Date(),
-        }));
-
-        // Check for nearby trending spots every location update
-        checkNearby(position.coords.latitude, position.coords.longitude);
-      },
-      (error) => {
-        setState(prev => ({ ...prev, error, isTracking: false }));
-        
-        if (error.code === error.PERMISSION_DENIED) {
-          toast({
-            title: "Location Permission Denied",
-            description: "Please allow location access to get nearby spot alerts",
-            variant: "destructive",
-          });
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 30000, // 30 seconds
-      }
-    );
+    
+    // Use current position from useGeolocation hook
+    checkNearby(latitude, longitude);
+    
+    toast({
+      title: "Tracking Started",
+      description: "You'll get alerts when trending spots are nearby",
+      duration: 3000,
+    });
 
     return () => {
-      navigator.geolocation.clearWatch(watchId);
       setState(prev => ({ ...prev, isTracking: false }));
     };
-  }, [checkNearby, toast]);
+  }, [checkNearby, toast, latitude, longitude]);
 
   const stopTracking = useCallback(() => {
     setState(prev => ({ ...prev, isTracking: false }));
   }, []);
 
-  const getCurrentPosition = useCallback((): Promise<GeolocationPosition> => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error('Geolocation not supported'));
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000, // 1 minute
+  const getCurrentPosition = useCallback(() => {
+    if (latitude && longitude) {
+      return Promise.resolve({
+        latitude,
+        longitude,
+        accuracy: null
       });
-    });
-  }, []);
-
-  // Auto-start tracking on page load if user has previously enabled notifications
-  useEffect(() => {
-    const shouldAutoTrack = localStorage.getItem('iykyk-auto-track') === 'true';
-    if (shouldAutoTrack && !state.isTracking) {
-      const cleanup = startTracking();
-      return cleanup;
     }
-  }, [startTracking, state.isTracking]);
+    return Promise.reject(new Error('Location not available'));
+  }, [latitude, longitude]);
+
+  // Auto-start tracking when location becomes available
+  useEffect(() => {
+    const shouldAutoTrack = localStorage.getItem('socialiser-auto-track') === 'true';
+    if (shouldAutoTrack && !state.isTracking && latitude && longitude) {
+      startTracking();
+    }
+  }, [startTracking, state.isTracking, latitude, longitude]);
 
   const enableAutoTracking = useCallback(() => {
-    localStorage.setItem('iykyk-auto-track', 'true');
-    const cleanup = startTracking();
+    localStorage.setItem('socialiser-auto-track', 'true');
+    startTracking();
     
     toast({
-      title: "Auto-Tracking Enabled ✅",
+      title: "Auto-Tracking Enabled",
       description: "You'll get alerts when trending spots are nearby",
       duration: 3000,
     });
-
-    return cleanup;
   }, [startTracking, toast]);
 
   const disableAutoTracking = useCallback(() => {
-    localStorage.setItem('iykyk-auto-track', 'false');
+    localStorage.setItem('socialiser-auto-track', 'false');
     stopTracking();
     
     toast({
@@ -127,6 +101,6 @@ export function useLocationTracking() {
     getCurrentPosition,
     enableAutoTracking,
     disableAutoTracking,
-    isAutoTrackingEnabled: localStorage.getItem('iykyk-auto-track') === 'true',
+    isAutoTrackingEnabled: localStorage.getItem('socialiser-auto-track') === 'true',
   };
 }

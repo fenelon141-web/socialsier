@@ -29,7 +29,7 @@ const config: CapacitorConfig = {
     },
     Geolocation: {
       permissions: {
-        location: "always"
+        location: "whenInUse"
       }
     },
     App: {
