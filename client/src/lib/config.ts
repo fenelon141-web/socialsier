@@ -21,6 +21,7 @@ export const iosConfig = {
     reconnectDelay: 3000,
     maxReconnectAttempts: 10,
     pingInterval: 30000, // Keep connection alive
+    forceNew: true, // Force new connection for iOS
   },
   // Location settings optimized for iOS
   location: {
