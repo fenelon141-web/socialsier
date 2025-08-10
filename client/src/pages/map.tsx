@@ -81,6 +81,7 @@ export default function MapView() {
       
       const response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`);
       if (!response.ok) {
+        console.error(`[MapView] API error: ${response.status} ${response.statusText}`);
         throw new Error(`Failed to fetch spots: ${response.status}`);
       }
       const data = await response.json();
@@ -100,6 +101,10 @@ export default function MapView() {
     refetchOnWindowFocus: false,
     staleTime: 10 * 60 * 1000, // 10 minutes cache
     gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
+    retry: (failureCount, error) => {
+      console.error(`[MapView] Query attempt ${failureCount} failed:`, error);
+      return failureCount < 2; // Only retry once
+    }
   });
 
   // Fallback to stored spots if location is not available

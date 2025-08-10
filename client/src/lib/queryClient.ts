@@ -51,7 +51,10 @@ export const queryClient = new QueryClient({
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
-      retry: false,
+      retry: (failureCount, error: Error) => {
+        console.error(`Query retry ${failureCount}:`, error.message);
+        return failureCount < 2;
+      }
     },
     mutations: {
       retry: false,
