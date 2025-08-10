@@ -1,40 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BottomNavigation from "@/components/bottom-navigation";
 import SpotCard from "@/components/spot-card";
-import LeafletMap from "@/components/leaflet-map";
 import SearchFilters from "@/components/search-filters";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { useToast } from "@/hooks/use-toast";
+import { calculateDistance } from "@/lib/location-utils";
 import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link, useSearch } from "wouter";
 import type { Spot } from "@shared/schema";
 
-// Calculate distance between two coordinates using Haversine formula
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371; // Radius of the Earth in kilometers
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in kilometers
-  return distance;
-}
+// Lazy load the map component for better initial page performance
+const LeafletMap = lazy(() => import("@/components/leaflet-map"));
 
-// Format distance for display
-function formatDistance(distance: number): string {
-  if (distance < 1) {
-    return `${Math.round(distance * 1000)}m`;
-  } else {
-    return `${distance.toFixed(1)}km`;
-  }
-}
+
 
 export default function MapView() {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
@@ -70,7 +52,7 @@ export default function MapView() {
     }
   }, [searchParams, toast]);
   
-  // Get nearby spots with advanced filters
+  // Get nearby spots with advanced filters and performance optimization
   const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/nearby", latitude, longitude, searchFilters],
     queryFn: async () => {
@@ -80,7 +62,8 @@ export default function MapView() {
       const params = new URLSearchParams({
         lat: latitude.toString(),
         lng: longitude.toString(),
-        radius: "2000"
+        radius: "1500", // Reduced radius for faster API response
+        limit: "20" // Limit results to improve performance
       });
       
       // Add filters to query params
@@ -89,11 +72,15 @@ export default function MapView() {
       });
       
       const response = await fetch(`/api/spots/nearby?${params.toString()}`);
-      return response.json();
+      const data = await response.json();
+      
+      // Sort by distance for better UX
+      return data.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
     },
     enabled: !!latitude && !!longitude,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes cache
+    gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
   });
 
   // Fallback to stored spots if location is not available
@@ -102,7 +89,23 @@ export default function MapView() {
     enabled: !latitude || !longitude
   });
 
-  const spots = nearbySpots || allSpots || [];
+  // Memoize spots processing for performance
+  const spots = useMemo(() => {
+    const currentSpots = nearbySpots || allSpots || [];
+    
+    // Add calculated distances if missing and sort by distance
+    return currentSpots
+      .map(spot => ({
+        ...spot,
+        distance: spot.distance || (
+          latitude && longitude 
+            ? Math.round(calculateDistance(latitude, longitude, spot.latitude, spot.longitude) * 1000)
+            : 0
+        )
+      }))
+      .sort((a, b) => (a.distance || 0) - (b.distance || 0));
+  }, [nearbySpots, allSpots, latitude, longitude]);
+
   const isLoading = spotsLoading || allSpotsLoading;
   
   // Handle saving spots for offline access
@@ -162,13 +165,22 @@ export default function MapView() {
             </div>
           </div>
         ) : latitude && longitude ? (
-          <LeafletMap 
-            center={{ lat: latitude, lng: longitude }}
-            spots={spots}
-            onSpotClick={(spot) => {
-              console.log('Spot clicked:', spot);
-            }}
-          />
+          <Suspense fallback={
+            <div className="h-64 bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+              <div className="text-center">
+                <MapPin className="w-8 h-8 text-pink-400 mx-auto mb-2 animate-pulse" />
+                <p className="text-gray-600 text-sm">Loading map...</p>
+              </div>
+            </div>
+          }>
+            <LeafletMap 
+              center={{ lat: latitude, lng: longitude }}
+              spots={spots}
+              onSpotClick={(spot) => {
+                console.log('Spot clicked:', spot);
+              }}
+            />
+          </Suspense>
         ) : (
           <div className="h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
             <div className="text-center">
@@ -248,7 +260,8 @@ export default function MapView() {
 
         <div className="space-y-3">
           {isLoading ? (
-            [1, 2, 3, 4, 5].map(i => (
+            // Loading skeleton for better perceived performance
+            [1, 2, 3].map(i => (
               <Card key={i} className="animate-pulse">
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
@@ -269,7 +282,8 @@ export default function MapView() {
               <p className="text-xs text-gray-400">Try expanding your search radius</p>
             </div>
           ) : (
-            spots?.map((spot) => {
+            // Limit to top 15 spots for better performance
+            spots?.slice(0, 15).map((spot) => {
               const distance = latitude && longitude ? 
                 calculateDistance(latitude, longitude, spot.latitude, spot.longitude) : null;
               

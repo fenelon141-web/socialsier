@@ -8,7 +8,7 @@ import { useHaptics } from "@/hooks/use-haptics";
 import { formatDistance, calculateDistance, isWithinRange } from "@/lib/location-utils";
 import { getSpotIcon } from "@/lib/spot-icons";
 import { CelebrationAnimation } from "./celebration-animation";
-import { useState } from "react";
+import { useState, memo } from "react";
 import type { Spot } from "@shared/schema";
 
 interface SpotCardProps {
@@ -17,7 +17,7 @@ interface SpotCardProps {
 
 
 
-export default function SpotCard({ spot }: SpotCardProps) {
+function SpotCard({ spot }: SpotCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
@@ -280,3 +280,6 @@ export default function SpotCard({ spot }: SpotCardProps) {
     </div>
   );
 }
+
+// Memoize the component for better performance
+export default memo(SpotCard);

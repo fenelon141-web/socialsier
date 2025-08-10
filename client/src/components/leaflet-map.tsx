@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -54,6 +54,58 @@ function MapController({ center }: { center: { lat: number; lng: number } }) {
 export default function LeafletMap({ center, spots, onSpotClick }: LeafletMapProps) {
   const [mapReady, setMapReady] = useState(false);
 
+  // Memoize markers to prevent unnecessary re-renders
+  const spotMarkers = useMemo(() => {
+    if (!spots || spots.length === 0) return [];
+    
+    // Limit to closest 15 spots for better performance
+    const closestSpots = spots
+      .filter(spot => spot.distance && spot.distance <= 2000) // Within 2km
+      .slice(0, 15);
+    
+    return closestSpots.map((spot) => (
+      <Marker
+        key={`${spot.id}-${spot.latitude}-${spot.longitude}`}
+        position={[spot.latitude, spot.longitude]}
+        icon={spotIcon}
+        eventHandlers={{
+          click: () => {
+            if (onSpotClick) onSpotClick(spot);
+          },
+        }}
+      >
+        <Popup maxWidth={280} closeOnEscapeKey={true}>
+          <div className="max-w-xs">
+            <div className="flex items-center justify-center w-full h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-md mb-2">
+              <span className="text-3xl">{getSpotIconEmoji(spot)}</span>
+            </div>
+            <h3 className="text-base font-semibold text-gray-800 mb-1 line-clamp-1">
+              {spot.name}
+            </h3>
+            <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+              {spot.description}
+            </p>
+            <div className="flex items-center justify-between text-sm">
+              {spot.rating && (
+                <span className="flex items-center text-yellow-600">
+                  ⭐ {spot.rating}
+                </span>
+              )}
+              {spot.distance && (
+                <span className="text-pink-600 font-medium">
+                  {Math.round(spot.distance)}m away
+                </span>
+              )}
+            </div>
+            <div className="mt-2 text-xs text-gray-500 capitalize">
+              {spot.category} • {spot.huntCount || 0} hunts
+            </div>
+          </div>
+        </Popup>
+      </Marker>
+    ));
+  }, [spots, onSpotClick]);
+
   return (
     <div className="w-full h-64 rounded-lg overflow-hidden">
       <MapContainer
@@ -61,19 +113,23 @@ export default function LeafletMap({ center, spots, onSpotClick }: LeafletMapPro
         zoom={15}
         className="w-full h-full"
         whenReady={() => setMapReady(true)}
+        preferCanvas={true} // Use canvas for better performance
+        zoomControl={false} // Disable zoom control for mobile
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={18}
+          tileSize={256}
         />
         
         <MapController center={center} />
         
         {/* User location marker */}
         <Marker position={[center.lat, center.lng]} icon={userIcon}>
-          <Popup>
+          <Popup closeOnEscapeKey={true}>
             <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">Your Location</div>
+              <div className="text-base font-semibold text-blue-600">Your Location</div>
               <div className="text-sm text-gray-600">
                 {center.lat.toFixed(4)}, {center.lng.toFixed(4)}
               </div>
@@ -81,48 +137,8 @@ export default function LeafletMap({ center, spots, onSpotClick }: LeafletMapPro
           </Popup>
         </Marker>
 
-        {/* Spot markers */}
-        {spots.map((spot) => (
-          <Marker
-            key={spot.id}
-            position={[spot.latitude, spot.longitude]}
-            icon={spotIcon}
-            eventHandlers={{
-              click: () => {
-                if (onSpotClick) onSpotClick(spot);
-              },
-            }}
-          >
-            <Popup maxWidth={300}>
-              <div className="max-w-xs">
-                <div className="flex items-center justify-center w-full h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-md mb-2">
-                  <span className="text-4xl">{getSpotIconEmoji(spot)}</span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                  {spot.name}
-                </h3>
-                <p className="text-sm text-gray-600 mb-2">
-                  {spot.description}
-                </p>
-                <div className="flex items-center justify-between text-sm">
-                  {spot.rating && (
-                    <span className="flex items-center text-yellow-600">
-                      ⭐ {spot.rating}
-                    </span>
-                  )}
-                  {spot.distance && (
-                    <span className="text-pink-600 font-medium">
-                      {Math.round(spot.distance)}m away
-                    </span>
-                  )}
-                </div>
-                <div className="mt-2 text-xs text-gray-500 capitalize">
-                  {spot.category} • {spot.huntCount || 0} hunts
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {/* Optimized spot markers */}
+        {spotMarkers}
       </MapContainer>
     </div>
   );

@@ -6,6 +6,36 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { insertSpotHuntSchema } from "@shared/schema";
 import { notificationService } from "./notification-service";
 
+// Simple in-memory cache for faster API responses
+const apiCache = new Map<string, { data: any; timestamp: number; expiry: number }>();
+
+function getFromCache(key: string): any | null {
+  const entry = apiCache.get(key);
+  if (!entry || Date.now() > entry.expiry) {
+    apiCache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+
+function setInCache(key: string, data: any, ttlMs: number): void {
+  apiCache.set(key, {
+    data,
+    timestamp: Date.now(),
+    expiry: Date.now() + ttlMs
+  });
+  
+  // Clean up old entries periodically
+  if (apiCache.size > 50) {
+    const now = Date.now();
+    for (const [k, v] of apiCache.entries()) {
+      if (now > v.expiry) {
+        apiCache.delete(k);
+      }
+    }
+  }
+}
+
 // Advanced search filter functions
 function filterByPriceRange(spot: any, priceRange: string): boolean {
   // If "any" is selected, show all spots
@@ -351,38 +381,18 @@ function calculateDistance(
 
 async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
   try {
-    // Use Overpass API to find trendy, aesthetic spots (exclude fast food)
+    // Optimized Overpass API query - reduced timeout and more focused search
     const query = `
-      [out:json][timeout:25];
+      [out:json][timeout:15];
       (
-        node["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
-        way["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
-        relation["amenity"~"^(cafe|restaurant|juice_bar)$"](around:${radius},${lat},${lng});
-        node["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
-        way["shop"~"^(coffee|tea|health_food|organic|bakery)$"](around:${radius},${lat},${lng});
-        node["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy|japanese|poke)$"](around:${radius},${lat},${lng});
-        way["cuisine"~"^(coffee_shop|bubble_tea|vegan|vegetarian|healthy|japanese|poke)$"](around:${radius},${lat},${lng});
-        node["shop"~"^(tea|bakery|pastry|beverages)$"](around:${radius},${lat},${lng});
-        way["shop"~"^(tea|bakery|pastry|beverages)$"](around:${radius},${lat},${lng});
-        node["amenity"="juice_bar"](around:${radius},${lat},${lng});
-        way["amenity"="juice_bar"](around:${radius},${lat},${lng});
-        node["leisure"~"^(fitness_centre|sports_centre|fitness_station)$"](around:${radius},${lat},${lng});
-        way["leisure"~"^(fitness_centre|sports_centre|fitness_station)$"](around:${radius},${lat},${lng});
-        node["amenity"~"^(gym|fitness_centre|studio)$"](around:${radius},${lat},${lng});
-        way["amenity"~"^(gym|fitness_centre|studio)$"](around:${radius},${lat},${lng});
-        node["sport"~"^(fitness|pilates|yoga|cycling|gymnastics|dance)$"](around:${radius},${lat},${lng});
-        way["sport"~"^(fitness|pilates|yoga|cycling|gymnastics|dance)$"](around:${radius},${lat},${lng});
-        node["shop"~"^(sports|fitness)$"](around:${radius},${lat},${lng});
-        way["shop"~"^(sports|fitness)$"](around:${radius},${lat},${lng});
-        node["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
-        way["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
-        relation["leisure"~"^(sports_centre|fitness_centre|fitness_station)$"](around:${radius},${lat},${lng});
-        node["sport"~"^(yoga|pilates|fitness|aerobics|gymnastics)$"](around:${radius},${lat},${lng});
-        way["sport"~"^(yoga|pilates|fitness|aerobics|gymnastics)$"](around:${radius},${lat},${lng});
-        relation["sport"~"^(yoga|pilates|fitness|aerobics|gymnastics)$"](around:${radius},${lat},${lng});
-        node["shop"="sports"](around:${radius},${lat},${lng});
-        way["shop"="sports"](around:${radius},${lat},${lng});
-        relation["shop"="sports"](around:${radius},${lat},${lng});
+        node["amenity"~"^(cafe|restaurant|juice_bar|gym)$"](around:${radius},${lat},${lng});
+        way["amenity"~"^(cafe|restaurant|juice_bar|gym)$"](around:${radius},${lat},${lng});
+        node["shop"~"^(coffee|tea|bakery|sports)$"](around:${radius},${lat},${lng});
+        way["shop"~"^(coffee|tea|bakery|sports)$"](around:${radius},${lat},${lng});
+        node["leisure"~"^(fitness_centre|sports_centre)$"](around:${radius},${lat},${lng});
+        way["leisure"~"^(fitness_centre|sports_centre)$"](around:${radius},${lat},${lng});
+        node["sport"~"^(fitness|yoga|pilates)$"](around:${radius},${lat},${lng});
+        way["sport"~"^(fitness|yoga|pilates)$"](around:${radius},${lat},${lng});
       );
       out geom;
     `;
@@ -392,7 +402,8 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `data=${encodeURIComponent(query)}`
+      body: `data=${encodeURIComponent(query)}`,
+      timeout: 10000 // 10 second timeout
     });
 
     if (!response.ok) {
@@ -415,10 +426,10 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       .filter((spot: any) => spot && isTrendyPlace(spot));
 
     const uniqueResults = removeDuplicates(spots);
-    // Sort by distance for nearby spots (closest first)
+    // Sort by distance for nearby spots and limit early for performance
     return uniqueResults
       .sort((a, b) => (a.distance || 0) - (b.distance || 0))
-      .slice(0, 25);
+      .slice(0, 20); // Reduced from 25 to 20 for faster response
 
   } catch (error) {
     console.warn('Failed to fetch nearby spots from OSM:', error);
@@ -1120,7 +1131,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { 
         lat, 
         lng, 
-        radius = 2000,
+        radius = 1500,
+        limit = 20,
         priceRange,
         dietary,
         ambiance,
@@ -1135,8 +1147,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userLat = parseFloat(lat as string);
       const userLng = parseFloat(lng as string);
       const searchRadius = parseInt(radius as string);
+      const maxResults = parseInt(limit as string);
       
-      console.log(`Finding nearby spots for location: ${userLat}, ${userLng} within ${searchRadius}m`);
+      console.log(`Finding nearby spots for location: ${userLat}, ${userLng} within ${searchRadius}m (limit: ${maxResults})`);
+      
+      // Create cache key for this request
+      const cacheKey = `spots:${Math.round(userLat * 1000) / 1000}:${Math.round(userLng * 1000) / 1000}:${Math.round(searchRadius / 500) * 500}:${JSON.stringify({ category, search, priceRange, dietary, ambiance })}`;
+      
+      // Check cache first for faster response
+      const cachedSpots = getFromCache(cacheKey);
+      if (cachedSpots) {
+        console.log(`Cache hit for ${cacheKey} - returning ${cachedSpots.length} cached spots`);
+        res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
+        res.set('X-Cache', 'HIT');
+        return res.json(cachedSpots.slice(0, maxResults));
+      }
+      
+      // Set cache headers for better performance
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
+      res.set('X-Cache', 'MISS');
       
       // Use OpenStreetMap to find nearby trendy spots (completely free)
       let nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
@@ -1176,8 +1205,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Sort by distance first for nearby spots (primary concern is proximity)
-      nearbySpots = nearbySpots.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      // Sort by distance first for nearby spots and limit results early
+      nearbySpots = nearbySpots
+        .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+        .slice(0, maxResults);
+      
+      // Cache the results for faster subsequent requests
+      setInCache(cacheKey, nearbySpots, 300000); // 5 minute cache
       
       console.log(`Found ${nearbySpots.length} spots, closest distances:`, 
         nearbySpots.slice(0, 5).map(s => `${s.name}: ${s.distance}m`));
