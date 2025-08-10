@@ -1,0 +1,44 @@
+{"coarseLocation":"granted","location":"granted"}
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 43776438
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  TO JS {"coords":{"heading":352.96875,"longitude":-0.27325638914705574,"accuracy":3.6094607826908205,"latitude":51.511184664540501,"speed":0,"altitude":27.982936859130859,"altitudeAccuracy":3},"timestamp":1754867904918}
+⚡️  [log] - [Geolocation] Position received: {"heading":352.96875,"longitude":-0.27325638914705574,"accuracy":3.6094607826908205,"latitude":51.5111846645405,"speed":0,"altitude":27.98293685913086,"altitudeAccuracy":3}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.5111846645405,"lng":-0.27325638914705574,"accuracy":3.6094607826908205}
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
