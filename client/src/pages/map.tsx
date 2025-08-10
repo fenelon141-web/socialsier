@@ -8,7 +8,7 @@ import SearchFilters from "@/components/search-filters";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { useToast } from "@/hooks/use-toast";
-import { calculateDistance } from "@/lib/location-utils";
+import { calculateDistance, formatDistance } from "@/lib/location-utils";
 import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link, useSearch } from "wouter";
 import type { Spot } from "@shared/schema";
@@ -95,15 +95,15 @@ export default function MapView() {
     
     // Add calculated distances if missing and sort by distance
     return currentSpots
-      .map(spot => ({
+      .map((spot: any) => ({
         ...spot,
         distance: spot.distance || (
           latitude && longitude 
-            ? Math.round(calculateDistance(latitude, longitude, spot.latitude, spot.longitude) * 1000)
+            ? Math.round(calculateDistance(latitude, longitude, spot.latitude, spot.longitude))
             : 0
         )
       }))
-      .sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      .sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
   }, [nearbySpots, allSpots, latitude, longitude]);
 
   const isLoading = spotsLoading || allSpotsLoading;
