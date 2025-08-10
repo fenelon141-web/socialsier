@@ -291,7 +291,7 @@ export default function Social() {
                   </Button>
                 </AddFriendDialog>
                 
-                <InviteFriendsDialog user={user || { id: 1, username: "Guest User", email: "guest@example.com", level: 1, totalPoints: 0, spotsHunted: 0, avatar: null, createdAt: new Date() }}>
+                <InviteFriendsDialog>
                   <Button
                     size="sm"
                     className="bg-gradient-to-r from-pink-400 to-purple-500 text-white"
@@ -437,10 +437,11 @@ export default function Social() {
               </CardContent>
             </Card>
           )}
+            </div>
           </TabsContent>
 
           <TabsContent value="calendar" className="space-y-4">
-            <SharedCalendar userId="1" />
+            <SharedCalendar />
           </TabsContent>
         </Tabs>
       </div>

@@ -6,7 +6,7 @@ interface BadgeCardProps {
 }
 
 export default function BadgeCard({ userBadge }: BadgeCardProps) {
-  const timeAgo = formatDistanceToNow(new Date(userBadge.earnedAt), { addSuffix: false });
+  const timeAgo = formatDistanceToNow(new Date(userBadge.earnedAt || new Date()), { addSuffix: false });
 
   return (
     <button 

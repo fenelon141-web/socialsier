@@ -62,7 +62,7 @@ export default function NotificationBell() {
         </div>
         
         <div className="max-h-96 overflow-y-auto">
-          {notifications.length === 0 ? (
+          {!notifications || notifications.length === 0 ? (
             <div className="p-4 text-center text-gray-500">
               <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No notifications yet</p>
@@ -70,7 +70,7 @@ export default function NotificationBell() {
             </div>
           ) : (
             <div className="space-y-1">
-              {notifications.slice(0, 10).map((notification) => (
+              {notifications?.slice(0, 10).map((notification) => (
                 <button
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
@@ -124,7 +124,7 @@ export default function NotificationBell() {
           )}
         </div>
         
-        {notifications.length > 10 && (
+        {notifications && notifications.length > 10 && (
           <div className="p-3 border-t text-center">
             <Button variant="ghost" size="sm" className="text-xs">
               View all notifications

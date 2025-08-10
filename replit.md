@@ -15,6 +15,9 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ✅ **Mock Content Removed**: All placeholder data eliminated for production release
 ✅ **Geolocation Consolidated**: Fixed duplicate location implementations for iOS compatibility
 ✅ **App Store Ready**: Final app name "Socialiser" consistent across all iOS files
+✅ **Performance Optimizations**: Server-side caching (5-min), reduced API timeouts, lazy loading
+✅ **TypeScript Errors Fixed**: Critical compilation errors in social components resolved
+✅ **iOS Crash Fixed**: Missing formatDistance function import causing iOS crashes resolved
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
