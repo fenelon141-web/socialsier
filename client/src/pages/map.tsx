@@ -71,7 +71,14 @@ export default function MapView() {
         if (value) params.append(key, value as string);
       });
       
-      const response = await fetch(`/api/spots/nearby?${params.toString()}`);
+      // Use production URL for iOS app
+      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
+      
+      const response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch spots: ${response.status}`);
+      }
       const data = await response.json();
       
       // Sort by distance for better UX

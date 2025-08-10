@@ -27,8 +27,11 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     }
 
     try {
-      // iOS Production WebSocket URL
-      const wsUrl = `wss://hot-girl-hunt-fenelon141.replit.app/ws`;
+      // iOS Production WebSocket URL with fallback detection
+      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const wsUrl = isCapacitor 
+        ? `wss://hot-girl-hunt-fenelon141.replit.app/ws`
+        : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
       
       setConnectionStatus('connecting');
       wsRef.current = new WebSocket(wsUrl);

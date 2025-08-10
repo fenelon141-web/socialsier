@@ -55,7 +55,14 @@ export default function Home() {
   const { data: nearbySpots, isLoading: nearbyLoading } = useQuery({
     queryKey: ["/api/spots/nearby", latitude, longitude],
     queryFn: async () => {
-      const response = await fetch(`https://hot-girl-hunt-fenelon141.replit.app/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=1000`);
+      // Use production URL for iOS app
+      const isCapacitor = window.Capacitor?.isNativePlatform();
+      const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
+      
+      const response = await fetch(`${baseUrl}/api/spots/nearby?lat=${latitude}&lng=${longitude}&radius=1000`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch nearby spots: ${response.status}`);
+      }
       return response.json();
     },
     enabled: !!(latitude && longitude),
@@ -69,10 +76,19 @@ export default function Home() {
     queryKey: ["/api/spots/gym", latitude, longitude],
     queryFn: async () => {
       if (latitude && longitude) {
-        const response = await fetch(`https://hot-girl-hunt-fenelon141.replit.app/api/spots/gym?lat=${latitude}&lng=${longitude}&radius=3000`);
+        // Use production URL for iOS app
+        const isCapacitor = window.Capacitor?.isNativePlatform();
+        const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
+        
+        const response = await fetch(`${baseUrl}/api/spots/gym?lat=${latitude}&lng=${longitude}&radius=3000`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch gym spots: ${response.status}`);
+        }
         return response.json();
       } else {
-        const response = await fetch('https://hot-girl-hunt-fenelon141.replit.app/api/spots/gym');
+        const isCapacitor = window.Capacitor?.isNativePlatform();
+        const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
+        const response = await fetch(`${baseUrl}/api/spots/gym`);
         return response.json();
       }
     }
