@@ -124,11 +124,9 @@ export default function MapView() {
     };
   }, [latitude, longitude, searchFilters]);
 
-  // Fallback to stored spots if location is not available
-  const { data: allSpots, isLoading: allSpotsLoading } = useQuery<Spot[]>({
-    queryKey: ["/api/spots"],
-    enabled: !latitude || !longitude
-  });
+  // Disable HTTP fallback since we're using WebSocket
+  const allSpots: Spot[] = [];
+  const allSpotsLoading = false;
 
   // Memoize spots processing for performance
   const spots = useMemo(() => {
