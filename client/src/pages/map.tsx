@@ -53,7 +53,7 @@ export default function MapView() {
   }, [searchParams, toast]);
   
   // Get nearby spots with advanced filters and performance optimization
-  const { data: nearbySpots, isLoading: spotsLoading } = useQuery<Spot[]>({
+  const { data: nearbySpots, isLoading: spotsLoading, error: nearbyError } = useQuery<Spot[]>({
     queryKey: ["/api/spots/nearby", latitude, longitude, searchFilters],
     queryFn: async () => {
       if (!latitude || !longitude) return [];
@@ -135,6 +135,19 @@ export default function MapView() {
   }, [nearbySpots, allSpots, latitude, longitude, locationError]);
 
   const isLoading = spotsLoading || allSpotsLoading;
+  
+  // Debug the query states
+  useEffect(() => {
+    console.log('[MapView] Component state:', {
+      latitude,
+      longitude,
+      spotsLoading,
+      nearbySpots: nearbySpots?.length || 0,
+      allSpots: allSpots?.length || 0,
+      nearbyError: nearbyError?.message,
+      finalSpots: spots?.length || 0
+    });
+  }, [latitude, longitude, spotsLoading, nearbySpots, allSpots, nearbyError, spots]);
   
   // Handle saving spots for offline access
   const handleSaveSpot = (spot: Spot) => {
@@ -309,6 +322,14 @@ export default function MapView() {
               <p className="text-gray-500">No spots found nearby</p>
               <p className="text-xs text-gray-400">
                 {!latitude || !longitude ? 'Location needed for spot discovery' : 'Try expanding your search radius'}
+              </p>
+              {nearbyError && (
+                <p className="text-xs text-red-500 mt-2">
+                  Error: {nearbyError.message}
+                </p>
+              )}
+              <p className="text-xs text-gray-300 mt-2">
+                Debug: L:{latitude?.toFixed(3)}, spots:{nearbySpots?.length || 0}, loading:{spotsLoading.toString()}
               </p>
             </div>
           ) : (
