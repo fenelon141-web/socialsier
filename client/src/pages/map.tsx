@@ -75,11 +75,25 @@ export default function MapView() {
       
       console.log(`[MapView] API params: ${params.toString()}`);
       
-      // Use production URL for iOS app
+      // Use production URL for iOS app - ensure HTTPS connectivity
       const isCapacitor = (window as any).Capacitor?.isNativePlatform();
       const baseUrl = isCapacitor ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
       
-      const response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`);
+      console.log(`[MapView] Making API request to: ${baseUrl}/api/spots/nearby?${params.toString()}`);
+      
+      const response = await fetch(`${baseUrl}/api/spots/nearby?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
+        // iOS network timeout
+        signal: AbortSignal.timeout(15000)
+      });
+      
+      console.log(`[MapView] Response status: ${response.status}`);
+      
       if (!response.ok) {
         console.error(`[MapView] API error: ${response.status} ${response.statusText}`);
         throw new Error(`Failed to fetch spots: ${response.status}`);

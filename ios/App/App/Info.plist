@@ -66,5 +66,46 @@
         <string>Socialiser needs photo library access to let you share existing photos from your gallery when posting about spots you've visited.</string>
         <key>NSUserNotificationsUsageDescription</key>
         <string>Socialiser sends notifications about trending spots near you, friend activity, and daily challenges to enhance your discovery experience.</string>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+                <key>NSAllowsArbitraryLoads</key>
+                <true/>
+                <key>NSExceptionDomains</key>
+                <dict>
+                        <key>localhost</key>
+                        <dict>
+                                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                                <true/>
+                                <key>NSExceptionMinimumTLSVersion</key>
+                                <string>TLSv1.0</string>
+                                <key>NSExceptionRequiresForwardSecrecy</key>
+                                <false/>
+                        </dict>
+                        <key>hot-girl-hunt-fenelon141.replit.app</key>
+                        <dict>
+                                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                                <false/>
+                                <key>NSExceptionMinimumTLSVersion</key>
+                                <string>TLSv1.2</string>
+                                <key>NSExceptionRequiresForwardSecrecy</key>
+                                <false/>
+                                <key>NSIncludesSubdomains</key>
+                                <true/>
+                                <key>NSExceptionAllowsLocalNetworking</key>
+                                <true/>
+                        </dict>
+                        <key>replit.app</key>
+                        <dict>
+                                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                                <false/>
+                                <key>NSExceptionMinimumTLSVersion</key>
+                                <string>TLSv1.2</string>
+                                <key>NSExceptionRequiresForwardSecrecy</key>
+                                <false/>
+                                <key>NSIncludesSubdomains</key>
+                                <true/>
+                        </dict>
+                </dict>
+        </dict>
 </dict>
 </plist>
