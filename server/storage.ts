@@ -368,27 +368,7 @@ class MemStorage implements IStorage {
     return [];
   }
   
-  async getSquadMembers(squadId: number): Promise<any[]> {
-    // In a real implementation, this would query squad members
-    // For now, return empty array
-    return [];
-  }
-
-  // Notification methods
-  async createNotification(notification: any): Promise<any> {
-    const newNotification = {
-      id: this.notifications.length + 1,
-      ...notification,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.notifications.push(newNotification);
-    return newNotification;
-  }
-
-  async getUserNotifications(userId: string): Promise<any[]> {
-    return this.notifications.filter(n => n.userId === userId);
-  }
+  // These methods are implemented below with proper types
 
   async getAllNotifications(): Promise<any[]> {
     return this.notifications;
