@@ -34,7 +34,7 @@ const config: CapacitorConfig = {
       urlScheme: "com.socialiser.app"
     },
     Camera: {
-      saveToGallery: true,
+      saveToGallery: false,
       allowEditing: true,
       correctOrientation: true,
       permissions: {
