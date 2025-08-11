@@ -123,16 +123,46 @@ export function useCamera() {
 
   // Show photo source selection (camera vs gallery)
   const choosePhotoSource = async (): Promise<string | null> => {
-    return new Promise((resolve) => {
-      // Create a simple selection dialog
-      const result = confirm("Choose photo source:\nOK = Camera\nCancel = Gallery");
-      
-      if (result) {
-        takePhoto().then(resolve);
-      } else {
-        selectFromGallery().then(resolve);
+    setIsLoading(true);
+    
+    try {
+      // First check and request permissions for iOS
+      if (typeof window !== 'undefined' && (window as any).Capacitor) {
+        const hasPermission = await checkCameraPermission();
+        if (!hasPermission) {
+          const granted = await requestCameraPermission();
+          if (!granted) {
+            toast({
+              title: "Camera Permission Needed",
+              description: "Please enable camera access in Settings to add photos to your stories",
+              variant: "destructive",
+            });
+            return null;
+          }
+        }
       }
-    });
+      
+      return new Promise((resolve) => {
+        // Create a simple selection dialog
+        const result = confirm("Choose photo source:\nOK = Camera\nCancel = Gallery");
+        
+        if (result) {
+          takePhoto().then(resolve);
+        } else {
+          selectFromGallery().then(resolve);
+        }
+      });
+    } catch (error) {
+      console.error('Photo source selection error:', error);
+      toast({
+        title: "Camera Error",
+        description: "Unable to access camera or photo library",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Check camera permissions (iOS specific)
