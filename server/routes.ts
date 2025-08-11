@@ -381,6 +381,8 @@ function calculateDistance(
 
 async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
   try {
+    console.log(`[findNearbyTrendySpots] Searching for spots around ${lat}, ${lng} within ${radius}m`);
+    
     // Optimized Overpass API query - reduced timeout and more focused search
     const query = `
       [out:json][timeout:15];
@@ -396,6 +398,8 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       );
       out geom;
     `;
+    
+    console.log(`[findNearbyTrendySpots] Overpass query: ${query.trim()}`);
 
     const response = await fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
@@ -406,13 +410,15 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
     });
 
     if (!response.ok) {
-      console.warn('Overpass API request failed:', response.status);
+      console.warn(`[findNearbyTrendySpots] Overpass API request failed: ${response.status} ${response.statusText}`);
       return [];
     }
 
     const data = await response.json();
+    console.log(`[findNearbyTrendySpots] Overpass API returned ${data.elements?.length || 0} elements`);
     
     if (!data.elements || data.elements.length === 0) {
+      console.log(`[findNearbyTrendySpots] No elements found in API response`);
       return [];
     }
 
@@ -424,11 +430,17 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       .map((element: any) => convertOSMToSpot(element, lat, lng))
       .filter((spot: any) => spot && isTrendyPlace(spot));
 
+    console.log(`[findNearbyTrendySpots] Processed ${spots.length} spots before deduplication`);
     const uniqueResults = removeDuplicates(spots);
+    console.log(`[findNearbyTrendySpots] ${uniqueResults.length} unique spots after deduplication`);
+    
     // Sort by distance for nearby spots and limit early for performance
-    return uniqueResults
+    const finalResults = uniqueResults
       .sort((a, b) => (a.distance || 0) - (b.distance || 0))
       .slice(0, 20); // Reduced from 25 to 20 for faster response
+    
+    console.log(`[findNearbyTrendySpots] Returning ${finalResults.length} final spots`);
+    return finalResults;
 
   } catch (error) {
     console.warn('Failed to fetch nearby spots from OSM:', error);
@@ -1068,8 +1080,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Spots routes
   app.get("/api/spots", async (req, res) => {
-    const spots = await storage.getAllSpots();
-    res.json(spots);
+    const { lat, lng, radius } = req.query;
+    console.log(`[/api/spots] Request params:`, { lat, lng, radius });
+    
+    if (lat && lng) {
+      // Get spots from OpenStreetMap
+      const latitude = parseFloat(lat as string);
+      const longitude = parseFloat(lng as string);
+      const searchRadius = radius ? parseInt(radius as string) : 1000;
+      
+      console.log(`[/api/spots] Searching OSM for spots at ${latitude}, ${longitude} within ${searchRadius}m`);
+      const spots = await findNearbyTrendySpots(latitude, longitude, searchRadius);
+      console.log(`[/api/spots] Returning ${spots.length} spots`);
+      res.json(spots);
+    } else {
+      // Fallback to database spots if no location provided
+      console.log(`[/api/spots] No location provided, getting database spots`);
+      const spots = await storage.getAllSpots();
+      res.json(spots);
+    }
   });
 
   app.get("/api/spots/trending", async (req, res) => {
@@ -1907,15 +1936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             console.log(`WebSocket spots request for ${data.latitude}, ${data.longitude}`);
             
-            const spots = await findNearbySpots(data.latitude, data.longitude, {
-              radius: data.radius || 1000,
-              limit: data.limit || 20,
-              category: data.filters?.category,
-              search: data.filters?.search,
-              dietary: data.filters?.dietary,
-              price: data.filters?.price,
-              ambiance: data.filters?.ambiance
-            });
+            const spots = await findNearbyTrendySpots(data.latitude, data.longitude, data.radius || 1000);
             
             console.log(`WebSocket returning ${spots.length} spots to client`);
             
@@ -1929,7 +1950,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ws.send(JSON.stringify({
               type: 'spotsNearbyResponse',
               requestId: data.requestId,
-              error: error.message
+              error: error instanceof Error ? error.message : 'Unknown error'
             }));
           }
         }
