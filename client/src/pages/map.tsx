@@ -62,108 +62,88 @@ export default function MapView() {
   const [spotsLoading, setSpotsLoading] = useState(true);
   const [nearbyError, setNearbyError] = useState<Error | null>(null);
   
-  // Bulletproof iOS-compatible fetch with multiple failsafes
+  // Enhanced iOS-compatible fetch with WebSocket-first approach
   const fetchRealTimeSpots = async (lat: number, lng: number) => {
-    console.log(`[MapView] Starting iOS-hardened fetch for ${lat}, ${lng}`);
+    console.log(`[MapView] Fetching spots for ${lat}, ${lng} with 1.8km radius`);
     setSpotsLoading(true);
     setNearbyError(null);
     
-    const isCapacitor = (window as any).Capacitor?.isNativePlatform();
-    
-    // iOS-hardened request configuration
-    const iosRequestConfig = {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'User-Agent': 'Socialiser-iOS/1.0',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
-      },
-      cache: 'no-cache' as RequestCache,
-      credentials: 'omit' as RequestCredentials,
-      mode: 'cors' as RequestMode,
-      timeout: isCapacitor ? 15000 : 10000 // Longer timeout for iOS
-    };
-    
-    // Use 1.8km radius as requested
-    const endpoints = [
-      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`,
-      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=20`
-    ];
-    
-    // Attempt each endpoint with iOS-specific retry logic
-    for (let i = 0; i < endpoints.length; i++) {
-      const endpoint = endpoints[i];
-      console.log(`[MapView] Attempt ${i + 1}: ${endpoint}`);
+    try {
+      // Try WebSocket first (faster for real-time data)
+      console.log('[MapView] Attempting WebSocket connection...');
+      const spots = await fetchSpotsViaWebSocket(lat, lng, searchFilters);
       
-      try {
-        // iOS-compatible fetch with abort controller
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), iosRequestConfig.timeout);
-        
-        const response = await fetch(endpoint, {
-          ...iosRequestConfig,
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          console.warn(`[MapView] HTTP ${response.status} from endpoint ${i + 1}`);
-          continue; // Try next endpoint
-        }
-        
-        const spots = await response.json();
-        
-        if (spots && Array.isArray(spots) && spots.length > 0) {
-          console.log(`[MapView] ✅ Success from endpoint ${i + 1}: ${spots.length} spots`);
-          setNearbySpots(spots);
-          setSpotsLoading(false);
-          return;
-        } else {
-          console.warn(`[MapView] Empty response from endpoint ${i + 1}`);
-          continue; // Try next endpoint
-        }
-        
-      } catch (fetchError) {
-        console.warn(`[MapView] Endpoint ${i + 1} failed:`, fetchError);
-        
-        // If this is the last endpoint, try WebSocket fallback
-        if (i === endpoints.length - 1) {
-          console.log('[MapView] All HTTP endpoints failed, trying WebSocket...');
+      if (spots && Array.isArray(spots) && spots.length > 0) {
+        console.log(`[MapView] ✅ WebSocket success: ${spots.length} spots`);
+        setNearbySpots(spots);
+        setSpotsLoading(false);
+        return;
+      } else {
+        console.log('[MapView] WebSocket returned empty, trying HTTP fallback...');
+        throw new Error('Empty WebSocket response');
+      }
+      
+    } catch (webSocketError) {
+      console.log('[MapView] WebSocket failed, falling back to HTTP:', webSocketError);
+      
+      // HTTP fallback with iOS optimization
+      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
+      const httpConfig = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'User-Agent': 'Socialiser-iOS/1.0',
+          'Cache-Control': 'no-cache'
+        },
+        cache: 'no-cache' as RequestCache,
+        credentials: 'omit' as RequestCredentials,
+        mode: 'cors' as RequestMode
+      };
+      
+      const endpoints = [
+        `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`,
+        `/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25` // Local fallback
+      ];
+      
+      for (let i = 0; i < endpoints.length; i++) {
+        try {
+          console.log(`[MapView] HTTP attempt ${i + 1}: ${endpoints[i]}`);
           
-          try {
-            const spots = await Promise.race([
-              fetchSpotsViaWebSocket(lat, lng, searchFilters),
-              new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('WebSocket timeout')), 8000)
-              )
-            ]) as any[];
-            
-            if (spots && Array.isArray(spots) && spots.length > 0) {
-              console.log(`[MapView] ✅ WebSocket fallback success: ${spots.length} spots`);
-              setNearbySpots(spots);
-              setSpotsLoading(false);
-              setNearbyError(null);
-              return;
-            }
-          } catch (wsError) {
-            console.error('[MapView] WebSocket fallback also failed:', wsError);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
+          
+          const response = await fetch(endpoints[i], {
+            ...httpConfig,
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            console.warn(`[MapView] HTTP ${response.status} from attempt ${i + 1}`);
+            continue;
           }
-        }
-        
-        // Small delay before trying next endpoint (iOS networking reliability)
-        if (i < endpoints.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          const httpSpots = await response.json();
+          
+          if (httpSpots && Array.isArray(httpSpots) && httpSpots.length > 0) {
+            console.log(`[MapView] ✅ HTTP success: ${httpSpots.length} spots`);
+            setNearbySpots(httpSpots);
+            setSpotsLoading(false);
+            return;
+          }
+          
+        } catch (httpError) {
+          console.warn(`[MapView] HTTP attempt ${i + 1} failed:`, httpError);
         }
       }
+      
+      // All attempts failed
+      console.error('[MapView] All networking attempts failed');
+      setNearbyError(new Error('Unable to load spots - check network connection'));
+      setSpotsLoading(false);
     }
-    
-    // All attempts failed
-    console.error('[MapView] All networking attempts failed');
-    setNearbyError(new Error('Unable to load spots - check network connection'));
-    setSpotsLoading(false);
   };
 
   // Real-time location-based spots fetching
