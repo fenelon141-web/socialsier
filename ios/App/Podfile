@@ -16,7 +16,7 @@ def capacitor_pods
   pod 'CapacitorDevice', :path => '../../node_modules/@capacitor/device'
   pod 'CapacitorGeolocation', :path => '../../node_modules/@capacitor/geolocation'
   pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
-  pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
+  # pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar' # Temporarily disabled
 end
 
 target 'App' do
