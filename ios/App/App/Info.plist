@@ -64,6 +64,8 @@
         <string>Socialiser needs camera access to let you capture and share photos of amazing spots you discover. Photos help other users find great places in your area.</string>
         <key>NSPhotoLibraryUsageDescription</key>
         <string>Socialiser needs photo library access to let you share existing photos from your gallery when posting about spots you've visited.</string>
+        <key>NSPhotoLibraryAddUsageDescription</key>
+        <string>Socialiser needs permission to save photos to your library so you can keep memories of the amazing spots you discover and share them with friends.</string>
         <key>NSUserNotificationsUsageDescription</key>
         <string>Socialiser sends notifications about trending spots near you, friend activity, and daily challenges to enhance your discovery experience.</string>
         <key>NSAppTransportSecurity</key>
