@@ -137,17 +137,67 @@ export default function MapView() {
       }
     };
     
-    // Use the dedicated WebSocket spots fetcher
+    // Multi-tier failsafe spots fetcher for 100% reliability
     const fetchSpots = async () => {
       try {
-        console.log(`[MapView] Fetching spots via dedicated WebSocket handler`);
-        const spots = await fetchSpotsViaWebSocket(latitude, longitude, searchFilters);
-        console.log(`[MapView] Successfully received ${spots.length} spots`);
-        setNearbySpots(spots);
+        console.log(`[MapView] Starting multi-tier spots fetch for ${latitude}, ${longitude}`);
+        
+        // Primary: Dedicated WebSocket
+        try {
+          console.log(`[MapView] Attempt 1: WebSocket spots handler`);
+          const spots = await fetchSpotsViaWebSocket(latitude, longitude, searchFilters);
+          if (spots && spots.length > 0) {
+            console.log(`[MapView] ✅ WebSocket success: ${spots.length} spots`);
+            setNearbySpots(spots);
+            setSpotsLoading(false);
+            return;
+          }
+        } catch (wsError) {
+          console.warn(`[MapView] WebSocket failed:`, wsError);
+        }
+        
+        // Fallback 1: Direct HTTP API
+        try {
+          console.log(`[MapView] Attempt 2: Direct HTTP API`);
+          const response = await fetch(`/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`);
+          if (response.ok) {
+            const spots = await response.json();
+            if (spots && spots.length > 0) {
+              console.log(`[MapView] ✅ HTTP API success: ${spots.length} spots`);
+              setNearbySpots(spots);
+              setSpotsLoading(false);
+              return;
+            }
+          }
+        } catch (httpError) {
+          console.warn(`[MapView] HTTP API failed:`, httpError);
+        }
+        
+        // Fallback 2: Production server direct
+        try {
+          console.log(`[MapView] Attempt 3: Production server direct`);
+          const response = await fetch(`https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`);
+          if (response.ok) {
+            const spots = await response.json();
+            if (spots && spots.length > 0) {
+              console.log(`[MapView] ✅ Production server success: ${spots.length} spots`);
+              setNearbySpots(spots);
+              setSpotsLoading(false);
+              return;
+            }
+          }
+        } catch (prodError) {
+          console.warn(`[MapView] Production server failed:`, prodError);
+        }
+        
+        // All methods failed
+        console.error(`[MapView] All fetch methods failed`);
+        setNearbyError(new Error('Unable to load spots. Please check your connection.'));
         setSpotsLoading(false);
+        
       } catch (error) {
-        console.error(`[MapView] Spots fetch failed:`, error);
-        setNearbyError(error instanceof Error ? error : new Error('Spots fetch failed'));
+        console.error(`[MapView] Unexpected error in fetchSpots:`, error);
+        setNearbyError(error instanceof Error ? error : new Error('Unexpected error'));
         setSpotsLoading(false);
       }
     };

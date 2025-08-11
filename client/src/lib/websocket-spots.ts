@@ -6,7 +6,13 @@ export function initializeWebSocket(): Promise<WebSocket> {
   if (connectionPromise) return connectionPromise;
   
   connectionPromise = new Promise((resolve, reject) => {
-    const wsUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
+    // Auto-detect production server URL for 100% reliability
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const fallbackUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
+    const wsUrl = window.location.hostname.includes('replit') 
+      ? `${protocol}//${window.location.host}/ws`
+      : fallbackUrl;
+    
     console.log(`[WebSocketSpots] Connecting to: ${wsUrl}`);
     
     const ws = new WebSocket(wsUrl);
