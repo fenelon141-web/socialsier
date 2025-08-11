@@ -70,6 +70,10 @@
         <dict>
                 <key>NSAllowsArbitraryLoads</key>
                 <true/>
+                <key>NSAllowsArbitraryLoadsInWebContent</key>
+                <true/>
+                <key>NSAllowsLocalNetworking</key>
+                <true/>
                 <key>NSExceptionDomains</key>
                 <dict>
                         <key>localhost</key>
@@ -93,6 +97,10 @@
                                 <true/>
                                 <key>NSExceptionAllowsLocalNetworking</key>
                                 <true/>
+                                <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
+                                <true/>
+                                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+                                <false/>
                         </dict>
                         <key>replit.app</key>
                         <dict>
@@ -104,6 +112,15 @@
                                 <false/>
                                 <key>NSIncludesSubdomains</key>
                                 <true/>
+                        </dict>
+                        <key>overpass-api.de</key>
+                        <dict>
+                                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                                <false/>
+                                <key>NSExceptionMinimumTLSVersion</key>
+                                <string>TLSv1.2</string>
+                                <key>NSExceptionRequiresForwardSecrecy</key>
+                                <false/>
                         </dict>
                 </dict>
         </dict>
