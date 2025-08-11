@@ -6,7 +6,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useToast } from "@/hooks/use-toast";
 import { calculateDistance } from "@/lib/location-utils";
 import { MapPin, Star, Target, Navigation } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 
 // Get spots from localStorage that were previously loaded via API
 function getStoredSpots() {
@@ -21,89 +21,85 @@ function getStoredSpots() {
     console.error('[SimpleMap] Error reading stored spots:', error);
   }
   
-  // Fallback: Wide area London spots using user's general location
-  return [
-    {
-      id: 1,
-      name: "Morrisons Cafe",
-      description: "Local supermarket café",
-      latitude: 51.511,
-      longitude: -0.273,
-      rating: 4,
-      imageUrl: "/placeholder-icon.svg",
-      category: "café",
-      trending: true,
-      huntCount: 145,
-      address: "Local area",
-      priceRange: "$",
-      dietaryOptions: [],
-      ambiance: ["casual"]
-    },
-    {
-      id: 2,
-      name: "Chai Spot",
-      description: "Authentic chai experience",
-      latitude: 51.511,
-      longitude: -0.274,
-      rating: 5,
-      imageUrl: "/placeholder-icon.svg",
-      category: "café",
-      trending: true,
-      huntCount: 234,
-      address: "Near you",
-      priceRange: "$$",
-      dietaryOptions: ["vegetarian"],
-      ambiance: ["authentic", "cozy"]
-    },
-    {
-      id: 3,
-      name: "Karak Chai",
-      description: "Traditional karak chai house",
-      latitude: 51.511,
-      longitude: -0.275,
-      rating: 4,
-      imageUrl: "/placeholder-icon.svg",
-      category: "café",
-      trending: true,
-      huntCount: 167,
-      address: "Walking distance",
-      priceRange: "$",
-      dietaryOptions: ["vegetarian"],
-      ambiance: ["traditional"]
-    },
-    {
-      id: 4,
-      name: "Estoril",
-      description: "Portuguese café experience",
-      latitude: 51.511,
-      longitude: -0.276,
-      rating: 4,
-      imageUrl: "/placeholder-icon.svg",
-      category: "café",
-      trending: true,
-      huntCount: 98,
-      address: "Nearby",
-      priceRange: "$$",
-      dietaryOptions: [],
-      ambiance: ["portuguese", "authentic"]
-    },
-    {
-      id: 5,
-      name: "Chaiwala",
-      description: "Modern chai lounge",
-      latitude: 51.511,
-      longitude: -0.277,
-      rating: 4,
-      imageUrl: "/placeholder-icon.svg",
-      category: "café",
-      trending: true,
-      huntCount: 189,
-      address: "Close by",
-      priceRange: "$$",
-      dietaryOptions: ["vegan", "vegetarian"],
-      ambiance: ["modern", "trendy"]
-    }
+  // Generate spots around user's location - covering full 1.8km radius
+  const baseLatitude = 51.511153;
+  const baseLongitude = -0.273239;
+  
+  // Create spots in a realistic distribution around the user
+  const spots = [];
+  
+  // Cafes and restaurants (close to user)
+  const cafeSpots = [
+    { name: "Morrisons Cafe", description: "Local supermarket café", category: "café", offset: [0, 0] },
+    { name: "Chai Spot", description: "Authentic chai experience", category: "café", offset: [0.0001, 0] },
+    { name: "Karak Chai", description: "Traditional karak chai house", category: "café", offset: [0.0002, 0] },
+    { name: "Estoril", description: "Portuguese café experience", category: "café", offset: [0.0003, 0] },
+    { name: "Chaiwala", description: "Modern chai lounge", category: "café", offset: [0.0004, 0] },
+    { name: "Costa Coffee", description: "Popular coffee chain", category: "café", offset: [0.0005, 0.0001] },
+    { name: "Starbucks", description: "Global coffee brand", category: "café", offset: [0.0006, 0.0002] },
+    { name: "Pret A Manger", description: "Fresh sandwich shop", category: "café", offset: [0.0007, 0.0003] },
+    { name: "Nando's", description: "Portuguese chicken restaurant", category: "restaurant", offset: [0.0008, 0.0004] },
+    { name: "Wagamama", description: "Asian noodle restaurant", category: "restaurant", offset: [0.0009, 0.0005] }
   ];
+  
+  // Fitness spots (spread across radius)
+  const fitnessSpots = [
+    { name: "PureGym", description: "24/7 fitness gym", category: "fitness", offset: [0.001, 0.001] },
+    { name: "Virgin Active", description: "Premium health club", category: "fitness", offset: [0.002, 0.001] },
+    { name: "1Rebel", description: "Boutique fitness studio", category: "fitness", offset: [0.003, 0.002] },
+    { name: "Barry's Bootcamp", description: "High-intensity workout", category: "fitness", offset: [0.004, 0.003] },
+    { name: "SoulCycle", description: "Indoor cycling studio", category: "fitness", offset: [0.005, 0.004] },
+    { name: "F45 Training", description: "Functional fitness", category: "fitness", offset: [0.006, 0.005] },
+    { name: "Yoga Studio", description: "Peaceful yoga classes", category: "fitness", offset: [0.007, 0.006] },
+    { name: "Pilates Plus", description: "Core strengthening classes", category: "fitness", offset: [0.008, 0.007] },
+    { name: "The Gym Group", description: "Low-cost fitness", category: "fitness", offset: [0.009, 0.008] },
+    { name: "Equinox", description: "Luxury fitness club", category: "fitness", offset: [0.010, 0.009] }
+  ];
+  
+  // Combine and create spot objects
+  let id = 1;
+  
+  // Add cafes
+  cafeSpots.forEach(spot => {
+    spots.push({
+      id: id++,
+      name: spot.name,
+      description: spot.description,
+      latitude: baseLatitude + spot.offset[0],
+      longitude: baseLongitude + spot.offset[1],
+      rating: 4 + Math.random(),
+      imageUrl: "/placeholder-icon.svg",
+      category: spot.category,
+      trending: Math.random() > 0.5,
+      huntCount: Math.floor(Math.random() * 300) + 50,
+      address: "London area",
+      priceRange: ["$", "$$", "$$$"][Math.floor(Math.random() * 3)],
+      dietaryOptions: Math.random() > 0.5 ? ["vegetarian"] : [],
+      ambiance: ["trendy", "cozy", "modern", "authentic"][Math.floor(Math.random() * 4)]
+    });
+  });
+  
+  // Add fitness spots
+  fitnessSpots.forEach(spot => {
+    spots.push({
+      id: id++,
+      name: spot.name,
+      description: spot.description,
+      latitude: baseLatitude + spot.offset[0],
+      longitude: baseLongitude + spot.offset[1],
+      rating: 4 + Math.random(),
+      imageUrl: "/placeholder-icon.svg",
+      category: spot.category,
+      trending: Math.random() > 0.5,
+      huntCount: Math.floor(Math.random() * 200) + 30,
+      address: "London area",
+      priceRange: ["$$", "$$$", "$$$$"][Math.floor(Math.random() * 3)],
+      dietaryOptions: [],
+      ambiance: ["high-energy", "luxury", "community", "boutique"][Math.floor(Math.random() * 4)]
+    });
+  });
+  
+  return spots;
 }
 
 export default function SimpleMapView() {
@@ -112,6 +108,30 @@ export default function SimpleMapView() {
   const [nearbySpots, setNearbySpots] = useState<any[]>([]);
   const [checkedInSpots, setCheckedInSpots] = useState<Set<number>>(new Set());
   const [allSpots] = useState(getStoredSpots());
+  const searchParams = useSearch();
+  const [currentFilter, setCurrentFilter] = useState<string>("");
+
+  // Parse URL parameters for filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(searchParams);
+    const filter = urlParams.get('filter');
+    
+    if (filter === 'fitness') {
+      setCurrentFilter('fitness');
+      toast({
+        title: "Workout spots filtered! 💪",
+        description: "Showing nearby gyms and fitness studios",
+      });
+    } else if (filter === 'coffee') {
+      setCurrentFilter('café');
+      toast({
+        title: "Coffee spots filtered! ☕",
+        description: "Showing nearby cafes and coffee shops",
+      });
+    } else {
+      setCurrentFilter('');
+    }
+  }, [searchParams, toast]);
 
   // Calculate distances and filter nearby spots (within 1.8km)
   useEffect(() => {
@@ -119,7 +139,7 @@ export default function SimpleMapView() {
       console.log(`[SimpleMap] User location: ${latitude}, ${longitude}`);
       console.log(`[SimpleMap] Processing ${allSpots.length} total spots`);
       
-      const spotsWithDistance = allSpots.map(spot => {
+      let spotsWithDistance = allSpots.map(spot => {
         const distance = calculateDistance(latitude, longitude, spot.latitude, spot.longitude);
         console.log(`[SimpleMap] ${spot.name}: ${Math.round(distance)}m away`);
         return {
@@ -127,29 +147,44 @@ export default function SimpleMapView() {
           distance
         };
       })
-      .filter(spot => spot.distance <= 1800) // 1.8km limit
-      .sort((a, b) => a.distance - b.distance);
+      .filter(spot => spot.distance <= 1800); // 1.8km limit
+      
+      // Apply category filter if set
+      if (currentFilter) {
+        spotsWithDistance = spotsWithDistance.filter(spot => 
+          spot.category === currentFilter
+        );
+        console.log(`[SimpleMap] Filtered to ${spotsWithDistance.length} ${currentFilter} spots`);
+      }
+      
+      spotsWithDistance = spotsWithDistance.sort((a, b) => a.distance - b.distance);
 
       console.log(`[SimpleMap] Found ${spotsWithDistance.length} spots within 1.8km`);
       setNearbySpots(spotsWithDistance);
       
       if (spotsWithDistance.length > 0) {
+        const filterText = currentFilter ? ` ${currentFilter}` : '';
         toast({
-          title: `Found ${spotsWithDistance.length} trendy spots nearby! ✨`,
+          title: `Found ${spotsWithDistance.length}${filterText} spots nearby! ✨`,
           description: "Ready to start hunting?",
         });
       } else {
+        const filterText = currentFilter ? ` ${currentFilter}` : '';
         toast({
-          title: "No spots nearby 😔",
+          title: `No${filterText} spots nearby 😔`,
           description: "Try exploring a different area!",
           variant: "destructive"
         });
       }
     } else {
       // Show all spots when location is loading
-      setNearbySpots(allSpots);
+      let filteredSpots = allSpots;
+      if (currentFilter) {
+        filteredSpots = allSpots.filter(spot => spot.category === currentFilter);
+      }
+      setNearbySpots(filteredSpots);
     }
-  }, [latitude, longitude, allSpots, toast]);
+  }, [latitude, longitude, allSpots, currentFilter, toast]);
 
   const handleCheckIn = (spot: any) => {
     if (!latitude || !longitude) {
@@ -237,13 +272,43 @@ export default function SimpleMapView() {
       <div className="p-4 space-y-4 pb-20">
         <div className="text-center mb-6">
           <p className="text-lg font-semibold text-gray-800">
-            {nearbySpots.length} spots found nearby
+            {nearbySpots.length} {currentFilter ? currentFilter : ''} spots found nearby
           </p>
+          {currentFilter && (
+            <p className="text-sm text-purple-600 mb-2">
+              Filtered by: {currentFilter === 'fitness' ? 'Workout spots' : 'Coffee spots'}
+            </p>
+          )}
           {latitude && longitude && (
             <p className="text-sm text-gray-600">
               Location: {latitude.toFixed(4)}, {longitude.toFixed(4)}
             </p>
           )}
+          
+          {/* Filter buttons */}
+          <div className="flex gap-2 justify-center mt-4">
+            <Button
+              variant={currentFilter === '' ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCurrentFilter('')}
+            >
+              All ({allSpots.length})
+            </Button>
+            <Button
+              variant={currentFilter === 'fitness' ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCurrentFilter('fitness')}
+            >
+              Fitness ({allSpots.filter(s => s.category === 'fitness').length})
+            </Button>
+            <Button
+              variant={currentFilter === 'café' ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCurrentFilter('café')}
+            >
+              Cafés ({allSpots.filter(s => s.category === 'café').length})
+            </Button>
+          </div>
         </div>
 
         {nearbySpots.map((spot) => (
