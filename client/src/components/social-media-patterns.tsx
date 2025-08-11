@@ -82,16 +82,37 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   });
 
   const handleTakePhoto = async () => {
+    console.log('=== PHOTO CAPTURE INITIATED ===');
+    
     try {
       const photo = await choosePhotoSource();
+      console.log('Photo capture result:', {
+        hasPhoto: !!photo,
+        photoLength: photo?.length || 0,
+        photoPrefix: photo?.substring(0, 50) + '...' || 'No photo'
+      });
+      
       if (photo) {
         setStoryImage(photo);
+        console.log('SUCCESS: Photo set for story');
         toast({
           title: "Photo captured! 📸",
           description: "Add a caption and post your story!",
         });
+
+        // Test the upload endpoint immediately
+        console.log('Testing upload endpoint with captured photo...');
+        try {
+          const testResponse = await apiRequest('POST', '/upload-story-image', { dataUrl: photo });
+          console.log('Upload test successful:', testResponse);
+        } catch (uploadError) {
+          console.error('Upload test failed:', uploadError);
+        }
+      } else {
+        console.log('No photo returned from camera');
       }
     } catch (error) {
+      console.error('Photo capture error:', error);
       toast({
         title: "Photo failed 😢",
         description: "Please try taking a photo again!",
@@ -101,7 +122,10 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   };
 
   const handleCreateStory = () => {
+    console.log('=== STORY CREATION INITIATED ===');
+    
     if (!storyImage) {
+      console.log('ERROR: No story image available');
       toast({
         title: "Photo required!",
         description: "Take a photo first to create your story.",
@@ -110,7 +134,13 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       return;
     }
 
-    console.log('Creating story with image:', storyImage.substring(0, 50) + '...');
+    console.log('Story image details:', {
+      hasImage: !!storyImage,
+      imageLength: storyImage.length,
+      imagePrefix: storyImage.substring(0, 50) + '...',
+      caption: storyCaption || 'No caption',
+      captionLength: storyCaption.length
+    });
     
     const storyData = {
       userId: "1",
@@ -119,6 +149,14 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       type: "photo",
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
     };
+
+    console.log('Calling createStoryMutation with data:', {
+      userId: storyData.userId,
+      hasImageUrl: !!storyData.imageUrl,
+      imageUrlLength: storyData.imageUrl.length,
+      caption: storyData.caption,
+      type: storyData.type
+    });
 
     createStoryMutation.mutate(storyData);
   };

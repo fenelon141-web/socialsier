@@ -2116,20 +2116,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stories endpoints
-  // Image upload test endpoint
+  // Image upload test endpoint with comprehensive logging
   app.post('/upload-story-image', (req, res) => {
+    console.log('=== UPLOAD TEST ENDPOINT CALLED ===');
+    console.log('Request headers:', req.headers);
+    console.log('Request body keys:', Object.keys(req.body));
+    
     try {
       const { dataUrl } = req.body;
       if (!dataUrl) {
+        console.log('ERROR: No image data provided');
         return res.status(400).json({ error: 'No image data provided' });
       }
-      console.log('Received image data (start):', dataUrl.substring(0, 50) + '...');
-      console.log('Image data length:', dataUrl.length);
       
-      res.json({ success: true, message: 'Image received successfully' });
+      console.log('SUCCESS: Received image data');
+      console.log('Image data prefix:', dataUrl.substring(0, 50));
+      console.log('Image data length:', dataUrl.length);
+      console.log('Image data type:', typeof dataUrl);
+      
+      const response = { success: true, message: 'Image received successfully', dataLength: dataUrl.length };
+      console.log('Sending response:', response);
+      
+      res.json(response);
+      console.log('=== UPLOAD TEST ENDPOINT COMPLETED SUCCESSFULLY ===');
     } catch (error) {
-      console.error('Error uploading image:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error('=== UPLOAD TEST ENDPOINT ERROR ===', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: 'Internal server error', details: errorMessage });
     }
   });
 
@@ -2144,19 +2157,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/stories", async (req, res) => {
+    console.log('=== STORY CREATION ENDPOINT CALLED ===');
+    console.log('Request method:', req.method);
+    console.log('Request headers:', req.headers);
+    console.log('Request body keys:', Object.keys(req.body));
+    
     try {
-      console.log("Story upload request received:", {
+      console.log("Detailed story upload request:", {
         hasImageUrl: !!req.body.imageUrl,
         imageUrlLength: req.body.imageUrl?.length || 0,
+        imageUrlPrefix: req.body.imageUrl?.substring(0, 50) + '...',
         caption: req.body.caption,
-        userId: req.body.userId
+        userId: req.body.userId,
+        type: req.body.type
       });
 
       // Validate required fields
       if (!req.body.imageUrl) {
+        console.log("VALIDATION ERROR: Image is required");
         return res.status(400).json({ message: "Image is required" });
       }
       if (!req.body.userId) {
+        console.log("VALIDATION ERROR: User ID is required");
         return res.status(400).json({ message: "User ID is required" });
       }
 
@@ -2165,21 +2187,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
       };
       
-      console.log("Creating story with data:", {
+      console.log("Attempting to create story with data:", {
         userId: storyData.userId,
         caption: storyData.caption,
         type: storyData.type,
-        expiresAt: storyData.expiresAt
+        expiresAt: storyData.expiresAt,
+        hasImageData: !!storyData.imageUrl
       });
       
       const story = await storage.createStory(storyData);
-      console.log("Story created successfully:", story.id);
-      res.json(story);
+      console.log("SUCCESS: Story created with ID:", story.id);
+      
+      const response = story;
+      console.log("Sending story response:", { id: response.id, userId: response.userId });
+      res.json(response);
+      console.log('=== STORY CREATION ENDPOINT COMPLETED SUCCESSFULLY ===');
     } catch (error) {
-      console.error("Error creating story:", error);
+      console.error("=== STORY CREATION ENDPOINT ERROR ===", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorStack = error instanceof Error ? error.stack : "No stack trace";
+      console.error("Error stack:", errorStack);
       res.status(500).json({ 
         message: "Failed to create story",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: errorMessage,
+        details: errorStack
       });
     }
   });
