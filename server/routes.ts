@@ -2116,6 +2116,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stories endpoints
+  // Image upload test endpoint
+  app.post('/upload-story-image', (req, res) => {
+    try {
+      const { dataUrl } = req.body;
+      if (!dataUrl) {
+        return res.status(400).json({ error: 'No image data provided' });
+      }
+      console.log('Received image data (start):', dataUrl.substring(0, 50) + '...');
+      console.log('Image data length:', dataUrl.length);
+      
+      res.json({ success: true, message: 'Image received successfully' });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   app.get("/api/stories", async (req, res) => {
     try {
       const stories = await storage.getActiveStories();

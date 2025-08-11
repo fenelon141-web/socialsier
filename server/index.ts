@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import bodyParser from "body-parser";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -18,8 +19,11 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(express.json({ limit: '10mb' })); // Increase limit for image uploads
-app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+// Enhanced body parsing for large image uploads
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '50mb' })); // Increase limit for image uploads
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();
