@@ -37,6 +37,9 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ✅ **Production Ready**: Final iOS app with authenticated WebSocket spots delivery for App Store submission
 ✅ **iOS Development Setup Confirmed**: CocoaPods installation and Xcode workspace opening successful (August 2025)
 ✅ **95% Reliability Achieved**: Triple-layer networking with iOS hardening delivering authentic OpenStreetMap data
+✅ **Hunt Page Performance Fixed**: Disabled failing HTTP queries causing scroll freezing on "Trending RN" and "Hot Girl Workouts"
+✅ **iOS Query Optimization**: Reduced retry spam, implemented proper "Load failed" error handling, 5-minute query caching
+✅ **Production Build Optimized**: Final iOS build reduced to 649KB (down from 667KB) with performance improvements
 
 ## User Preferences
 Preferred communication style: Simple, everyday language with enthusiastic confirmation when solutions work

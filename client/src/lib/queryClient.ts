@@ -50,10 +50,15 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      staleTime: 5 * 60 * 1000, // 5 minutes cache
       retry: (failureCount, error: Error) => {
+        // Reduce retry spam on iOS
+        if (error.message.includes('Load failed')) {
+          console.warn(`iOS network error, skipping retry:`, error.message);
+          return false; // Don't retry iOS "Load failed" errors
+        }
         console.error(`Query retry ${failureCount}:`, error.message);
-        return failureCount < 2;
+        return failureCount < 1; // Reduce retries from 2 to 1
       }
     },
     mutations: {

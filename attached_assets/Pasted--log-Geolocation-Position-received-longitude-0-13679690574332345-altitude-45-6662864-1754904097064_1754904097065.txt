@@ -1,0 +1,62 @@
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13679690574332345,"altitude":45.66628646850586,"speed":1.1100000143051147,"latitude":51.60996778149504,"altitudeAccuracy":3,"accuracy":9.657679180512133,"heading":-1}
+⚡️  To Native ->  Geolocation getCurrentPosition 10334995
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60996778149504,"lng":-0.13679690574332345,"accuracy":9.657679180512133}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Position received: {"altitude":45.66628646850586,"latitude":51.60996778149504,"altitudeAccuracy":3,"speed":1.1100000143051147,"accuracy":9.657679180512133,"heading":-1,"longitude":-0.13679690574332345}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60996778149504,"lng":-0.13679690574332345,"accuracy":9.657679180512133}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 10334996
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {"timestamp":1754903985922,"coords":{"longitude":-0.13679690574332345,"altitude":45.666286468505859,"speed":1.1100000143051147,"latitude":51.609967781495037,"altitudeAccuracy":3,"accuracy":9.6576791805121331,"heading":-1}}
+⚡️  TO JS {"timestamp":1754903985922,"coords":{"altitude":45.666286468505859,"latitude":51.609967781495037,"altitudeAccuracy":3,"speed":1.1100000143051147,"accuracy":9.6576791805121331,"heading":-1,"longitude":-0.13679690574332345}}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13679690574332345,"altitude":45.66628646850586,"speed":1.1100000143051147,"latitude":51.60996778149504,"altitudeAccuracy":3,"accuracy":9.657679180512133,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60996778149504,"lng":-0.13679690574332345,"accuracy":9.657679180512133}
+⚡️  [log] - [Geolocation] Position received: {"altitude":45.66628646850586,"latitude":51.60996778149504,"altitudeAccuracy":3,"speed":1.1100000143051147,"accuracy":9.657679180512133,"heading":-1,"longitude":-0.13679690574332345}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60996778149504,"lng":-0.13679690574332345,"accuracy":9.657679180512133}
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
