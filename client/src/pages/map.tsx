@@ -57,146 +57,76 @@ export default function MapView() {
     }
   }, [searchParams, toast]);
   
-  // Valley girl aesthetic emergency spots to guarantee display
-  const emergencySpots = [
-    {
-      id: 1,
-      name: 'Chai Spot',
-      description: 'Authentic chai lattes & golden milk',
-      latitude: 51.511153,
-      longitude: -0.273239,
-      rating: 4.8,
-      imageUrl: '/placeholder-icon.svg',
-      category: 'café',
-      trending: true,
-      huntCount: 234,
-      distance: 0,
-      amenity: 'cafe',
-      priceRange: '$$',
-      dietaryOptions: ['vegan', 'organic'],
-      ambiance: ['instagram-worthy'],
-      amenities: [],
-      address: '0m away',
-      createdAt: new Date()
-    },
-    {
-      id: 2,
-      name: 'Matcha Maiden',
-      description: 'Instagram-worthy matcha bowls',
-      latitude: 51.511153 + 0.0001,
-      longitude: -0.273239,
-      rating: 4.9,
-      imageUrl: '/placeholder-icon.svg',
-      category: 'café',
-      trending: true,
-      huntCount: 187,
-      distance: 11,
-      amenity: 'cafe',
-      priceRange: '$$$',
-      dietaryOptions: ['vegan', 'gluten-free'],
-      ambiance: ['aesthetic'],
-      amenities: [],
-      address: '11m away',
-      createdAt: new Date()
-    },
-    {
-      id: 3,
-      name: 'Acai Dreams',
-      description: 'Colorful acai & smoothie bowls',
-      latitude: 51.511153 + 0.0003,
-      longitude: -0.273239,
-      rating: 4.7,
-      imageUrl: '/placeholder-icon.svg',
-      category: 'café',
-      trending: true,
-      huntCount: 156,
-      distance: 33,
-      amenity: 'cafe',
-      priceRange: '$$',
-      dietaryOptions: ['vegan', 'organic'],
-      ambiance: ['boujee'],
-      amenities: [],
-      address: '33m away',
-      createdAt: new Date()
-    },
-    {
-      id: 4,
-      name: 'Poke Paradise',
-      description: 'Fresh poke bowls & bubble tea',
-      latitude: 51.511153 + 0.0004,
-      longitude: -0.273239,
-      rating: 4.6,
-      imageUrl: '/placeholder-icon.svg',
-      category: 'restaurant',
-      trending: true,
-      huntCount: 198,
-      distance: 44,
-      amenity: 'restaurant',
-      priceRange: '$$$',
-      dietaryOptions: ['gluten-free'],
-      ambiance: ['trendy'],
-      amenities: [],
-      address: '44m away',
-      createdAt: new Date()
-    },
-    {
-      id: 5,
-      name: 'Hot Girl Pilates',
-      description: 'Core & confidence building',
-      latitude: 51.511153 + 0.001,
-      longitude: -0.273239 + 0.001,
-      rating: 4.9,
-      imageUrl: '/placeholder-icon.svg',
-      category: 'fitness',
-      trending: true,
-      huntCount: 89,
-      distance: 131,
-      amenity: 'fitness',
-      priceRange: '$$$',
-      dietaryOptions: [],
-      ambiance: ['empowering'],
-      amenities: [],
-      address: '131m away',
-      createdAt: new Date()
-    },
-    {
-      id: 6,
-      name: '1Rebel',
-      description: 'Boutique fitness with nightclub vibes',
-      latitude: 51.511153 + 0.003,
-      longitude: -0.273239 + 0.002,
-      rating: 4.8,
-      imageUrl: '/placeholder-icon.svg',
-      category: 'fitness',
-      trending: true,
-      huntCount: 245,
-      distance: 361,
-      amenity: 'fitness',
-      priceRange: '$$$$',
-      dietaryOptions: [],
-      ambiance: ['luxury'],
-      amenities: [],
-      address: '361m away',
-      createdAt: new Date()
-    }
-  ];
-
-  // WebSocket-based spots fetching to bypass iOS HTTP issues
-  const [nearbySpots, setNearbySpots] = useState<Spot[]>(emergencySpots);
-  const [spotsLoading, setSpotsLoading] = useState(false);
+  // Real-time spots fetching with iOS compatibility
+  const [nearbySpots, setNearbySpots] = useState<Spot[]>([]);
+  const [spotsLoading, setSpotsLoading] = useState(true);
   const [nearbyError, setNearbyError] = useState<Error | null>(null);
   
-  // Load emergency spots immediately on component mount
-  useEffect(() => {
-    console.log('[MapView] ✅ LOADING EMERGENCY SPOTS ON MOUNT');
-    setNearbySpots(emergencySpots);
-    setSpotsLoading(false);
+  // iOS-compatible fetch function
+  const fetchRealTimeSpots = async (lat: number, lng: number) => {
+    console.log(`[MapView] Fetching real-time spots for ${lat}, ${lng}`);
+    setSpotsLoading(true);
     setNearbyError(null);
-  }, []); // Empty dependency array = run once on mount
+    
+    try {
+      // iOS-specific configuration for reliable network requests
+      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
+      
+      // Primary: Direct production server (most reliable for iOS)
+      const prodUrl = `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=2000&limit=25`;
+      
+      console.log(`[MapView] Attempting iOS-compatible fetch: ${prodUrl}`);
+      
+      const response = await fetch(prodUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-cache'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const spots = await response.json();
+      
+      if (spots && Array.isArray(spots) && spots.length > 0) {
+        console.log(`[MapView] ✅ Real-time spots loaded: ${spots.length} spots`);
+        setNearbySpots(spots);
+        setSpotsLoading(false);
+        return;
+      } else {
+        throw new Error('No spots returned from API');
+      }
+      
+    } catch (error) {
+      console.error('[MapView] Real-time fetch failed:', error);
+      setNearbyError(error as Error);
+      
+      // Fallback to WebSocket for iOS
+      try {
+        console.log('[MapView] Trying WebSocket fallback for iOS...');
+        const spots = await fetchSpotsViaWebSocket(lat, lng, searchFilters);
+        if (spots && Array.isArray(spots) && spots.length > 0) {
+          console.log(`[MapView] ✅ WebSocket fallback success: ${spots.length} spots`);
+          setNearbySpots(spots);
+          setSpotsLoading(false);
+          setNearbyError(null);
+          return;
+        }
+      } catch (wsError) {
+        console.error('[MapView] WebSocket fallback also failed:', wsError);
+      }
+      
+      setSpotsLoading(false);
+    }
+  };
 
-  // Direct WebSocket spots fetching effect
+  // Real-time location-based spots fetching
   useEffect(() => {
-    console.log('[MapView] UseEffect triggered - checking location:', { 
+    console.log('[MapView] Location effect triggered:', { 
       latitude, 
       longitude, 
       hasLatitude: !!latitude, 
@@ -212,6 +142,8 @@ export default function MapView() {
     
     if (locationError) {
       console.log('[MapView] Location error present:', locationError);
+      setSpotsLoading(false);
+      setNearbyError(locationError);
       return;
     }
     
@@ -220,133 +152,8 @@ export default function MapView() {
       return;
     }
     
-    console.log(`[MapView] ✅ Starting spots fetch for ${latitude}, ${longitude}`);
-    setSpotsLoading(true);
-    setNearbyError(null);
-    
-    // Function to send spots request
-    const sendSpotsRequest = () => {
-      const requestId = Date.now().toString();
-      const requestData = {
-        type: 'getSpotsNearby',
-        requestId,
-        latitude,
-        longitude,
-        radius: 2500,
-        limit: 25,
-        filters: searchFilters
-      };
-      
-      console.log(`[MapView] Sending WebSocket spots request:`, requestData);
-      
-      if ((window as any).webSocket?.readyState === WebSocket.OPEN) {
-        (window as any).webSocket.send(JSON.stringify(requestData));
-        console.log(`[MapView] WebSocket request sent successfully`);
-      } else {
-        console.log(`[MapView] WebSocket not ready, attempting to connect...`);
-        
-        // Try to reinitialize WebSocket connection
-        const initWebSocket = () => {
-          const wsUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
-          console.log(`[MapView] Connecting to: ${wsUrl}`);
-          
-          const ws = new WebSocket(wsUrl);
-          
-          ws.onopen = () => {
-            console.log('[MapView] WebSocket connected, sending spots request');
-            (window as any).webSocket = ws;
-            ws.send(JSON.stringify(requestData));
-          };
-          
-          ws.onerror = (error) => {
-            console.error('[MapView] WebSocket connection failed:', error);
-            setNearbyError(new Error('Connection failed'));
-            setSpotsLoading(false);
-          };
-        };
-        
-        initWebSocket();
-      }
-    };
-    
-
-
-    // Multi-tier failsafe spots fetcher for 100% reliability
-    const fetchSpots = async () => {
-      // IMMEDIATE emergency display - guaranteed to show spots
-      console.log(`[MapView] ✅ EMERGENCY SPOTS LOADING: ${emergencySpots.length} spots`);
-      setNearbySpots(emergencySpots);
-      setSpotsLoading(false);
-      setNearbyError(null);
-      
-      try {
-        console.log(`[MapView] Starting background fetch for ${latitude}, ${longitude}`);
-        
-        // Then try to fetch real data in background
-        try {
-          console.log(`[MapView] Background attempt: WebSocket spots handler`);
-          const spots = await Promise.race([
-            fetchSpotsViaWebSocket(latitude, longitude, searchFilters),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000))
-          ]) as any[];
-          if (spots && Array.isArray(spots) && spots.length > 0) {
-            console.log(`[MapView] ✅ WebSocket success: ${spots.length} spots - updating display`);
-            setNearbySpots(spots);
-            return;
-          }
-        } catch (wsError) {
-          console.warn(`[MapView] WebSocket failed:`, wsError);
-        }
-        
-        // Fallback 1: Direct HTTP API (bypass iOS "Load failed" issues)
-        try {
-          console.log(`[MapView] Attempt 2: Direct HTTP API`);
-          const isNative = (window as any).Capacitor?.isNativePlatform();
-          const apiUrl = isNative 
-            ? `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`
-            : `/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`;
-          
-          const response = await fetch(apiUrl);
-          if (response.ok) {
-            const spots = await response.json();
-            if (spots && spots.length > 0) {
-              console.log(`[MapView] ✅ HTTP API success: ${spots.length} spots`);
-              setNearbySpots(spots);
-              setSpotsLoading(false);
-              return;
-            }
-          }
-        } catch (httpError) {
-          console.warn(`[MapView] HTTP API failed:`, httpError);
-        }
-        
-        // Fallback 2: Production server direct
-        try {
-          console.log(`[MapView] Attempt 3: Production server direct`);
-          const response = await fetch(`https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`);
-          if (response.ok) {
-            const spots = await response.json();
-            if (spots && spots.length > 0) {
-              console.log(`[MapView] ✅ Production server success: ${spots.length} spots`);
-              setNearbySpots(spots);
-              setSpotsLoading(false);
-              return;
-            }
-          }
-        } catch (prodError) {
-          console.warn(`[MapView] Production server failed:`, prodError);
-        }
-        
-        // This section removed since we now load emergency spots immediately above
-        
-      } catch (error) {
-        console.error(`[MapView] Background fetch failed:`, error);
-        // Emergency spots already loaded above, so don't show error
-        console.log(`[MapView] Keeping emergency spots displayed`);
-      }
-    };
-    
-    fetchSpots();
+    console.log(`[MapView] ✅ Starting real-time spots fetch for ${latitude}, ${longitude}`);
+    fetchRealTimeSpots(latitude, longitude);
   }, [latitude, longitude, searchFilters]);
 
   // Disable HTTP fallback since we're using WebSocket
