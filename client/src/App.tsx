@@ -8,7 +8,7 @@ import { initializeIOSOptimizations } from "@/lib/ios-utils";
 import ErrorBoundary from "@/components/error-boundary";
 import PermissionHandler from "@/components/permission-handler";
 import Home from "@/pages/home";
-import SimpleMapView from "@/pages/simple-map";
+import MapView from "@/pages/map";
 import Social from "@/pages/social";
 import Squads from "@/pages/squads";
 import TasteMakers from "@/pages/taste-makers";
@@ -29,7 +29,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/map" component={SimpleMapView} />
+      <Route path="/map" component={MapView} />
       <Route path="/social" component={Social} />
       <Route path="/squads" component={Squads} />
       <Route path="/taste-makers" component={TasteMakers} />
