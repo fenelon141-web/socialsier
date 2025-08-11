@@ -62,6 +62,14 @@ export default function MapView() {
   const [spotsLoading, setSpotsLoading] = useState(false);
   const [nearbyError, setNearbyError] = useState<Error | null>(null);
   
+  // Load emergency spots immediately on component mount
+  useEffect(() => {
+    console.log('[MapView] ✅ LOADING EMERGENCY SPOTS ON MOUNT');
+    setNearbySpots(emergencySpots);
+    setSpotsLoading(false);
+    setNearbyError(null);
+  }, []); // Empty dependency array = run once on mount
+
   // Direct WebSocket spots fetching effect
   useEffect(() => {
     console.log('[MapView] UseEffect triggered - checking location:', { 
