@@ -24,10 +24,7 @@ const config: CapacitorConfig = {
       layoutName: "launch_screen",
       useDialog: true,
     },
-    StatusBar: {
-      style: "light",
-      backgroundColor: "#ff69b4"
-    },
+
     Geolocation: {
       permissions: {
         location: "whenInUse"
