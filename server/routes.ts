@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import path from "path";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { insertSpotHuntSchema } from "@shared/schema";
@@ -2089,6 +2090,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
   
+  // Direct download endpoint for iOS project
+  app.get("/download/socialiser-ios", async (req, res) => {
+    try {
+      const filePath = path.join(process.cwd(), 'socialiser-ios-clean.tar.gz');
+      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-ios-clean.tar.gz');
+      res.setHeader('Content-Type', 'application/gzip');
+      res.sendFile(filePath);
+    } catch (error) {
+      console.error("Error serving download:", error);
+      res.status(404).json({ message: "File not found" });
+    }
+  });
+
   // Stories endpoints
   app.get("/api/stories", async (req, res) => {
     try {
