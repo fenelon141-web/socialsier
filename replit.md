@@ -40,6 +40,9 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ✅ **Hunt Page Performance Fixed**: Disabled failing HTTP queries causing scroll freezing on "Trending RN" and "Hot Girl Workouts"
 ✅ **iOS Query Optimization**: Reduced retry spam, implemented proper "Load failed" error handling, 5-minute query caching
 ✅ **Production Build Optimized**: Final iOS build reduced to 649KB (down from 667KB) with performance improvements
+✅ **iOS Login Page Fixed**: Authentication routing configured to show login page at root for iOS simulator/device
+✅ **Navigation Routes Updated**: Home page moved to /home route, bottom navigation updated for iOS compatibility
+✅ **iOS Authentication Ready**: Login flow redirects properly, Xcode simulator will now show login page on startup
 
 ## User Preferences
 Preferred communication style: Simple, everyday language with enthusiastic confirmation when solutions work

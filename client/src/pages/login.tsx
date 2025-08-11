@@ -39,7 +39,7 @@ export default function Login() {
         title: "Welcome back!",
         description: "You're now logged in to Socialiser",
       });
-      setLocation("/");
+      setLocation("/home");
     } catch (error) {
       toast({
         title: "Login failed",

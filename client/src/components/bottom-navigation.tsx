@@ -6,7 +6,7 @@ export default function BottomNavigation() {
   const [location] = useLocation();
 
   const navItems = [
-    { path: "/", icon: Home, label: "Hunt", isActive: location === "/" },
+    { path: "/home", icon: Home, label: "Hunt", isActive: location === "/" || location === "/home" },
     { path: "/map", icon: Map, label: "Map", isActive: location === "/map" },
     { path: "/discover", icon: Sparkles, label: "Discover", isActive: location === "/discover" },
     { path: "/social", icon: Users, label: "Social", isActive: location === "/social" },

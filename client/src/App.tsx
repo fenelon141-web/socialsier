@@ -26,9 +26,20 @@ const AuthLogin = lazy(() => import("./pages/auth-login"));
 const Login = lazy(() => import("./pages/login"));
 
 function Router() {
+  // For iOS simulator testing, show login page at root
+  const isSimulator = (window as any).Capacitor?.isNativePlatform();
+  
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      {/* Show login page for iOS simulator/device */}
+      <Route path="/" component={isSimulator ? () => (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+          <div className="text-pink-600">Loading...</div>
+        </div>}>
+          <Login />
+        </Suspense>
+      ) : Home} />
+      <Route path="/home" component={Home} />
       <Route path="/map" component={MapView} />
       <Route path="/social" component={Social} />
       <Route path="/squads" component={Squads} />
@@ -42,7 +53,7 @@ function Router() {
         <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
           <div className="text-pink-600">Loading...</div>
         </div>}>
-          <AuthLogin onAuthSuccess={() => window.location.href = "/"} />
+          <AuthLogin onAuthSuccess={() => window.location.href = "/home"} />
         </Suspense>
       )} />
       <Route path="/login" component={() => (
@@ -52,7 +63,13 @@ function Router() {
           <Login />
         </Suspense>
       )} />
-      <Route component={Home} />
+      <Route component={isSimulator ? () => (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+          <div className="text-pink-600">Loading...</div>
+        </div>}>
+          <Login />
+        </Suspense>
+      ) : Home} />
     </Switch>
   );
 }
