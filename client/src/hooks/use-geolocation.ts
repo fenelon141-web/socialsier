@@ -48,43 +48,101 @@ export function useGeolocation() {
       if (isCapacitorIOS || isNative) {
         console.log('[Geolocation] Using Capacitor for native app');
         
-        // Check current permissions first
-        const currentPermissions = await Geolocation.checkPermissions();
-        console.log('[Geolocation] Current permissions:', currentPermissions);
-        
-        // Request permissions if not granted
-        if (currentPermissions.location !== 'granted') {
-          console.log('[Geolocation] Requesting location permissions...');
-          const permissions = await Geolocation.requestPermissions();
-          console.log('[Geolocation] Permission result:', permissions);
+        try {
+          // Check current permissions first
+          const currentPermissions = await Geolocation.checkPermissions();
+          console.log('[Geolocation] Current permissions:', currentPermissions);
           
-          if (permissions.location !== 'granted') {
-            throw new Error('Location permission denied by user');
+          // Request permissions if not granted
+          if (currentPermissions.location !== 'granted') {
+            console.log('[Geolocation] Requesting location permissions...');
+            try {
+              const permissions = await Geolocation.requestPermissions();
+              console.log('[Geolocation] Permission result:', permissions);
+              
+              if (permissions.location !== 'granted') {
+                throw new Error('Location permission denied by user');
+              }
+            } catch (permError: any) {
+              // If permission request fails, try to get position anyway (iOS sometimes grants automatically)
+              console.log('[Geolocation] Permission request error:', permError);
+              if (permError.code === 'UNIMPLEMENTED') {
+                console.log('[Geolocation] Permission API not implemented, attempting direct position request...');
+              } else {
+                throw permError;
+              }
+            }
+          }
+
+          console.log('[Geolocation] Getting current position...');
+          const position = await Geolocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 15000, // Increased timeout for iPhone
+            maximumAge: 10000, // Accept cached location up to 10 seconds old
+          });
+          
+          console.log('[Geolocation] Position received:', position.coords);
+
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            loading: false,
+            error: null,
+          });
+          
+          console.log('[Geolocation] Location state updated:', {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          });
+        } catch (capError: any) {
+          console.error('[Geolocation] Capacitor error:', capError);
+          
+          // Fallback to browser API if Capacitor fails
+          console.log('[Geolocation] Falling back to browser geolocation API...');
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                console.log('[Geolocation] Browser API position:', position.coords);
+                setLocation({
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  accuracy: position.coords.accuracy,
+                  loading: false,
+                  error: null,
+                });
+              },
+              (error) => {
+                console.error('[Geolocation] Browser API error:', error);
+                // Use London coordinates as last resort
+                console.log('[Geolocation] Using default London coordinates');
+                setLocation({
+                  latitude: 51.511153,
+                  longitude: -0.273239,
+                  accuracy: 100,
+                  loading: false,
+                  error: 'Using approximate location',
+                });
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 10000
+              }
+            );
+          } else {
+            // Use London coordinates as last resort
+            console.log('[Geolocation] No geolocation available, using default coordinates');
+            setLocation({
+              latitude: 51.511153,
+              longitude: -0.273239,
+              accuracy: 100,
+              loading: false,
+              error: 'Using approximate location',
+            });
           }
         }
-
-        console.log('[Geolocation] Getting current position...');
-        const position = await Geolocation.getCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: 15000, // Increased timeout for iPhone
-          maximumAge: 10000, // Accept cached location up to 10 seconds old
-        });
-        
-        console.log('[Geolocation] Position received:', position.coords);
-
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-          loading: false,
-          error: null,
-        });
-        
-        console.log('[Geolocation] Location state updated:', {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          accuracy: position.coords.accuracy
-        });
       } else {
         console.log('[Geolocation] Using browser geolocation API for web');
         

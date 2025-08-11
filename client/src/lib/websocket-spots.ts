@@ -60,7 +60,7 @@ export async function fetchSpotsViaWebSocket(
         requestId,
         latitude,
         longitude,
-        radius: 2500,
+        radius: 1800, // 1.8km radius as requested
         limit: 25,
         filters
       };

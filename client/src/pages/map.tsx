@@ -86,11 +86,10 @@ export default function MapView() {
       timeout: isCapacitor ? 15000 : 10000 // Longer timeout for iOS
     };
     
-    // Multiple production endpoints for redundancy
+    // Use 1.8km radius as requested
     const endpoints = [
-      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=2000&limit=25`,
-      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1500&limit=20`,
-      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1000&limit=15`
+      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`,
+      `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=20`
     ];
     
     // Attempt each endpoint with iOS-specific retry logic
