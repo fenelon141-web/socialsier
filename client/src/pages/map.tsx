@@ -9,6 +9,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { useToast } from "@/hooks/use-toast";
 import { calculateDistance, formatDistance } from "@/lib/location-utils";
+import { fetchSpotsViaWebSocket } from "@/lib/websocket-spots";
 import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link, useSearch } from "wouter";
 import type { Spot } from "@shared/schema";
@@ -57,71 +58,75 @@ export default function MapView() {
   const [spotsLoading, setSpotsLoading] = useState(false);
   const [nearbyError, setNearbyError] = useState<Error | null>(null);
   
-  // WebSocket spots fetching effect
+  // Direct WebSocket spots fetching effect
   useEffect(() => {
     if (!latitude || !longitude) return;
     
-    console.log(`[MapView] Using WebSocket to fetch spots for ${latitude}, ${longitude}`);
+    console.log(`[MapView] Starting spots fetch for ${latitude}, ${longitude}`);
     setSpotsLoading(true);
     setNearbyError(null);
     
-    const requestId = Date.now().toString();
-    const requestData = {
-      type: 'getSpotsNearby',
-      requestId,
-      latitude,
-      longitude,
-      radius: 2500,
-      limit: 25,
-      filters: searchFilters
-    };
-    
-    console.log(`[MapView] Sending WebSocket request:`, requestData);
-    // Send message via WebSocket if connected
-    if ((window as any).webSocket?.readyState === WebSocket.OPEN) {
-      (window as any).webSocket.send(JSON.stringify(requestData));
-    } else {
-      setNearbyError(new Error('WebSocket not connected'));
-      setSpotsLoading(false);
-    }
-    
-    // Set timeout for request
-    const timeout = setTimeout(() => {
-      setSpotsLoading(false);
-      setNearbyError(new Error('WebSocket request timeout'));
-    }, 15000);
-    
-    // Listen for WebSocket response directly
-    const handleMessage = (event: MessageEvent) => {
-      try {
-        const message = JSON.parse(event.data);
-        if (message.type === 'spotsNearbyResponse' && message.requestId === requestId) {
-          clearTimeout(timeout);
-          setSpotsLoading(false);
+    // Function to send spots request
+    const sendSpotsRequest = () => {
+      const requestId = Date.now().toString();
+      const requestData = {
+        type: 'getSpotsNearby',
+        requestId,
+        latitude,
+        longitude,
+        radius: 2500,
+        limit: 25,
+        filters: searchFilters
+      };
+      
+      console.log(`[MapView] Sending WebSocket spots request:`, requestData);
+      
+      if ((window as any).webSocket?.readyState === WebSocket.OPEN) {
+        (window as any).webSocket.send(JSON.stringify(requestData));
+        console.log(`[MapView] WebSocket request sent successfully`);
+      } else {
+        console.log(`[MapView] WebSocket not ready, attempting to connect...`);
+        
+        // Try to reinitialize WebSocket connection
+        const initWebSocket = () => {
+          const wsUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
+          console.log(`[MapView] Connecting to: ${wsUrl}`);
           
-          if (message.error) {
-            setNearbyError(new Error(message.error));
-          } else {
-            console.log(`[MapView] WebSocket returned ${message.spots?.length || 0} spots`);
-            setNearbySpots(message.spots || []);
-          }
-        }
+          const ws = new WebSocket(wsUrl);
+          
+          ws.onopen = () => {
+            console.log('[MapView] WebSocket connected, sending spots request');
+            (window as any).webSocket = ws;
+            ws.send(JSON.stringify(requestData));
+          };
+          
+          ws.onerror = (error) => {
+            console.error('[MapView] WebSocket connection failed:', error);
+            setNearbyError(new Error('Connection failed'));
+            setSpotsLoading(false);
+          };
+        };
+        
+        initWebSocket();
+      }
+    };
+    
+    // Use the dedicated WebSocket spots fetcher
+    const fetchSpots = async () => {
+      try {
+        console.log(`[MapView] Fetching spots via dedicated WebSocket handler`);
+        const spots = await fetchSpotsViaWebSocket(latitude, longitude, searchFilters);
+        console.log(`[MapView] Successfully received ${spots.length} spots`);
+        setNearbySpots(spots);
+        setSpotsLoading(false);
       } catch (error) {
-        console.error('WebSocket message parsing error:', error);
+        console.error(`[MapView] Spots fetch failed:`, error);
+        setNearbyError(error instanceof Error ? error : new Error('Spots fetch failed'));
+        setSpotsLoading(false);
       }
     };
     
-    // Add WebSocket message listener
-    if ((window as any).webSocket) {
-      (window as any).webSocket.addEventListener('message', handleMessage);
-    }
-    
-    return () => {
-      clearTimeout(timeout);
-      if ((window as any).webSocket) {
-        (window as any).webSocket.removeEventListener('message', handleMessage);
-      }
-    };
+    fetchSpots();
   }, [latitude, longitude, searchFilters]);
 
   // Disable HTTP fallback since we're using WebSocket
