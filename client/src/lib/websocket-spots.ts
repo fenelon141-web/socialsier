@@ -6,12 +6,15 @@ export function initializeWebSocket(): Promise<WebSocket> {
   if (connectionPromise) return connectionPromise;
   
   connectionPromise = new Promise((resolve, reject) => {
-    // Auto-detect production server URL for 100% reliability
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    // Force production server for iOS to avoid "Load failed" errors
+    const isNative = (window as any).Capacitor?.isNativePlatform();
     const fallbackUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
-    const wsUrl = window.location.hostname.includes('replit') 
-      ? `${protocol}//${window.location.host}/ws`
-      : fallbackUrl;
+    
+    const wsUrl = isNative 
+      ? fallbackUrl  // Always use production server on native iOS
+      : window.location.hostname.includes('replit') 
+        ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`
+        : fallbackUrl;
     
     console.log(`[WebSocketSpots] Connecting to: ${wsUrl}`);
     

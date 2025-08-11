@@ -156,10 +156,15 @@ export default function MapView() {
           console.warn(`[MapView] WebSocket failed:`, wsError);
         }
         
-        // Fallback 1: Direct HTTP API
+        // Fallback 1: Direct HTTP API (bypass iOS "Load failed" issues)
         try {
           console.log(`[MapView] Attempt 2: Direct HTTP API`);
-          const response = await fetch(`/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`);
+          const isNative = (window as any).Capacitor?.isNativePlatform();
+          const apiUrl = isNative 
+            ? `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`
+            : `/api/spots?lat=${latitude}&lng=${longitude}&radius=1000`;
+          
+          const response = await fetch(apiUrl);
           if (response.ok) {
             const spots = await response.json();
             if (spots && spots.length > 0) {
