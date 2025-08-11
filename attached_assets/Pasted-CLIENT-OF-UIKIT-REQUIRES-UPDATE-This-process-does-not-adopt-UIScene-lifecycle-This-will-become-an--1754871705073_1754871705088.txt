@@ -1,0 +1,442 @@
+CLIENT OF UIKIT REQUIRES UPDATE: This process does not adopt UIScene lifecycle. This will become an assert in a future version.
+Could not create a sandbox extension for '/var/containers/Bundle/Application/71E3472F-4424-4F94-89E4-35D3C84614AB/App.app'
+⚡️  Loading app at capacitor://localhost...
+⚡️  WebView loaded
+⚡️  To Native ->  Device getInfo 60371063
+⚡️  To Native ->  Device getInfo 60371064
+⚡️  [log] - iOS optimizations initialized
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":101515264,"diskTotal":127866785792,"diskFree":11487862784,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFre
+⚡️  To Native ->  StatusBar setStyle 60371065
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":103038976,"diskTotal":127866785792,"diskFree":11486744576,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFre
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  To Native ->  Device getInfo 60371066
+⚡️  To Native ->  Device getInfo 60371067
+⚡️  To Native ->  Device getInfo 60371068
+⚡️  To Native ->  Device getInfo 60371069
+⚡️  To Native ->  StatusBar setStyle 60371070
+⚡️  To Native ->  StatusBar setBackgroundColor 60371071
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":103202816,"diskTotal":127866785792,"diskFree":11486736384,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFre
+⚡️  To Native ->  StatusBar setStyle 60371072
+⚡️  To Native ->  Geolocation checkPermissions 60371073
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":103284736,"diskTotal":127866785792,"diskFree":11486625792,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFre
+⚡️  To Native ->  StatusBar setStyle 60371074
+⚡️  To Native ->  Geolocation checkPermissions 60371075
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":102580224,"diskTotal":127866785792,"diskFree":11486625792,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFre
+⚡️  To Native ->  StatusBar setStyle 60371076
+⚡️  To Native ->  Geolocation checkPermissions 60371077
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":102596608,"diskTotal":127866785792,"diskFree":11486261248,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFre
+⚡️  TO JS {}
+ERROR MESSAGE:  {"data":{},"code":"UNIMPLEMENTED","message":"not implemented","errorMessage":"not implemented"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  StatusBar setStyle 60371078
+⚡️  To Native ->  StatusBar setBackgroundColor 60371079
+⚡️  To Native ->  StatusBar setBackgroundColor 60371080
+⚡️  TO JS {"location":"prompt","coarseLocation":"prompt"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"location":"prompt","coarseLocation":"prompt"}
+⚡️  TO JS {}
+ERROR MESSAGE:  {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"data":{},"code":"UNIMPLEMENTED","message":"not implemented","errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+ERROR MESSAGE:  {"data":{},"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"prompt","coarseLocation":"prompt"}
+⚡️  To Native ->  Geolocation requestPermissions 60371081
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  StatusBar setBackgroundColor 60371082
+⚡️  To Native ->  Geolocation requestPermissions 60371083
+⚡️  To Native ->  StatusBar setBackgroundColor 60371084
+ERROR MESSAGE:  {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+ERROR MESSAGE:  {"data":{},"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"prompt","coarseLocation":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  Geolocation requestPermissions 60371085
+⚡️  To Native ->  StatusBar setBackgroundColor 60371086
+ERROR MESSAGE:  {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  To Native ->  App removeAllListeners 60371087
+⚡️  To Native ->  App removeAllListeners 60371088
+⚡️  To Native ->  App removeAllListeners 60371089
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  To Native ->  App removeAllListeners 60371090
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"data":{},"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"data":{},"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+SplashScreen.hideSplash: SplashScreen was automatically hidden after default timeout. You should call `SplashScreen.hide()` as soon as your web app is loaded (or increase the timeout). Read more at https://capacitorjs.com/docs/apis/splash-screen#hiding-the-splash-screen
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 60371091
+⚡️  To Native ->  Geolocation getCurrentPosition 60371092
+⚡️  To Native ->  Geolocation getCurrentPosition 60371093
+⚡️  [log] - [Geolocation] Permission result: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Permission result: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Permission result: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  To Native ->  Device getInfo 60371094
+⚡️  To Native ->  Device getInfo 60371095
+⚡️  To Native ->  Device getInfo 60371096
+⚡️  To Native ->  Device getInfo 60371097
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":81575936,"diskTotal":127866785792,"diskFree":11483959296,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  To Native ->  StatusBar setStyle 60371098
+⚡️  To Native ->  Geolocation checkPermissions 60371099
+⚡️  To Native ->  Device getInfo 60371100
+⚡️  To Native ->  Device getInfo 60371101
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":81838080,"diskTotal":127866785792,"diskFree":11483959296,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  To Native ->  StatusBar setStyle 60371102
+⚡️  To Native ->  Geolocation checkPermissions 60371103
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":81805312,"diskTotal":127866785792,"diskFree":11483959296,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  To Native ->  StatusBar setStyle 60371104
+⚡️  To Native ->  Geolocation checkPermissions 60371105
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":82116608,"diskTotal":127866785792,"diskFree":11483959296,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  To Native ->  StatusBar setStyle 60371106
+⚡️  To Native ->  StatusBar setBackgroundColor 60371107
+⚡️  To Native ->  Geolocation checkPermissions 60371108
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 60371109
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":81772544,"diskTotal":127866785792,"diskFree":11483959296,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  To Native ->  StatusBar setStyle 60371110
+⚡️  To Native ->  Geolocation checkPermissions 60371111
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":81821696,"diskTotal":127866785792,"diskFree":11483959296,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  StatusBar setStyle 60371112
+⚡️  To Native ->  StatusBar setBackgroundColor 60371113
+⚡️  To Native ->  Geolocation checkPermissions 60371114
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Geolocation getCurrentPosition 60371115
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+ERROR MESSAGE:  {"errorMessage":"not implemented","data":{},"code":"UNIMPLEMENTED","message":"not implemented"}
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  StatusBar setBackgroundColor 60371116
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 60371117
+⚡️  To Native ->  StatusBar setBackgroundColor 60371118
+⚡️  TO JS {}
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Geolocation getCurrentPosition 60371119
+⚡️  To Native ->  StatusBar setBackgroundColor 60371120
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  To Native ->  Geolocation ⚡️  [error] - Query retry 0: Load failed
+getCurrentPosition 60371121
+⚡️  TO JS {}
+ERROR MESSAGE:  {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  StatusBar setBackgroundColor 60371122
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [error] - {"errorMessage":"not implemented","data":{},"code":"UNIMPLEMENTED","message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  To Native ->  Geolocation getCurrentPosition 60371123
+ERROR MESSAGE:  {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Starting location request...
+ERROR MESSAGE:  {"errorMessage":"not implemented","message":"not implemented","data":{},"code":"UNIMPLEMENTED"}
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+ERROR MESSAGE:  {"code":"UNIMPLEMENTED","message":"not implemented","errorMessage":"not implemented","data":{}}
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","message":"not implemented","data":{},"code":"UNIMPLEMENTED"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","errorMessage":"not implemented","data":{}}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.7055994522008562,"altitude":27.391139984130859,"speed":0,"latitude":51.511149887207338}}
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"altitude":27.391139984130859,"accuracy":3.7055994522008562,"speed":0,"latitude":51.511149887207338,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}}
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.7055994522008562,"altitude":27.391139984130859,"speed":0,"latitude":51.511149887207338}}
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"altitude":27.391139984130859,"accuracy":3.7055994522008562,"speed":0,"latitude":51.511149887207338,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}}
+⚡️  TO JS {"coords":{"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.7055994522008562,"altitude":27.391139984130859,"speed":0,"latitude":51.511149887207338},"timestamp":1754871669972}
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"altitude":27.391139984130859,"accuracy":3.7055994522008562,"speed":0,"latitude":51.511149887207338,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}}
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.7055994522008562,"altitude":27.391139984130859,"speed":0,"latitude":51.511149887207338}}
+⚡️  TO JS {"coords":{"altitude":27.391139984130859,"accuracy":3.7055994522008562,"speed":0,"latitude":51.511149887207338,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1},"timestamp":1754871669972}
+⚡️  TO JS {"coords":{"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.7055994522008562,"altitude":27.391139984130859,"speed":0,"latitude":51.511149887207338},"timestamp":1754871669972}
+⚡️  [log] - [Geolocation] Position received: {"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.705599452200856,"altitude":27.39113998413086,"speed":0,"latitude":51.51114988720734}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.39113998413086,"accuracy":3.705599452200856,"speed":0,"latitude":51.51114988720734,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.705599452200856,"altitude":27.39113998413086,"speed":0,"latitude":51.51114988720734}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.39113998413086,"accuracy":3.705599452200856,"speed":0,"latitude":51.51114988720734,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.705599452200856,"altitude":27.39113998413086,"speed":0,"latitude":51.51114988720734}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.39113998413086,"accuracy":3.705599452200856,"speed":0,"latitude":51.51114988720734,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.705599452200856,"altitude":27.39113998413086,"speed":0,"latitude":51.51114988720734}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.39113998413086,"accuracy":3.705599452200856,"speed":0,"latitude":51.51114988720734,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [Geolocation] Position received: {"heading":-1,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"accuracy":3.705599452200856,"altitude":27.39113998413086,"speed":0,"latitude":51.51114988720734}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 1: Load failed
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  To Native ->  App removeAllListeners 60371124
+⚡️  [log] - [MapView] Component state: {"latitude":null,"longitude":null,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  To Native ->  App removeAllListeners 60371125
+⚡️  TO JS undefined
+⚡️  To Native ->  App removeAllListeners 60371126
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  To Native ->  App removeAllListeners 60371127
+⚡️  To Native ->  App ⚡️  TO JS removeAllListeners 60371128
+undefined
+⚡️  To Native ->  App removeAllListeners 60371129
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  To Native ->  Device getInfo 60371130
+⚡️  TO JS {"realDiskTotal":127866785792,"operatingSystem":"ios","platform":"ios","memUsed":55246848,"diskTotal":127866785792,"diskFree":11501142016,"osVersion":"18.5","manufacturer":"Apple","isVirtual":false,"model":"iPhone14,5","webViewVersion":"18.5","realDiskFree
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Using WebSocket to fetch spots for 51.511124959205475, -0.27327378322992535
+⚡️  [log] - [MapView] Sending WebSocket request: {"type":"getSpotsNearby","requestId":"1754871678764","latitude":51.511124959205475,"longitude":-0.27327378322992535,"radius":2500,"limit":25,"filters":{}}
+⚡️  [log] - [MapView] Component state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Component state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"nearbyError":"WebSocket not connected","finalSpots":0}
+⚡️  To Native ->  StatusBar setStyle 60371131
+⚡️  TO JS {}
+⚡️  To Native ->  StatusBar setBackgroundColor 60371132
+ERROR MESSAGE:  ⚡️  [log] - [MapView] Processing 0 spots for display
+{"code":"UNIMPLEMENTED","message":"not implemented","errorMessage":"not implemented","data":{}}
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [MapView] Component state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"nearbyError":"WebSocket not connected","finalSpots":0}
+⚡️  To Native ->  Geolocation checkPermissions 60371133
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [error] - {"code":"UNIMPLEMENTED","message":"not implemented","errorMessage":"not implemented","data":{}}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  To Native ->  Geolocation getCurrentPosition 60371134
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Using browser geolocation API for web
+⚡️  [log] - [MapView] Component state: {"latitude":51.511124959205475,"longitude":-0.27327378322992535,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"nearbyError":"WebSocket not connected","finalSpots":0}
+⚡️  TO JS {"timestamp":1754871669972,"coords":{"altitude":27.391139984130859,"accuracy":3.7055994522008562,"speed":0,"latitude":51.511149887207338,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.39113998413086,"accuracy":3.705599452200856,"speed":0,"latitude":51.51114988720734,"altitudeAccuracy":4,"longitude":-0.27322887154467823,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51114988720734,"lng":-0.27322887154467823,"accuracy":3.705599452200856}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.51114988720734,"longitude":-0.27322887154467823,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Using WebSocket to fetch spots for 51.51114988720734, -0.27322887154467823
+⚡️  [log] - [MapView] Sending WebSocket request: {"type":"getSpotsNearby","requestId":"1754871678885","latitude":51.51114988720734,"longitude":-0.27322887154467823,"radius":2500,"limit":25,"filters":{}}
+⚡️  [log] - [MapView] Component state: {"latitude":51.51114988720734,"longitude":-0.27322887154467823,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"nearbyError":"WebSocket not connected","finalSpots":0}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.51114988720734,"longitude":-0.27322887154467823,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Component state: {"latitude":51.51114988720734,"longitude":-0.27322887154467823,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"nearbyError":"WebSocket not connected","finalSpots":0}
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 2: Load failed
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [error] - Query retry 0: Load failed
