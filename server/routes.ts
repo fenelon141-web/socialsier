@@ -1957,23 +1957,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Handle spots request via WebSocket for iOS compatibility
         if (data.type === 'getSpotsNearby') {
           try {
-            console.log(`WebSocket spots request for ${data.latitude}, ${data.longitude}`);
+            console.log(`[WebSocket] Received spots request for ${data.latitude}, ${data.longitude} with radius ${data.radius || 1800}m`);
             
-            const spots = await findNearbyTrendySpots(data.latitude, data.longitude, data.radius || 1000);
+            const spots = await findNearbyTrendySpots(data.latitude, data.longitude, data.radius || 1800);
             
-            console.log(`WebSocket returning ${spots.length} spots to client`);
+            console.log(`[WebSocket] Found ${spots.length} spots, sending response to client`);
             
-            ws.send(JSON.stringify({
-              type: 'spotsNearbyResponse',
-              requestId: data.requestId,
-              spots: spots
+            // Ensure spots are properly formatted for iOS
+            const formattedSpots = spots.map(spot => ({
+              ...spot,
+              rating: Math.floor(spot.rating || 4), // Ensure whole numbers
+              distance: Math.round(spot.distance || 0), // Ensure whole numbers
             }));
-          } catch (error) {
-            console.error('WebSocket spots error:', error);
+            
             ws.send(JSON.stringify({
               type: 'spotsNearbyResponse',
               requestId: data.requestId,
-              error: error instanceof Error ? error.message : 'Unknown error'
+              spots: formattedSpots,
+              count: formattedSpots.length,
+              location: { lat: data.latitude, lng: data.longitude }
+            }));
+            
+            console.log(`[WebSocket] Successfully sent ${formattedSpots.length} spots to iOS client`);
+          } catch (error) {
+            console.error('[WebSocket] Spots request error:', error);
+            ws.send(JSON.stringify({
+              type: 'spotsNearbyResponse',
+              requestId: data.requestId,
+              error: error instanceof Error ? error.message : 'Failed to load spots',
+              spots: []
             }));
           }
         }
