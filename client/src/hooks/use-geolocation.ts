@@ -25,6 +25,19 @@ export function useGeolocation() {
       console.log('[Geolocation] Starting location request...');
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
+      // For development in Replit, use fixed London coordinates if geolocation fails
+      if (window.location.hostname.includes('replit.dev') || window.location.hostname.includes('replit.app')) {
+        console.log('[Geolocation] Using development coordinates for Replit environment');
+        setLocation({
+          latitude: 51.511153,
+          longitude: -0.273239,
+          accuracy: 10,
+          loading: false,
+          error: null,
+        });
+        return;
+      }
+      
       if (isNative) {
         console.log('[Geolocation] Using Capacitor for native app');
         
