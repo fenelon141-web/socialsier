@@ -25,8 +25,11 @@ export function useGeolocation() {
       console.log('[Geolocation] Starting location request...');
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
-      // Skip Replit fallback for native iOS - let real location work
-      if (isNative) {
+      // Check if running on actual iOS device
+      const isActuallyNative = (window as any).Capacitor?.isNativePlatform?.() || 
+                               (window as any).Capacitor?.platform === 'ios';
+      
+      if (isActuallyNative) {
         console.log('[Geolocation] Native iOS app - using real location');
       } else if (window.location.hostname.includes('replit.dev') || window.location.hostname.includes('replit.app')) {
         console.log('[Geolocation] Using development coordinates for Replit environment');
@@ -40,7 +43,7 @@ export function useGeolocation() {
         return;
       }
       
-      if (isNative) {
+      if (isActuallyNative || isNative) {
         console.log('[Geolocation] Using Capacitor for native app');
         
         // Check current permissions first
