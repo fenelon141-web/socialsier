@@ -28,32 +28,32 @@ function getStoredSpots() {
   // Create spots in a realistic distribution around the user
   const spots = [];
   
-  // Cafes and restaurants (close to user)
+  // Trendy valley girl aesthetic spots
   const cafeSpots = [
-    { name: "Morrisons Cafe", description: "Local supermarket café", category: "café", offset: [0, 0] },
-    { name: "Chai Spot", description: "Authentic chai experience", category: "café", offset: [0.0001, 0] },
-    { name: "Karak Chai", description: "Traditional karak chai house", category: "café", offset: [0.0002, 0] },
-    { name: "Estoril", description: "Portuguese café experience", category: "café", offset: [0.0003, 0] },
-    { name: "Chaiwala", description: "Modern chai lounge", category: "café", offset: [0.0004, 0] },
-    { name: "Costa Coffee", description: "Popular coffee chain", category: "café", offset: [0.0005, 0.0001] },
-    { name: "Starbucks", description: "Global coffee brand", category: "café", offset: [0.0006, 0.0002] },
-    { name: "Pret A Manger", description: "Fresh sandwich shop", category: "café", offset: [0.0007, 0.0003] },
-    { name: "Nando's", description: "Portuguese chicken restaurant", category: "restaurant", offset: [0.0008, 0.0004] },
-    { name: "Wagamama", description: "Asian noodle restaurant", category: "restaurant", offset: [0.0009, 0.0005] }
+    { name: "Chai Spot", description: "Authentic chai lattes & golden milk", category: "café", offset: [0, 0] },
+    { name: "Matcha Maiden", description: "Instagram-worthy matcha bowls", category: "café", offset: [0.0001, 0] },
+    { name: "Iced & Spiced", description: "Cold brew & spiced chai paradise", category: "café", offset: [0.0002, 0] },
+    { name: "Acai Dreams", description: "Colorful acai & smoothie bowls", category: "café", offset: [0.0003, 0] },
+    { name: "Poke Paradise", description: "Fresh poke bowls & bubble tea", category: "restaurant", offset: [0.0004, 0] },
+    { name: "Bloom & Brew", description: "Floral iced lattes & pastries", category: "café", offset: [0.0005, 0.0001] },
+    { name: "Pink Salt Cafe", description: "Himalayan pink everything", category: "café", offset: [0.0006, 0.0002] },
+    { name: "Golden Hour", description: "Turmeric lattes & wellness shots", category: "café", offset: [0.0007, 0.0003] },
+    { name: "Bowl Babe", description: "Buddha bowls & overnight oats", category: "restaurant", offset: [0.0008, 0.0004] },
+    { name: "Oat Milk Queen", description: "Plant-based everything", category: "café", offset: [0.0009, 0.0005] }
   ];
   
-  // Fitness spots (spread across radius)
+  // Trendy valley girl fitness spots
   const fitnessSpots = [
-    { name: "PureGym", description: "24/7 fitness gym", category: "fitness", offset: [0.001, 0.001] },
-    { name: "Virgin Active", description: "Premium health club", category: "fitness", offset: [0.002, 0.001] },
-    { name: "1Rebel", description: "Boutique fitness studio", category: "fitness", offset: [0.003, 0.002] },
-    { name: "Barry's Bootcamp", description: "High-intensity workout", category: "fitness", offset: [0.004, 0.003] },
-    { name: "SoulCycle", description: "Indoor cycling studio", category: "fitness", offset: [0.005, 0.004] },
-    { name: "F45 Training", description: "Functional fitness", category: "fitness", offset: [0.006, 0.005] },
-    { name: "Yoga Studio", description: "Peaceful yoga classes", category: "fitness", offset: [0.007, 0.006] },
-    { name: "Pilates Plus", description: "Core strengthening classes", category: "fitness", offset: [0.008, 0.007] },
-    { name: "The Gym Group", description: "Low-cost fitness", category: "fitness", offset: [0.009, 0.008] },
-    { name: "Equinox", description: "Luxury fitness club", category: "fitness", offset: [0.010, 0.009] }
+    { name: "Hot Girl Pilates", description: "Core & confidence building", category: "fitness", offset: [0.001, 0.001] },
+    { name: "Glow Yoga", description: "Candlelit flow sessions", category: "fitness", offset: [0.002, 0.001] },
+    { name: "1Rebel", description: "Boutique fitness with nightclub vibes", category: "fitness", offset: [0.003, 0.002] },
+    { name: "Barry's Bootcamp", description: "High-energy HIIT in the dark", category: "fitness", offset: [0.004, 0.003] },
+    { name: "SoulCycle", description: "Rhythm-based indoor cycling", category: "fitness", offset: [0.005, 0.004] },
+    { name: "F45 Training", description: "Functional group workouts", category: "fitness", offset: [0.006, 0.005] },
+    { name: "Reformer Babe", description: "Trendy Pilates reformer classes", category: "fitness", offset: [0.007, 0.006] },
+    { name: "Sweat Society", description: "Women-only boutique gym", category: "fitness", offset: [0.008, 0.007] },
+    { name: "Barre Beauty", description: "Ballet-inspired toning", category: "fitness", offset: [0.009, 0.008] },
+    { name: "Hot Power Yoga", description: "Heated vinyasa flow", category: "fitness", offset: [0.010, 0.009] }
   ];
   
   // Combine and create spot objects
@@ -73,9 +73,9 @@ function getStoredSpots() {
       trending: Math.random() > 0.5,
       huntCount: Math.floor(Math.random() * 300) + 50,
       address: "London area",
-      priceRange: ["$", "$$", "$$$"][Math.floor(Math.random() * 3)],
-      dietaryOptions: Math.random() > 0.5 ? ["vegetarian"] : [],
-      ambiance: ["trendy", "cozy", "modern", "authentic"][Math.floor(Math.random() * 4)]
+      priceRange: ["$$", "$$$"][Math.floor(Math.random() * 2)],
+      dietaryOptions: ["vegan", "gluten-free", "organic", "plant-based"][Math.floor(Math.random() * 4)],
+      ambiance: ["instagram-worthy", "aesthetic", "boujee", "trendy"][Math.floor(Math.random() * 4)]
     });
   });
   
@@ -93,9 +93,9 @@ function getStoredSpots() {
       trending: Math.random() > 0.5,
       huntCount: Math.floor(Math.random() * 200) + 30,
       address: "London area",
-      priceRange: ["$$", "$$$", "$$$$"][Math.floor(Math.random() * 3)],
+      priceRange: ["$$$", "$$$$"][Math.floor(Math.random() * 2)],
       dietaryOptions: [],
-      ambiance: ["high-energy", "luxury", "community", "boutique"][Math.floor(Math.random() * 4)]
+      ambiance: ["empowering", "luxury", "boutique", "exclusive"][Math.floor(Math.random() * 4)]
     });
   });
   

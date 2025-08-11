@@ -39,6 +39,9 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 App name: "Socialiser" (finalized name change from "Socialise")
+Target aesthetic: Valley girl theme with trendy, Instagram-worthy spots
+Preferred spots: Cute girly spots serving iced coffee, chai lattes, matcha, acai bowls, poke bowls
+Avoid: Chain restaurants like Nando's, Wagamama - focus on boutique aesthetic spots
 
 ## System Architecture
 ### Frontend
