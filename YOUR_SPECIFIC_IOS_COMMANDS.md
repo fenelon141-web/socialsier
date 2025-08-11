@@ -1,42 +1,46 @@
-# Your Specific iOS Setup Commands
+# Your Specific iOS Terminal Commands
 
-## Your Project Path:
-`/Users/adamfenelon/Desktop/Socialiser`
-
-## Terminal Commands for Your Setup:
-
+## Step 1: Open Terminal and Navigate to Project
 ```bash
-# Navigate to your iOS App directory
-cd /Users/adamfenelon/Desktop/Socialiser/ios/App
+cd /path/to/your/socialiser-project
+cd ios
+```
 
-# Install CocoaPods dependencies
+## Step 2: Install CocoaPods Dependencies
+```bash
 pod install
+```
 
-# Open in Xcode (correct workspace file)
+## Step 3: Open Xcode with the Workspace
+```bash
 open App.xcworkspace
 ```
 
-## If pod install fails:
+## Alternative: Open Xcode First
+If the `open` command doesn't work:
 ```bash
-# Update CocoaPods first
-sudo gem install cocoapods
-cd /Users/adamfenelon/Desktop/Socialiser/ios/App
+# Just run pod install
 pod install
+
+# Then manually open Xcode and select:
+# File → Open → Navigate to ios/App.xcworkspace
 ```
 
-## Alternative Xcode Opening Methods:
+## Complete Sequence (Copy-Paste Ready):
+```bash
+cd ios
+pod install
+open App.xcworkspace
+```
 
-### From Finder:
-1. Navigate to: `/Users/adamfenelon/Desktop/Socialiser/ios/App/`
-2. Double-click `App.xcworkspace`
+## What This Does:
+- `pod install` downloads all iOS dependencies (takes 1-2 minutes)
+- `open App.xcworkspace` launches Xcode with your Socialiser project
+- Xcode will load with all native iOS configurations ready
 
-### From Xcode:
-1. File → Open
-2. Navigate to: `/Users/adamfenelon/Desktop/Socialiser/ios/App/`
-3. Select: `App.xcworkspace`
+## In Xcode:
+1. Select your iPhone device or simulator
+2. Click the Play button (▶️) to build and run
+3. App installs on your iPhone with full location and networking
 
-## What You Should See:
-After opening the workspace, you'll see the full Socialiser project structure with all source files, and you can build the updated app with WebSocket functionality.
-
-## Expected Result:
-Your iPhone will display the 20 spots (Chai Spot, Morrisons Cafe, etc.) that have been successfully found by the server.
+Your iPhone will connect to the live production server and display the 20 London spots we just verified working.
