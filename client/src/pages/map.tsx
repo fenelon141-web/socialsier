@@ -182,8 +182,9 @@ export default function MapView() {
       return;
     }
     
-    if (locationError) {
-      console.log('[MapView] Location error present:', locationError);
+    // Don't block on minor location errors if we have coordinates
+    if (locationError && !latitude && !longitude) {
+      console.log('[MapView] Location error without coordinates:', locationError);
       setSpotsLoading(false);
       setNearbyError(new Error(typeof locationError === 'string' ? locationError : 'Location error'));
       return;

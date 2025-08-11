@@ -1,0 +1,424 @@
+CLIENT OF UIKIT REQUIRES UPDATE: This process does not adopt UIScene lifecycle. This will become an assert in a future version.
+Could not create a sandbox extension for '/var/containers/Bundle/Application/50268F3F-E008-4A70-89B7-972DF84D631B/App.app'
+⚡️  Loading app at capacitor://localhost...
+⚡️  WebView loaded
+⚡️  [log] - iOS optimizations initialized
+⚡️  [log] - [App] Initializing global WebSocket: wss://hot-girl-hunt-fenelon141.replit.app/ws
+⚡️  To Native ->  Device getInfo 88086596
+⚡️  To Native ->  Device getInfo 88086597
+⚡️  TO JS {"manufacturer":"Apple","name":"iPhone","realDiskFree":23009628217,"isVirtual":false,"osVersion":"18.5","realDiskTotal":127866785792,"platform":"ios","operatingSystem":"ios","webViewVersion":"18.5","iOSVersion":180500,"memUsed":104005632,"model":"iPhone14,
+⚡️  To Native ->  StatusBar setStyle 88086598
+⚡️  TO JS {"manufacturer":"Apple","name":"iPhone","realDiskFree":23009628217,"isVirtual":false,"osVersion":"18.5","realDiskTotal":127866785792,"platform":"ios","operatingSystem":"ios","webViewVersion":"18.5","iOSVersion":180500,"memUsed":102203392,"model":"iPhone14,
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Device getInfo 88086599
+⚡️  To Native ->  Geolocation checkPermissions 88086600
+⚡️  To Native ->  Device getInfo 88086601
+⚡️  To Native ->  Geolocation checkPermissions 88086602
+⚡️  To Native ->  Device getInfo 88086603
+⚡️  To Native ->  Geolocation checkPermissions 88086604
+⚡️  To Native ->  Device getInfo 88086605
+⚡️  To Native ->  Geolocation checkPermissions 88086606
+⚡️  To Native ->  StatusBar setStyle 88086607
+⚡️  To Native ->  StatusBar setBackgroundColor 88086608
+⚡️  TO JS {"manufacturer":"Apple","name":"iPhone","realDiskFree":23009222713,"isVirtual":false,"osVersion":"18.5","realDiskTotal":127866785792,"platform":"ios","operatingSystem":"ios","webViewVersion":"18.5","iOSVersion":180500,"memUsed":102547456,"model":"iPhone14,
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  To Native ->  StatusBar setStyle 88086609
+⚡️  To Native ->  Geolocation requestPermissions 88086610
+⚡️  TO JS {"manufacturer":"Apple","name":"iPhone","realDiskFree":23009222713,"isVirtual":false,"osVersion":"18.5","realDiskTotal":127866785792,"platform":"ios","operatingSystem":"ios","webViewVersion":"18.5","iOSVersion":180500,"memUsed":102907904,"model":"iPhone14,
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  To Native ->  StatusBar setStyle 88086611
+⚡️  To Native ->  Geolocation requestPermissions 88086612
+⚡️  To Native ->  Geolocation checkPermissions 88086613
+⚡️  To Native ->  Geolocation checkPermissions 88086614
+⚡️  TO JS {"manufacturer":"Apple","name":"iPhone","realDiskFree":23009222713,"isVirtual":false,"osVersion":"18.5","realDiskTotal":127866785792,"platform":"ios","operatingSystem":"ios","webViewVersion":"18.5","iOSVersion":180500,"memUsed":102924288,"model":"iPhone14,
+⚡️  To Native ->  StatusBar setStyle 88086615
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  To Native ->  Geolocation checkPermissions 88086616
+⚡️  To Native ->  Geolocation requestPermissions 88086617
+⚡️  TO JS {"manufacturer":"Apple","name":"iPhone","realDiskFree":23009157177,"isVirtual":false,"osVersion":"18.5","realDiskTotal":127866785792,"platform":"ios","operatingSystem":"ios","webViewVersion":"18.5","iOSVersion":180500,"memUsed":102727680,"model":"iPhone14,
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  TO JS {}
+ERROR MESSAGE:  {"errorMessage":"not implemented","message":"not implemented","code":"UNIMPLEMENTED","data":{}}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  StatusBar setStyle 88086618
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  Geolocation requestPermissions 88086619
+⚡️  To Native ->  StatusBar setBackgroundColor 88086620
+⚡️  To Native ->  StatusBar setBackgroundColor 88086621
+⚡️  To Native ->  StatusBar setBackgroundColor 88086622
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  TO JS {"coarseLocation":"prompt","location":"prompt"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"location":"prompt","coarseLocation":"prompt"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  App removeAllListeners 88086623
+⚡️  To Native ->  App removeAllListeners 88086624
+⚡️  To Native ->  App removeAllListeners 88086625
+⚡️  To Native ->  App removeAllListeners 88086626
+⚡️  To Native ->  Geolocation requestPermissions 88086627
+⚡️  To Native ->  Geolocation requestPermissions 88086628
+⚡️  To Native ->  StatusBar setBackgroundColor 88086629
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  Geolocation requestPermissions 88086630
+⚡️  [error] - {"errorMessage":"not implemented","message":"not implemented","code":"UNIMPLEMENTED","data":{}}
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+ERROR MESSAGE:  {"errorMessage":"not implemented","message":"not implemented","code":"UNIMPLEMENTED","data":{}}
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+⚡️  To Native ->  StatusBar setBackgroundColor 88086631
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"prompt","location":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+ERROR MESSAGE:  {"errorMessage":"not implemented","message":"not implemented","code":"UNIMPLEMENTED","data":{}}
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - [Geolocation] Current permissions: {"location":"prompt","coarseLocation":"prompt"}
+⚡️  [log] - [Geolocation] Requesting location permissions...
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","message":"not implemented","code":"UNIMPLEMENTED","data":{}}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","message":"not implemented","code":"UNIMPLEMENTED","data":{}}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [App] Global WebSocket connected
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+SplashScreen.hideSplash: SplashScreen was automatically hidden after default timeout. You should call `SplashScreen.hide()` as soon as your web app is loaded (or increase the timeout). Read more at https://capacitorjs.com/docs/apis/splash-screen#hiding-the-splash-screen
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+ This method can cause UI unresponsiveness if invoked on the main thread. Instead, consider waiting for the `-locationManagerDidChangeAuthorization:` callback and checking `authorizationStatus` first.
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086632
+⚡️  [log] - [Geolocation] Permission result: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 88086633
+⚡️  To Native ->  Geolocation getCurrentPosition 88086634
+⚡️  [log] - [Geolocation] Permission result: {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086635
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 88086636
+⚡️  [log] - [Geolocation] Permission result: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 88086637
+⚡️  To Native ->  Geolocation getCurrentPosition 88086638
+⚡️  [log] - [Geolocation] Permission result: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Permission result: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Permission result: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Permission result: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {"coords":{"altitudeAccuracy":24,"speed":0,"accuracy":9.0938480368779882,"longitude":-0.13681633633385099,"altitude":45.030666351318359,"latitude":51.60999664753642,"heading":-1},"timestamp":1754906174417}
+⚡️  TO JS {"coords":{"altitudeAccuracy":24,"heading":-1,"altitude":45.030666351318359,"accuracy":9.0938480368779882,"speed":0,"latitude":51.60999664753642,"longitude":-0.13681633633385099},"timestamp":1754906174417}
+⚡️  TO JS {"coords":{"altitudeAccuracy":24,"speed":0,"accuracy":9.0938480368779882,"longitude":-0.13681633633385099,"altitude":45.030666351318359,"latitude":51.60999664753642,"heading":-1},"timestamp":1754906174417}
+⚡️  TO JS {"coords":{"altitudeAccuracy":24,"heading":-1,"accuracy":9.0938480368779882,"altitude":45.030666351318359,"speed":0,"latitude":51.60999664753642,"longitude":-0.13681633633385099},"timestamp":1754906174417}
+⚡️  TO JS {"timestamp":1754906174417,"coords":{"altitudeAccuracy":24,"speed":0,"longitude":-0.13681633633385099,"accuracy":9.0938480368779882,"heading":-1,"latitude":51.60999664753642,"altitude":45.030666351318359}}
+⚡️  TO JS {"timestamp":1754906174417,"coords":{"altitudeAccuracy":24,"altitude":45.030666351318359,"heading":-1,"accuracy":9.0938480368779882,"speed":0,"latitude":51.60999664753642,"longitude":-0.13681633633385099}}
+⚡️  TO JS {"coords":{"altitudeAccuracy":24,"speed":0,"longitude":-0.13681633633385099,"accuracy":9.0938480368779882,"heading":-1,"latitude":51.60999664753642,"altitude":45.030666351318359},"timestamp":1754906174417}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"speed":0,"accuracy":9.093848036877988,"longitude":-0.13681633633385099,"altitude":45.03066635131836,"latitude":51.60999664753642,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"heading":-1,"altitude":45.03066635131836,"accuracy":9.093848036877988,"speed":0,"latitude":51.60999664753642,"longitude":-0.13681633633385099}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"speed":0,"accuracy":9.093848036877988,"longitude":-0.13681633633385099,"altitude":45.03066635131836,"latitude":51.60999664753642,"heading":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"heading":-1,"accuracy":9.093848036877988,"altitude":45.03066635131836,"speed":0,"latitude":51.60999664753642,"longitude":-0.13681633633385099}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"speed":0,"longitude":-0.13681633633385099,"accuracy":9.093848036877988,"heading":-1,"latitude":51.60999664753642,"altitude":45.03066635131836}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"altitude":45.03066635131836,"heading":-1,"accuracy":9.093848036877988,"speed":0,"latitude":51.60999664753642,"longitude":-0.13681633633385099}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - [Geolocation] Position received: {"altitudeAccuracy":24,"speed":0,"longitude":-0.13681633633385099,"accuracy":9.093848036877988,"heading":-1,"latitude":51.60999664753642,"altitude":45.03066635131836}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999664753642,"lng":-0.13681633633385099,"accuracy":9.093848036877988}
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Device getInfo 88086639
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  ⚡️  [log] - [Geolocation] Starting location request...
+Geolocation checkPermissions 88086640
+⚡️  To Native ->  Device getInfo 88086641
+⚡️  To Native ->  Geolocation checkPermissions 88086642
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  To Native ->  Device getInfo 88086643
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  To Native ->  Geolocation checkPermissions 88086644
+⚡️  To Native ->  Device getInfo 88086645
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Geolocation checkPermissions 88086646
+⚡️  TO JS {"manufacturer":"Apple","model":"iPhone14,5","platform":"ios","diskTotal":127866785792,"memUsed":88309760,"operatingSystem":"ios","diskFree":11298291712,"osVersion":"18.5","webViewVersion":"18.5","isVirtual":false,"realDiskTotal":127866785792,"iOSVersion":
+⚡️  To Native ->  StatusBar setStyle 88086647
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation checkPermissions 88086648
+⚡️  To Native ->  Geolocation getCurrentPosition 88086649
+⚡️  TO JS {"manufacturer":"Apple","model":"iPhone14,5","platform":"ios","diskTotal":127866785792,"memUsed":87883776,"operatingSystem":"ios","diskFree":11298291712,"osVersion":"18.5","webViewVersion":"18.5","isVirtual":false,"realDiskTotal":127866785792,"iOSVersion":
+⚡️  To Native ->  StatusBar setStyle 88086650
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation checkPermissions 88086651
+⚡️  To Native ->  Geolocation getCurrentPosition 88086652
+⚡️  TO JS {"manufacturer":"Apple","model":"iPhone14,5","platform":"ios","diskTotal":127866785792,"memUsed":87834624,"operatingSystem":"ios","diskFree":11298291712,"osVersion":"18.5","webViewVersion":"18.5","isVirtual":false,"realDiskTotal":127866785792,"iOSVersion":
+⚡️  To Native ->  StatusBar setStyle 88086653
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation checkPermissions 88086654
+⚡️  To Native ->  Geolocation getCurrentPosition 88086655
+⚡️  TO JS {"manufacturer":"Apple","model":"iPhone14,5","platform":"ios","diskTotal":127866785792,"memUsed":87851008,"operatingSystem":"ios","diskFree":11298295808,"osVersion":"18.5","webViewVersion":"18.5","isVirtual":false,"realDiskTotal":127866785792,"iOSVersion":
+⚡️  To Native ->  StatusBar setStyle 88086656
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coords":{"longitude":-0.13682212042178957,"latitude":51.609997969387983,"altitudeAccuracy":6,"speed":0,"accuracy":8.4947028776548272,"heading":-1,"altitude":45.030666351318359},"timestamp":1754906176826}
+⚡️  TO JS {"timestamp":1754906176826,"coords":{"longitude":-0.13682212042178957,"altitude":45.030666351318359,"altitudeAccuracy":6,"heading":-1,"accuracy":8.4947028776548272,"speed":0,"latitude":51.609997969387983}}
+⚡️  To Native ->  Geolocation checkPermissions 88086657
+⚡️  To Native ->  Geolocation getCurrentPosition 88086658
+⚡️  To Native ->  StatusBar setBackgroundColor 88086659
+⚡️  To Native ->  Geolocation getCurrentPosition 88086660
+⚡️  To Native ->  StatusBar setBackgroundColor 88086661
+⚡️  To Native ->  Geolocation getCurrentPosition 88086662
+⚡️  To Native ->  StatusBar setBackgroundColor 88086663
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 88086664
+⚡️  To Native ->  StatusBar setBackgroundColor 88086665
+⚡️  To Native ->  Device getInfo 88086666
+⚡️  To Native ->  Geolocation checkPermissions 88086667
+⚡️  TO JS ⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+{"coords":{"longitude":-0.13682212042178957,"latitude":51.609997969387983,"altitudeAccuracy":6,"speed":0,"accuracy":8.4947028776548272,"heading":-1,"altitude":45.030666351318359},"timestamp":1754906176981}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {"timestamp":1754906176981,"coords":{"longitude":-0.13682212042178957,"altitude":45.030666351318359,"altitudeAccuracy":6,"heading":-1,"accuracy":8.4947028776548272,"speed":0,"latitude":51.609997969387983}}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"latitude":51.60999796938798,"altitudeAccuracy":6,"speed":0,"accuracy":8.494702877654827,"heading":-1,"altitude":45.03066635131836}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"altitude":45.03066635131836,"altitudeAccuracy":6,"heading":-1,"accuracy":8.494702877654827,"speed":0,"latitude":51.60999796938798}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+ERROR MESSAGE:  {"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented","data":{}}
+⚡️  To Native ->  Device getInfo 88086668
+⚡️  To Native ->  Geolocation checkPermissions 88086669
+⚡️  To Native ->  Geolocation getCurrentPosition 88086670
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+ERROR MESSAGE:  {"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented","data":{}}
+ERROR MESSAGE:  {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  TO JS {"timestamp":1754906176988,"coords":{"longitude":-0.13682212042178957,"latitude":51.609997969387983,"altitudeAccuracy":6,"speed":0,"accuracy":8.4947028776548272,"heading":-1,"altitude":45.030666351318359}}
+⚡️  TO JS {"timestamp":1754906176988,"coords":{"longitude":-0.13682212042178957,"altitude":45.030666351318359,"altitudeAccuracy":6,"heading":-1,"accuracy":8.4947028776548272,"speed":0,"latitude":51.609997969387983}}
+⚡️  TO JS {"coords":{"longitude":-0.13682212042178957,"latitude":51.609997969387983,"altitudeAccuracy":6,"speed":0,"accuracy":8.4947028776548272,"heading":-1,"altitude":45.030666351318359},"timestamp":1754906176988}
+⚡️  To Native ->  Geolocation checkPermissions 88086671
+⚡️  To Native ->  Geolocation checkPermissions 88086672
+⚡️  To Native ->  Geolocation checkPermissions 88086673
+⚡️  To Native ->  Geolocation checkPermissions 88086674
+⚡️  TO JS {"manufacturer":"Apple","model":"iPhone14,5","platform":"ios","diskTotal":127866785792,"memUsed":87932928,"operatingSystem":"ios","diskFree":11298295808,"osVersion":"18.5","webViewVersion":"18.5","isVirtual":false,"realDiskTotal":127866785792,"iOSVersion":
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  StatusBar setStyle 88086675
+⚡️  To Native ->  Geolocation getCurrentPosition 88086676
+⚡️  To Native ->  Geolocation checkPermissions 88086677
+⚡️  TO JS {"manufacturer":"Apple","model":"iPhone14,5","platform":"ios","diskTotal":127866785792,"memUsed":85983232,"operatingSystem":"ios","diskFree":11298103296,"osVersion":"18.5","webViewVersion":"18.5","isVirtual":false,"realDiskTotal":127866785792,"iOSVersion":
+⚡️  To Native ->  StatusBar setStyle 88086678
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  Geolocation checkPermissions 88086679
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 88086680
+⚡️  [error] - {"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented","data":{}}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"latitude":51.60999796938798,"altitudeAccuracy":6,"speed":0,"accuracy":8.494702877654827,"heading":-1,"altitude":45.03066635131836}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"altitude":45.03066635131836,"altitudeAccuracy":6,"heading":-1,"accuracy":8.494702877654827,"speed":0,"latitude":51.60999796938798}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"message":"not implemented","code":"UNIMPLEMENTED","errorMessage":"not implemented","data":{}}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [error] - {"errorMessage":"not implemented","code":"UNIMPLEMENTED","data":{},"message":"not implemented"}
+⚡️  [log] - Error initializing Capacitor: {"code":"UNIMPLEMENTED","data":{},"errorMessage":"not implemented"}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"latitude":51.60999796938798,"altitudeAccuracy":6,"speed":0,"accuracy":8.494702877654827,"heading":-1,"altitude":45.03066635131836}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"altitude":45.03066635131836,"altitudeAccuracy":6,"heading":-1,"accuracy":8.494702877654827,"speed":0,"latitude":51.60999796938798}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682212042178957,"latitude":51.60999796938798,"altitudeAccuracy":6,"speed":0,"accuracy":8.494702877654827,"heading":-1,"altitude":45.03066635131836}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999796938798,"lng":-0.13682212042178957,"accuracy":8.494702877654827}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coords":{"longitude":-0.13682226071019793,"altitude":45.215924853778041,"altitudeAccuracy":30,"heading":-1,"accuracy":8.4947049012325788,"speed":0,"latitude":51.609997947680689},"timestamp":1754906177001}
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086681
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086682
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086683
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  TO JS {}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086684
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  StatusBar setBackgroundColor 88086685
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coords":{"longitude":-0.13682226071019793,"latitude":51.609997947680689,"altitudeAccuracy":30,"speed":0,"accuracy":8.4947049012325788,"heading":-1,"altitude":45.215924853778041},"timestamp":1754906177087}
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  [error] - Query retry 0: Load failed
+⚡️  TO JS {}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  To Native ->  Geolocation getCurrentPosition 88086686
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  StatusBar setBackgroundColor 88086687
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682226071019793,"altitude":45.21592485377804,"altitudeAccuracy":30,"heading":-1,"accuracy":8.494704901232579,"speed":0,"latitude":51.60999794768069}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999794768069,"lng":-0.13682226071019793,"accuracy":8.494704901232579}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 88086688
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.13682226071019793,"latitude":51.60999794768069,"altitudeAccuracy":30,"speed":0,"accuracy":8.494704901232579,"heading":-1,"altitude":45.21592485377804}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.60999794768069,"lng":-0.13682226071019793,"accuracy":8.494704901232579}
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[NSTaggedPointerString countByEnumeratingWithState:objects:count:]: unrecognized selector sent to instance 0x8000000000000000'
+*** First throw call stack:
+(0x19907721c 0x196511abc 0x1990e1614 0x198f8ba1c 0x198f8baa0 0x1976b2b44 0x100d2f2b8 0x100d2f940 0x1a6ce0604 0x1a6cdf538 0x1a6cdafb8 0x1bb54b474 0x198fc99b0 0x198f6c188 0x198f6d09c 0x198f6ec3c 0x1e614d454 0x19b981274 0x19b94ca28 0x100a05148 0x1bfe43f08)
+libc++abi: terminating due to uncaught exception of type NSException
+*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[NSTaggedPointerString countByEnumeratingWithState:objects:count:]: unrecognized selector sent to instance 0x8000000000000000'
+*** First throw call stack:
+(0x19907721c 0x196511abc 0x1990e1614 0x198f8ba1c 0x198f8baa0 0x1976b2b44 0x100d2f2b8 0x100d2f940 0x1a6ce0604 0x1a6cdf538 0x1a6cdafb8 0x1bb54b474 0x198fc99b0 0x198f6c188 0x198f6d09c 0x198f6ec3c 0x1e614d454 0x19b981274 0x19b94ca28 0x100a05148 0x1bfe43f08)
+terminating due to uncaught exception of type NSException
+Message from debugger: killed

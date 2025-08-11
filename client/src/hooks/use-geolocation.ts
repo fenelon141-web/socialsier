@@ -53,27 +53,19 @@ export function useGeolocation() {
           const currentPermissions = await Geolocation.checkPermissions();
           console.log('[Geolocation] Current permissions:', currentPermissions);
           
-          // Request permissions if not granted
+          // Only request permissions if not already granted
           if (currentPermissions.location !== 'granted') {
             console.log('[Geolocation] Requesting location permissions...');
             try {
               const permissions = await Geolocation.requestPermissions();
               console.log('[Geolocation] Permission result:', permissions);
-              
-              if (permissions.location !== 'granted') {
-                throw new Error('Location permission denied by user');
-              }
             } catch (permError: any) {
-              // If permission request fails, try to get position anyway (iOS sometimes grants automatically)
-              console.log('[Geolocation] Permission request error:', permError);
-              if (permError.code === 'UNIMPLEMENTED') {
-                console.log('[Geolocation] Permission API not implemented, attempting direct position request...');
-              } else {
-                throw permError;
-              }
+              // iOS sometimes has issues with permission API but permissions are already granted
+              console.log('[Geolocation] Permission request error (may be already granted):', permError.code);
             }
           }
 
+          // Always try to get position regardless of permission request result
           console.log('[Geolocation] Getting current position...');
           const position = await Geolocation.getCurrentPosition({
             enableHighAccuracy: true,

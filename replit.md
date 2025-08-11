@@ -43,6 +43,9 @@ Socialiser is a mobile-first web application designed to gamify location discove
 ✅ **iOS Login Page Fixed**: Authentication routing configured to show login page at root for iOS simulator/device
 ✅ **Navigation Routes Updated**: Home page moved to /home route, bottom navigation updated for iOS compatibility
 ✅ **iOS Authentication Ready**: Login flow redirects properly, Xcode simulator will now show login page on startup
+✅ **iOS Location Working**: GPS coordinates successfully captured (51.61, -0.137) with 8.5m accuracy
+✅ **Map Radius Fixed**: All endpoints now use 1.8km (1800m) radius as requested
+✅ **Permissions Granted**: Location permissions working despite "not implemented" warnings
 
 ## User Preferences
 Preferred communication style: Simple, everyday language with enthusiastic confirmation when solutions work
