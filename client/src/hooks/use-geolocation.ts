@@ -25,11 +25,13 @@ export function useGeolocation() {
       console.log('[Geolocation] Starting location request...');
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
-      // Check if running on actual iOS device
-      const isActuallyNative = (window as any).Capacitor?.isNativePlatform?.() || 
-                               (window as any).Capacitor?.platform === 'ios';
+      // Enhanced iOS detection for Capacitor
+      const isCapacitorIOS = (window as any).Capacitor?.isNativePlatform() || 
+                             (window as any).Capacitor?.platform === 'ios' ||
+                             (window as any).Device?.info?.platform === 'ios' ||
+                             window.navigator.userAgent.includes('iPhone');
       
-      if (isActuallyNative) {
+      if (isCapacitorIOS && !window.location.hostname.includes('replit')) {
         console.log('[Geolocation] Native iOS app - using real location');
       } else if (window.location.hostname.includes('replit.dev') || window.location.hostname.includes('replit.app')) {
         console.log('[Geolocation] Using development coordinates for Replit environment');
@@ -43,7 +45,7 @@ export function useGeolocation() {
         return;
       }
       
-      if (isActuallyNative || isNative) {
+      if (isCapacitorIOS || isNative) {
         console.log('[Geolocation] Using Capacitor for native app');
         
         // Check current permissions first

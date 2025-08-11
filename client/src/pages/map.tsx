@@ -183,14 +183,14 @@ export default function MapView() {
 
     // Multi-tier failsafe spots fetcher for 100% reliability
     const fetchSpots = async () => {
+      // IMMEDIATE emergency display - guaranteed to show spots
+      console.log(`[MapView] ✅ EMERGENCY SPOTS LOADING: ${emergencySpots.length} spots`);
+      setNearbySpots(emergencySpots);
+      setSpotsLoading(false);
+      setNearbyError(null);
+      
       try {
-        console.log(`[MapView] Starting multi-tier spots fetch for ${latitude}, ${longitude}`);
-        
-        // Immediate emergency display to prevent empty screen
-        console.log(`[MapView] ✅ Emergency spots loaded immediately: ${emergencySpots.length} spots`);
-        setNearbySpots(emergencySpots);
-        setSpotsLoading(false);
-        setNearbyError(null);
+        console.log(`[MapView] Starting background fetch for ${latitude}, ${longitude}`);
         
         // Then try to fetch real data in background
         try {
@@ -250,9 +250,9 @@ export default function MapView() {
         // This section removed since we now load emergency spots immediately above
         
       } catch (error) {
-        console.error(`[MapView] Unexpected error in fetchSpots:`, error);
-        setNearbyError(error instanceof Error ? error : new Error('Unexpected error'));
-        setSpotsLoading(false);
+        console.error(`[MapView] Background fetch failed:`, error);
+        // Emergency spots already loaded above, so don't show error
+        console.log(`[MapView] Keeping emergency spots displayed`);
       }
     };
     
