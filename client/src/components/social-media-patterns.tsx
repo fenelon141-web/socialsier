@@ -44,7 +44,21 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   // Create story mutation
   const createStoryMutation = useMutation({
     mutationFn: async (storyData: any) => {
-      return apiRequest("POST", "/api/stories", storyData);
+      console.log("Attempting to create story:", {
+        hasImageUrl: !!storyData.imageUrl,
+        imageUrlLength: storyData.imageUrl?.length || 0,
+        caption: storyData.caption,
+        userId: storyData.userId
+      });
+      
+      try {
+        const response = await apiRequest("POST", "/api/stories", storyData);
+        console.log("Story creation successful:", response);
+        return response;
+      } catch (error) {
+        console.error("Story creation failed:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
@@ -57,9 +71,11 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       });
     },
     onError: (error: any) => {
+      console.error("Story mutation error:", error);
+      const errorMessage = error.message || "Couldn't post your story. Try again!";
       toast({
         title: "Story failed 😢",
-        description: error.message || "Couldn't post your story. Try again!",
+        description: errorMessage,
         variant: "destructive",
       });
     },

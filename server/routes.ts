@@ -2128,15 +2128,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/stories", async (req, res) => {
     try {
+      console.log("Story upload request received:", {
+        hasImageUrl: !!req.body.imageUrl,
+        imageUrlLength: req.body.imageUrl?.length || 0,
+        caption: req.body.caption,
+        userId: req.body.userId
+      });
+
+      // Validate required fields
+      if (!req.body.imageUrl) {
+        return res.status(400).json({ message: "Image is required" });
+      }
+      if (!req.body.userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+
       const storyData = {
         ...req.body,
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
       };
+      
+      console.log("Creating story with data:", {
+        userId: storyData.userId,
+        caption: storyData.caption,
+        type: storyData.type,
+        expiresAt: storyData.expiresAt
+      });
+      
       const story = await storage.createStory(storyData);
+      console.log("Story created successfully:", story.id);
       res.json(story);
     } catch (error) {
       console.error("Error creating story:", error);
-      res.status(500).json({ message: "Failed to create story" });
+      res.status(500).json({ 
+        message: "Failed to create story",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

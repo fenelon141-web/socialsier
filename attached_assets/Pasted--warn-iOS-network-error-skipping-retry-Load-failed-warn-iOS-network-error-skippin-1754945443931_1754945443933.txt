@@ -1,0 +1,34 @@
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [log] - WebSocket connected
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - 📸 Starting story creation process...
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+⚡️  To Native ->  Camera getPhoto 79734961
+⚡️  CAPCameraPlugin - You are missing NSPhotoLibraryAddUsageDescription in your Info.plist file. Camera will not function without it. Learn more: https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW73
+ERROR MESSAGE:  {"message":"You are missing NSPhotoLibraryAddUsageDescription in your Info.plist file. Camera will not function without it. Learn more: https:\/\/developer.apple.com\/library\/content\/documentation\/General\/Reference\/InfoPlistKeyReference\/Articles\/CocoaKeys.html#\/\/apple_ref\/doc\/uid\/TP40009251-SW73","errorMessage":"You are missing NSPhotoLibraryAddUsageDescription in your Info.plist file. Camera will not function without it. Learn more: https:\/\/developer.apple.com\/library\/content\/documentation
+⚡️  [error] - [App] WebSocket error: {"isTrusted":true}
+⚡️  [log] - [App] WebSocket disconnected, reconnecting in 3s...
+⚡️  [error] - {"message":"You are missing NSPhotoLibraryAddUsageDescription in your Info.plist file. Camera will not function without it. Learn more: https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW73","errorMessage":"You are missing NSPhotoLibraryAddUsageDescription in your Info.plist file. Camera will not function without it. Learn more: https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW73"}
+⚡️  [error] - Camera error: {"errorMessage":"You are missing NSPhotoLibraryAddUsageDescription in your Info.plist file. Camera will not function without it. Learn more: https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW73"}
+⚡️  [log] - No photo captured
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - [App] Initializing global WebSocket: wss://hot-girl-hunt-fenelon141.replit.app/ws
+⚡️  [log] - [App] Global WebSocket connected
