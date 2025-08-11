@@ -2,7 +2,7 @@
 
 ## Step 1: Open Terminal and Navigate to Project
 ```bash
-cd /path/to/your/socialiser-project
+cd /Users/adamfenelon/Desktop/Socialiser
 cd ios
 ```
 
@@ -28,7 +28,7 @@ pod install
 
 ## Complete Sequence (Copy-Paste Ready):
 ```bash
-cd ios
+cd /Users/adamfenelon/Desktop/Socialiser/ios
 pod install
 open App.xcworkspace
 ```
