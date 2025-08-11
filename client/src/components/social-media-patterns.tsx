@@ -100,13 +100,33 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
           description: "Add a caption and post your story!",
         });
 
-        // Test the upload endpoint immediately
+        // Test the upload endpoint immediately with full URL
         console.log('Testing upload endpoint with captured photo...');
+        console.log('Photo size for upload test:', photo.length);
+        
         try {
-          const testResponse = await apiRequest('POST', '/upload-story-image', { dataUrl: photo });
-          console.log('Upload test successful:', testResponse);
-        } catch (uploadError) {
+          // Test with fetch directly to confirm connectivity
+          const directFetchResponse = await fetch('https://hot-girl-hunt-fenelon141.replit.app/upload-story-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dataUrl: photo.substring(0, 1000) }) // Use smaller sample for test
+          });
+          
+          console.log('Direct fetch response status:', directFetchResponse.status);
+          const directData = await directFetchResponse.json();
+          console.log('Direct fetch response data:', directData);
+          
+          // Also test with apiRequest
+          const testResponse = await apiRequest('POST', '/upload-story-image', { 
+            dataUrl: photo.substring(0, 1000) // Use smaller sample for test
+          });
+          console.log('API request test successful:', testResponse);
+        } catch (uploadError: any) {
           console.error('Upload test failed:', uploadError);
+          console.error('Error details:', {
+            message: uploadError?.message || 'Unknown error',
+            stack: uploadError?.stack || 'No stack trace'
+          });
         }
       } else {
         console.log('No photo returned from camera');

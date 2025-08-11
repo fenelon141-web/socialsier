@@ -2116,34 +2116,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stories endpoints
-  // Image upload test endpoint with comprehensive logging
+  // Simple test endpoint to check connectivity
   app.post('/upload-story-image', (req, res) => {
-    console.log('=== UPLOAD TEST ENDPOINT CALLED ===');
+    console.log('Upload route hit!');
+    console.log('Request method:', req.method);
+    console.log('Request URL:', req.url);
     console.log('Request headers:', req.headers);
-    console.log('Request body keys:', Object.keys(req.body));
     
-    try {
-      const { dataUrl } = req.body;
-      if (!dataUrl) {
-        console.log('ERROR: No image data provided');
-        return res.status(400).json({ error: 'No image data provided' });
-      }
-      
-      console.log('SUCCESS: Received image data');
-      console.log('Image data prefix:', dataUrl.substring(0, 50));
-      console.log('Image data length:', dataUrl.length);
-      console.log('Image data type:', typeof dataUrl);
-      
-      const response = { success: true, message: 'Image received successfully', dataLength: dataUrl.length };
-      console.log('Sending response:', response);
-      
-      res.json(response);
-      console.log('=== UPLOAD TEST ENDPOINT COMPLETED SUCCESSFULLY ===');
-    } catch (error) {
-      console.error('=== UPLOAD TEST ENDPOINT ERROR ===', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      res.status(500).json({ error: 'Internal server error', details: errorMessage });
+    if (req.body && req.body.dataUrl) {
+      console.log('Received image size:', req.body.dataUrl.length);
+    } else {
+      console.log('No dataUrl in request body');
+      console.log('Request body keys:', Object.keys(req.body || {}));
     }
+
+    // Simple success response
+    res.json({ success: true, message: 'Image uploaded!' });
   });
 
   app.get("/api/stories", async (req, res) => {
