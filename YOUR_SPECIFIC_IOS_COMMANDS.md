@@ -3,7 +3,7 @@
 ## Step 1: Open Terminal and Navigate to Project
 ```bash
 cd /Users/adamfenelon/Desktop/Socialiser
-cd ios
+cd ios/App
 ```
 
 ## Step 2: Install CocoaPods Dependencies
@@ -28,7 +28,7 @@ pod install
 
 ## Complete Sequence (Copy-Paste Ready):
 ```bash
-cd /Users/adamfenelon/Desktop/Socialiser/ios
+cd /Users/adamfenelon/Desktop/Socialiser/ios/App
 pod install
 open App.xcworkspace
 ```
