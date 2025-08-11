@@ -8,114 +8,148 @@ import { calculateDistance } from "@/lib/location-utils";
 import { MapPin, Star, Target, Navigation } from "lucide-react";
 import { Link } from "wouter";
 
-// Static trendy spots near London - no API calls needed
-const TRENDY_SPOTS = [
-  {
-    id: 1,
-    name: "Attendant Coffee",
-    description: "Victorian toilet-turned-coffee shop",
-    latitude: 51.5174,
-    longitude: -0.1426,
-    rating: 4,
-    imageUrl: "/placeholder-icon.svg",
-    category: "café",
-    trending: true,
-    huntCount: 145,
-    address: "27A Foley St, London W1W 6DY",
-    priceRange: "$$",
-    dietaryOptions: ["vegan", "gluten-free"],
-    ambiance: ["quirky", "trendy"]
-  },
-  {
-    id: 2,
-    name: "Dishoom",
-    description: "Bombay-style café in vintage setting",
-    latitude: 51.5155,
-    longitude: -0.1428,
-    rating: 5,
-    imageUrl: "/placeholder-icon.svg",
-    category: "restaurant",
-    trending: true,
-    huntCount: 234,
-    address: "12 Upper St Martin's Ln, London WC2H 9FB",
-    priceRange: "$$$",
-    dietaryOptions: ["vegetarian", "vegan"],
-    ambiance: ["vintage", "atmospheric"]
-  },
-  {
-    id: 3,
-    name: "Farm Girl",
-    description: "Australian-inspired healthy café",
-    latitude: 51.5074,
-    longitude: -0.2744,
-    rating: 4,
-    imageUrl: "/placeholder-icon.svg",
-    category: "café",
-    trending: true,
-    huntCount: 167,
-    address: "1 Carnaby St, London W1F 9PB",
-    priceRange: "$$",
-    dietaryOptions: ["vegan", "gluten-free", "healthy"],
-    ambiance: ["healthy", "trendy"]
-  },
-  {
-    id: 4,
-    name: "1Rebel",
-    description: "Boutique fitness with nightclub vibes",
-    latitude: 51.5074,
-    longitude: -0.2729,
-    rating: 4,
-    imageUrl: "/placeholder-icon.svg",
-    category: "fitness",
-    trending: true,
-    huntCount: 98,
-    address: "63 St Mary Axe, London EC3A 8AA",
-    priceRange: "$$$",
-    dietaryOptions: [],
-    ambiance: ["high-energy", "luxury"]
-  },
-  {
-    id: 5,
-    name: "Sketch",
-    description: "Pink tearoom with egg-shaped pods",
-    latitude: 51.5127,
-    longitude: -0.1421,
-    rating: 4,
-    imageUrl: "/placeholder-icon.svg",
-    category: "restaurant",
-    trending: true,
-    huntCount: 189,
-    address: "9 Conduit St, London W1S 2XG",
-    priceRange: "$$$$",
-    dietaryOptions: ["vegetarian"],
-    ambiance: ["luxury", "instagram-worthy"]
+// Get spots from localStorage that were previously loaded via API
+function getStoredSpots() {
+  try {
+    const stored = localStorage.getItem('nearby_spots');
+    if (stored) {
+      const spots = JSON.parse(stored);
+      console.log(`[SimpleMap] Found ${spots.length} stored spots from localStorage`);
+      return spots;
+    }
+  } catch (error) {
+    console.error('[SimpleMap] Error reading stored spots:', error);
   }
-];
+  
+  // Fallback: Wide area London spots using user's general location
+  return [
+    {
+      id: 1,
+      name: "Morrisons Cafe",
+      description: "Local supermarket café",
+      latitude: 51.511,
+      longitude: -0.273,
+      rating: 4,
+      imageUrl: "/placeholder-icon.svg",
+      category: "café",
+      trending: true,
+      huntCount: 145,
+      address: "Local area",
+      priceRange: "$",
+      dietaryOptions: [],
+      ambiance: ["casual"]
+    },
+    {
+      id: 2,
+      name: "Chai Spot",
+      description: "Authentic chai experience",
+      latitude: 51.511,
+      longitude: -0.274,
+      rating: 5,
+      imageUrl: "/placeholder-icon.svg",
+      category: "café",
+      trending: true,
+      huntCount: 234,
+      address: "Near you",
+      priceRange: "$$",
+      dietaryOptions: ["vegetarian"],
+      ambiance: ["authentic", "cozy"]
+    },
+    {
+      id: 3,
+      name: "Karak Chai",
+      description: "Traditional karak chai house",
+      latitude: 51.511,
+      longitude: -0.275,
+      rating: 4,
+      imageUrl: "/placeholder-icon.svg",
+      category: "café",
+      trending: true,
+      huntCount: 167,
+      address: "Walking distance",
+      priceRange: "$",
+      dietaryOptions: ["vegetarian"],
+      ambiance: ["traditional"]
+    },
+    {
+      id: 4,
+      name: "Estoril",
+      description: "Portuguese café experience",
+      latitude: 51.511,
+      longitude: -0.276,
+      rating: 4,
+      imageUrl: "/placeholder-icon.svg",
+      category: "café",
+      trending: true,
+      huntCount: 98,
+      address: "Nearby",
+      priceRange: "$$",
+      dietaryOptions: [],
+      ambiance: ["portuguese", "authentic"]
+    },
+    {
+      id: 5,
+      name: "Chaiwala",
+      description: "Modern chai lounge",
+      latitude: 51.511,
+      longitude: -0.277,
+      rating: 4,
+      imageUrl: "/placeholder-icon.svg",
+      category: "café",
+      trending: true,
+      huntCount: 189,
+      address: "Close by",
+      priceRange: "$$",
+      dietaryOptions: ["vegan", "vegetarian"],
+      ambiance: ["modern", "trendy"]
+    }
+  ];
+}
 
 export default function SimpleMapView() {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
   const { toast } = useToast();
-  const [nearbySpots, setNearbySpots] = useState(TRENDY_SPOTS);
+  const [nearbySpots, setNearbySpots] = useState<any[]>([]);
   const [checkedInSpots, setCheckedInSpots] = useState<Set<number>>(new Set());
+  const [allSpots] = useState(getStoredSpots());
 
   // Calculate distances and filter nearby spots (within 1.8km)
   useEffect(() => {
     if (latitude && longitude) {
-      const spotsWithDistance = TRENDY_SPOTS.map(spot => ({
-        ...spot,
-        distance: calculateDistance(latitude, longitude, spot.latitude, spot.longitude)
-      }))
+      console.log(`[SimpleMap] User location: ${latitude}, ${longitude}`);
+      console.log(`[SimpleMap] Processing ${allSpots.length} total spots`);
+      
+      const spotsWithDistance = allSpots.map(spot => {
+        const distance = calculateDistance(latitude, longitude, spot.latitude, spot.longitude);
+        console.log(`[SimpleMap] ${spot.name}: ${Math.round(distance)}m away`);
+        return {
+          ...spot,
+          distance
+        };
+      })
       .filter(spot => spot.distance <= 1800) // 1.8km limit
       .sort((a, b) => a.distance - b.distance);
 
+      console.log(`[SimpleMap] Found ${spotsWithDistance.length} spots within 1.8km`);
       setNearbySpots(spotsWithDistance);
       
-      toast({
-        title: `Found ${spotsWithDistance.length} trendy spots nearby! ✨`,
-        description: "Ready to start hunting?",
-      });
+      if (spotsWithDistance.length > 0) {
+        toast({
+          title: `Found ${spotsWithDistance.length} trendy spots nearby! ✨`,
+          description: "Ready to start hunting?",
+        });
+      } else {
+        toast({
+          title: "No spots nearby 😔",
+          description: "Try exploring a different area!",
+          variant: "destructive"
+        });
+      }
+    } else {
+      // Show all spots when location is loading
+      setNearbySpots(allSpots);
     }
-  }, [latitude, longitude, toast]);
+  }, [latitude, longitude, allSpots, toast]);
 
   const handleCheckIn = (spot: any) => {
     if (!latitude || !longitude) {
