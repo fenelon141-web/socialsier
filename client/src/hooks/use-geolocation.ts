@@ -75,13 +75,20 @@ export function useGeolocation() {
 
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy,
+            const coords = position.coords;
+            console.log('[Geolocation] Position received:', coords);
+            console.log('[Geolocation] Location state updated:', { lat: coords.latitude, lng: coords.longitude, accuracy: coords.accuracy });
+            
+            const newLocation = {
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              accuracy: coords.accuracy,
               loading: false,
               error: null,
-            });
+            };
+            
+            console.log('[Geolocation] Setting location state:', newLocation);
+            setLocation(newLocation);
           },
           (error) => {
             let errorMessage = 'Location error';

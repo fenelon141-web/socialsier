@@ -20,7 +20,11 @@ const LeafletMap = lazy(() => import("@/components/leaflet-map"));
 
 
 export default function MapView() {
-  const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
+  const geoLocation = useGeolocation();
+  const { latitude, longitude, loading: locationLoading, error: locationError } = geoLocation;
+  
+  // Debug location state
+  console.log('[MapView] Location state:', { latitude, longitude, locationLoading, locationError });
   const [searchFilters, setSearchFilters] = useState({});
   const { saveSpot, isSaved, savedSpots, isOnline } = useOfflineStorage();
   const { toast } = useToast();
@@ -60,9 +64,31 @@ export default function MapView() {
   
   // Direct WebSocket spots fetching effect
   useEffect(() => {
-    if (!latitude || !longitude) return;
+    console.log('[MapView] UseEffect triggered - checking location:', { 
+      latitude, 
+      longitude, 
+      hasLatitude: !!latitude, 
+      hasLongitude: !!longitude,
+      locationLoading,
+      locationError
+    });
     
-    console.log(`[MapView] Starting spots fetch for ${latitude}, ${longitude}`);
+    if (locationLoading) {
+      console.log('[MapView] Location still loading, waiting...');
+      return;
+    }
+    
+    if (locationError) {
+      console.log('[MapView] Location error present:', locationError);
+      return;
+    }
+    
+    if (!latitude || !longitude) {
+      console.log('[MapView] No location available yet, skipping spots fetch');
+      return;
+    }
+    
+    console.log(`[MapView] ✅ Starting spots fetch for ${latitude}, ${longitude}`);
     setSpotsLoading(true);
     setNearbyError(null);
     
