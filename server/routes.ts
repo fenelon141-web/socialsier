@@ -2093,8 +2093,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Direct download endpoint for iOS project
   app.get("/download/socialiser-ios", async (req, res) => {
     try {
-      const filePath = path.join(process.cwd(), 'socialiser-ios-clean.tar.gz');
-      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-ios-clean.tar.gz');
+      const filePath = path.join(process.cwd(), 'socialiser-clean-minimal.tar.gz');
+      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-clean-minimal.tar.gz');
       res.setHeader('Content-Type', 'application/gzip');
       res.sendFile(filePath);
     } catch (error) {
