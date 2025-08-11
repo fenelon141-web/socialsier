@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { App } from '@capacitor/app';
-import { StatusBar, Style } from '@capacitor/status-bar';
+// StatusBar plugin removed for iOS compatibility
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Device } from '@capacitor/device';
 
@@ -17,10 +17,8 @@ export function useCapacitor() {
         setIsNative(info.platform !== 'web');
 
         if (info.platform !== 'web') {
-          // Configure status bar for Valley Girl theme
-          await StatusBar.setStyle({ style: Style.Light });
-          await StatusBar.setBackgroundColor({ color: '#ff69b4' });
-
+          // StatusBar configuration removed for iOS compatibility
+          
           // Hide splash screen after app loads
           await SplashScreen.hide();
 
