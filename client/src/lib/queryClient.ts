@@ -1,7 +1,9 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// iOS Production Server URL
-const API_BASE_URL = 'https://hot-girl-hunt-fenelon141.replit.app';
+// Development and production URL detection
+const API_BASE_URL = import.meta.env.DEV 
+  ? 'http://localhost:5000'
+  : 'https://hot-girl-hunt-fenelon141.replit.app';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {

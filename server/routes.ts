@@ -984,6 +984,39 @@ function sortByTrendiness(spots: any[]): any[] {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Test routes - Register these FIRST before other middleware
+  console.log('Registering test routes...');
+  
+  app.get('/test-server', (req, res) => {
+    console.log('Test server endpoint hit!');
+    res.json({ message: 'Server is working!', timestamp: new Date().toISOString() });
+  });
+  
+  app.all('/upload-story-image', (req, res) => {
+    console.log('===============================');
+    console.log('Upload route hit!');
+    console.log('Request method:', req.method);
+    console.log('Request URL:', req.url);
+    console.log('Request path:', req.path);
+    console.log('===============================');
+    
+    if (req.method === 'OPTIONS') {
+      res.status(200).end();
+      return;
+    }
+    
+    if (req.body && req.body.dataUrl) {
+      console.log('Received image size:', req.body.dataUrl.length);
+    } else {
+      console.log('No dataUrl in request body');
+      console.log('Request body keys:', Object.keys(req.body || {}));
+    }
+
+    console.log('Sending success response');
+    res.json({ success: true, message: 'Image uploaded!', method: req.method });
+    console.log('Response sent');
+  });
+
   // Authentication routes
   app.post('/api/auth/register', async (req, res) => {
     try {
@@ -2116,23 +2149,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stories endpoints
-  // Simple test endpoint to check connectivity
-  app.post('/upload-story-image', (req, res) => {
-    console.log('Upload route hit!');
-    console.log('Request method:', req.method);
-    console.log('Request URL:', req.url);
-    console.log('Request headers:', req.headers);
-    
-    if (req.body && req.body.dataUrl) {
-      console.log('Received image size:', req.body.dataUrl.length);
-    } else {
-      console.log('No dataUrl in request body');
-      console.log('Request body keys:', Object.keys(req.body || {}));
-    }
-
-    // Simple success response
-    res.json({ success: true, message: 'Image uploaded!' });
-  });
 
   app.get("/api/stories", async (req, res) => {
     try {
