@@ -71,14 +71,14 @@ export class ObjectStorageService {
           contentType: `image/${imageType}`,
           cacheControl: 'public, max-age=31536000',
         },
-        public: true, // Make file publicly accessible
       });
       
       console.log('Upload completed successfully');
       
-      // Return the public URL
-      const publicUrl = `https://storage.googleapis.com/${bucketId}/${filename}`;
-      console.log(`Public URL: ${publicUrl}`);
+      // Return a public URL that we'll serve through our own endpoint
+      // This works around bucket permission restrictions
+      const publicUrl = `/public-objects/${filename}`;
+      console.log(`Public URL (via our server): ${publicUrl}`);
       
       return publicUrl;
       
