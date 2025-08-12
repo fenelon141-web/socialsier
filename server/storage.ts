@@ -285,19 +285,10 @@ class MemStorage implements IStorage {
       id: this.users.length + 1,
       username: insertUser.username!,
       email: insertUser.email!,
-      firstName: insertUser.firstName!,
-      lastName: insertUser.lastName!,
-      dateOfBirth: insertUser.dateOfBirth!,
-      password: insertUser.password || null,
       level: insertUser.level || 1,
       totalPoints: insertUser.totalPoints || 0,
       spotsHunted: insertUser.spotsHunted || 0,
-      avatar: insertUser.avatar ?? null,
-      acceptedTerms: insertUser.acceptedTerms || new Date(),
-      pushToken: insertUser.pushToken || null,
-      notifyFriendActivity: insertUser.notifyFriendActivity ?? true,
-      notifyNearbySpots: insertUser.notifyNearbySpots ?? true,
-      notifyChallengeReminders: insertUser.notifyChallengeReminders ?? true,
+      avatar: insertUser.avatar,
       createdAt: new Date()
     };
     this.users.push(newUser);
@@ -332,7 +323,7 @@ class MemStorage implements IStorage {
         email: userData.email,
         firstName: userData.firstName || '',
         lastName: userData.lastName || '',
-        dateOfBirth: new Date(),  // Required field, use current date as placeholder
+        dateOfBirth: null,
         password: null,
         level: 1,
         totalPoints: 0,
@@ -433,7 +424,7 @@ class MemStorage implements IStorage {
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.read = true;
-      // Note: Notification type doesn't have updatedAt field
+      notification.updatedAt = new Date();
     }
   }
 
@@ -443,7 +434,7 @@ class MemStorage implements IStorage {
     
     const newSpotHunt: SpotHunt = {
       id: this.spotHunts.length + 1,
-      userId,
+      userId: userId.toString(),
       spotId,
       pointsEarned,
       huntedAt: new Date()
@@ -459,7 +450,7 @@ class MemStorage implements IStorage {
       });
       
       // Check for badge achievements based on hunts
-      const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId);
+      const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId.toString());
       
       // Award "First Hunt Cutie" badge for first hunt (only if not already earned)
       if (userHunts.length === 1) {
@@ -511,7 +502,7 @@ class MemStorage implements IStorage {
 
   // Helper method to get user hunts by category/description
   private async getUserSpotHuntsByCategory(userId: number, keyword: string): Promise<SpotHunt[]> {
-    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId);
+    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId.toString());
     const categoryHunts: SpotHunt[] = [];
     
     for (const hunt of userHunts) {
@@ -600,16 +591,16 @@ class MemStorage implements IStorage {
     if (this.userBadges.length === 0 && userId === 1) {
       await this.getAllBadges(); // Ensure badges are initialized
       this.userBadges = [
-        { id: 1, userId: 1, badgeId: 41, earnedAt: new Date() }, // First Hunt Cutie
-        { id: 2, userId: 1, badgeId: 1, earnedAt: new Date() },  // Boba Princess
-        { id: 3, userId: 1, badgeId: 12, earnedAt: new Date() }, // Avo Toast Angel
-        { id: 4, userId: 1, badgeId: 25, earnedAt: new Date() }, // Barre Bestie
-        { id: 5, userId: 1, badgeId: 33, earnedAt: new Date() }  // Pink Paradise
+        { id: 1, userId: "1", badgeId: 41, earnedAt: new Date() }, // First Hunt Cutie
+        { id: 2, userId: "1", badgeId: 1, earnedAt: new Date() },  // Boba Princess
+        { id: 3, userId: "1", badgeId: 12, earnedAt: new Date() }, // Avo Toast Angel
+        { id: 4, userId: "1", badgeId: 25, earnedAt: new Date() }, // Barre Bestie
+        { id: 5, userId: "1", badgeId: 33, earnedAt: new Date() }  // Pink Paradise
       ];
     }
     
     return this.userBadges
-      .filter(ub => ub.userId === userId)
+      .filter(ub => ub.userId === userId.toString())
       .map(ub => ({
         ...ub,
         badge: this.badges.find(b => b.id === ub.badgeId)!
@@ -619,7 +610,7 @@ class MemStorage implements IStorage {
   async awardBadge(userId: number, badgeId: number): Promise<UserBadge> {
     const newUserBadge: UserBadge = {
       id: this.userBadges.length + 1,
-      userId,
+      userId: userId.toString(),
       badgeId,
       earnedAt: new Date()
     };
@@ -630,7 +621,7 @@ class MemStorage implements IStorage {
   // Helper method to check if user already has a specific badge
   async hasUserBadge(userId: number, badgeId: number): Promise<boolean> {
     return this.userBadges.some(ub => 
-      ub.userId === userId && ub.badgeId === badgeId
+      ub.userId === userId.toString() && ub.badgeId === badgeId
     );
   }
 
@@ -641,7 +632,7 @@ class MemStorage implements IStorage {
 
   async getUserChallengeProgress(userId: number): Promise<(UserChallengeProgress & { challenge: DailyChallenge })[]> {
     return this.userChallengeProgress
-      .filter(ucp => ucp.userId === userId)
+      .filter(ucp => ucp.userId === userId.toString())
       .map(ucp => ({
         ...ucp,
         challenge: this.dailyChallenges.find(c => c.id === ucp.challengeId)!
@@ -650,7 +641,7 @@ class MemStorage implements IStorage {
 
   async updateChallengeProgress(userId: number, challengeId: number, progress: number): Promise<UserChallengeProgress> {
     const existingProgress = this.userChallengeProgress.find(
-      ucp => ucp.userId === userId && ucp.challengeId === challengeId
+      ucp => ucp.userId === userId.toString() && ucp.challengeId === challengeId
     );
 
     if (existingProgress) {
@@ -659,7 +650,7 @@ class MemStorage implements IStorage {
     } else {
       const newProgress: UserChallengeProgress = {
         id: this.userChallengeProgress.length + 1,
-        userId,
+        userId: userId.toString(),
         challengeId,
         progress,
         completed: false,
@@ -780,12 +771,7 @@ class MemStorage implements IStorage {
   async createPost(post: InsertPost): Promise<Post> {
     const newPost: Post = {
       id: this.nextPostId++,
-      content: post.content,
-      type: post.type || 'text',  // Provide default value
-      rating: post.rating ?? null,
-      imageUrl: post.imageUrl ?? null,
-      userId: post.userId,
-      spotId: post.spotId ?? null,
+      ...post,
       createdAt: new Date()
     };
     this.posts.push(newPost);
@@ -863,11 +849,7 @@ class MemStorage implements IStorage {
   async createSpotReview(review: InsertSpotReview): Promise<SpotReview> {
     const newReview: SpotReview = {
       id: this.nextReviewId++,
-      rating: review.rating,
-      imageUrl: review.imageUrl ?? null,
-      userId: review.userId,
-      review: review.review ?? null,
-      spotId: review.spotId,
+      ...review,
       createdAt: new Date()
     };
     this.spotReviews.push(newReview);
