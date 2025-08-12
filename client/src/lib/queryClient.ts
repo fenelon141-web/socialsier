@@ -3,7 +3,7 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 // Development and production URL detection
 const API_BASE_URL = import.meta.env.DEV 
   ? 'http://localhost:5000'
-  : 'https://hot-girl-hunt-fenelon141.replit.app';
+  : 'https://socialiser.MYDOMAIN.com';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {

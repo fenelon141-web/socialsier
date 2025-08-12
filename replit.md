@@ -19,6 +19,12 @@ Socialiser is a mobile-first location-based discovery app designed to help users
 - **Reason**: Prevents App Store rejection due to social media features requiring content moderation
 - **Status**: All social functionality replaced with "coming soon" placeholders
 
+### Production API Configuration (Aug 12, 2025)
+- **API URL**: Updated queryClient.ts to use configurable production URL pattern
+- **Development**: Uses localhost:5000 for local development
+- **Production**: Uses https://socialiser.MYDOMAIN.com placeholder for deployment
+- **Note**: Replace MYDOMAIN with actual domain before deployment
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
