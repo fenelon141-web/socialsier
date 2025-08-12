@@ -992,6 +992,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ message: 'Server is working!', timestamp: new Date().toISOString() });
   });
   
+  // Serve uploaded images from object storage
+  app.get("/public-objects/:filePath(*)", async (req, res) => {
+    const filePath = req.params.filePath;
+    console.log(`Serving public object: ${filePath}`);
+    
+    try {
+      // Get bucket from environment
+      const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
+      if (!bucketId) {
+        return res.status(500).json({ error: "Object storage bucket not configured" });
+      }
+      
+      const { objectStorageClient } = await import('./objectStorage');
+      const bucket = objectStorageClient.bucket(bucketId);
+      const file = bucket.file(filePath);
+      
+      // Check if file exists
+      const [exists] = await file.exists();
+      if (!exists) {
+        return res.status(404).json({ error: "File not found" });
+      }
+      
+      // Get file metadata
+      const [metadata] = await file.getMetadata();
+      
+      // Set appropriate headers
+      res.set({
+        'Content-Type': metadata.contentType || 'application/octet-stream',
+        'Content-Length': metadata.size,
+        'Cache-Control': 'public, max-age=31536000', // 1 year cache
+        'Access-Control-Allow-Origin': '*' // Allow cross-origin access
+      });
+      
+      // Stream the file to the response
+      const stream = file.createReadStream();
+      stream.on('error', (err) => {
+        console.error('Stream error:', err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'Error streaming file' });
+        }
+      });
+      
+      stream.pipe(res);
+      
+    } catch (error) {
+      console.error("Error serving public object:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   // Image upload endpoint - converts base64 to object storage URL
   app.post('/upload-story-image', async (req, res) => {
     console.log('===============================');
@@ -2157,13 +2207,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Direct download endpoint for updated iOS project with object storage fixes
   app.get("/download/socialiser-ios", async (req, res) => {
     try {
-      const filePath = path.join(process.cwd(), 'socialiser-ios-updated.tar.gz');
-      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-ios-updated.tar.gz');
+      // Try updated file first, fallback to clean-minimal
+      const updatedFile = path.join(process.cwd(), 'socialiser-ios-updated.tar.gz');
+      const fallbackFile = path.join(process.cwd(), 'socialiser-clean-minimal.tar.gz');
+      
+      const fs = await import('fs/promises');
+      let fileToServe = fallbackFile; // Default to clean-minimal
+      
+      try {
+        await fs.access(updatedFile);
+        fileToServe = updatedFile;
+        console.log('Serving updated iOS file');
+      } catch {
+        console.log('Serving clean-minimal iOS file');
+      }
+      
+      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-ios.tar.gz');
       res.setHeader('Content-Type', 'application/gzip');
-      res.sendFile(filePath);
+      res.sendFile(fileToServe);
     } catch (error) {
-      console.error("Error serving updated download:", error);
-      res.status(404).json({ message: "Updated file not found" });
+      console.error("Error serving download:", error);
+      res.status(404).json({ message: "File not found" });
     }
   });
 
