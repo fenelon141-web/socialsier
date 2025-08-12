@@ -2154,16 +2154,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
   
-  // Direct download endpoint for iOS project
+  // Direct download endpoint for updated iOS project with object storage fixes
   app.get("/download/socialiser-ios", async (req, res) => {
     try {
-      const filePath = path.join(process.cwd(), 'socialiser-clean-minimal.tar.gz');
-      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-clean-minimal.tar.gz');
+      const filePath = path.join(process.cwd(), 'socialiser-ios-updated.tar.gz');
+      res.setHeader('Content-Disposition', 'attachment; filename=socialiser-ios-updated.tar.gz');
       res.setHeader('Content-Type', 'application/gzip');
       res.sendFile(filePath);
     } catch (error) {
-      console.error("Error serving download:", error);
-      res.status(404).json({ message: "File not found" });
+      console.error("Error serving updated download:", error);
+      res.status(404).json({ message: "Updated file not found" });
     }
   });
 
