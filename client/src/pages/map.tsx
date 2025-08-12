@@ -9,7 +9,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { useToast } from "@/hooks/use-toast";
 import { calculateDistance, formatDistance } from "@/lib/location-utils";
-import { fetchSpotsViaWebSocket } from "@/lib/websocket-spots";
+// WebSocket spots functionality removed due to connection conflicts
 import { ArrowLeft, MapPin, Star, Target, Navigation, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link, useSearch } from "wouter";
 import type { Spot } from "@shared/schema";
@@ -62,86 +62,39 @@ export default function MapView() {
   const [spotsLoading, setSpotsLoading] = useState(true);
   const [nearbyError, setNearbyError] = useState<Error | null>(null);
   
-  // Enhanced iOS-compatible fetch with WebSocket-first approach
+  // Direct HTTP API call (WebSocket conflicts resolved by using proven working endpoint)
   const fetchRealTimeSpots = async (lat: number, lng: number) => {
     console.log(`[MapView] Fetching spots for ${lat}, ${lng} with 1.8km radius`);
     setSpotsLoading(true);
     setNearbyError(null);
     
     try {
-      // Try WebSocket first (faster for real-time data)
-      console.log('[MapView] Attempting WebSocket connection...');
-      const spots = await fetchSpotsViaWebSocket(lat, lng, searchFilters);
+      // Use the local API endpoint that server logs show is working perfectly
+      const apiUrl = `/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`;
+      console.log(`[MapView] Calling local API: ${apiUrl}`);
       
-      if (spots && Array.isArray(spots) && spots.length > 0) {
-        console.log(`[MapView] ✅ WebSocket success: ${spots.length} spots`);
-        setNearbySpots(spots);
-        setSpotsLoading(false);
-        return;
-      } else {
-        console.log('[MapView] WebSocket returned empty, trying HTTP fallback...');
-        throw new Error('Empty WebSocket response');
-      }
-      
-    } catch (webSocketError) {
-      console.log('[MapView] WebSocket failed, falling back to HTTP:', webSocketError);
-      
-      // HTTP fallback with iOS optimization
-      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
-      const httpConfig = {
+      const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'User-Agent': 'Socialiser-iOS/1.0',
-          'Cache-Control': 'no-cache'
-        },
-        cache: 'no-cache' as RequestCache,
-        credentials: 'omit' as RequestCredentials,
-        mode: 'cors' as RequestMode
-      };
-      
-      const endpoints = [
-        `https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`,
-        `/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25` // Local fallback
-      ];
-      
-      for (let i = 0; i < endpoints.length; i++) {
-        try {
-          console.log(`[MapView] HTTP attempt ${i + 1}: ${endpoints[i]}`);
-          
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 10000);
-          
-          const response = await fetch(endpoints[i], {
-            ...httpConfig,
-            signal: controller.signal
-          });
-          
-          clearTimeout(timeoutId);
-          
-          if (!response.ok) {
-            console.warn(`[MapView] HTTP ${response.status} from attempt ${i + 1}`);
-            continue;
-          }
-          
-          const httpSpots = await response.json();
-          
-          if (httpSpots && Array.isArray(httpSpots) && httpSpots.length > 0) {
-            console.log(`[MapView] ✅ HTTP success: ${httpSpots.length} spots`);
-            setNearbySpots(httpSpots);
-            setSpotsLoading(false);
-            return;
-          }
-          
-        } catch (httpError) {
-          console.warn(`[MapView] HTTP attempt ${i + 1} failed:`, httpError);
+          'Content-Type': 'application/json'
         }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status ${response.status}`);
       }
       
-      // All attempts failed
-      console.error('[MapView] All networking attempts failed');
-      setNearbyError(new Error('Unable to load spots - check network connection'));
+      const spots = await response.json();
+      console.log(`[MapView] ✅ Successfully received ${spots.length} spots from API`);
+      console.log(`[MapView] Sample spot:`, spots[0]);
+      
+      setNearbySpots(spots);
+      setSpotsLoading(false);
+      
+    } catch (error) {
+      console.error('[MapView] API request failed:', error);
+      setNearbyError(new Error('Unable to load spots - server error'));
       setSpotsLoading(false);
     }
   };

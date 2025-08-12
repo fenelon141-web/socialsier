@@ -116,12 +116,12 @@ export class NotificationService {
           id: element.id,
           name: element.tags.name,
           category: this.getCategoryFromTags(element.tags),
-          rating: this.estimateRating(element.tags),
-          huntCount: Math.floor(Math.random() * 20) + 5, // Simulated for now
-          distance: this.calculateDistance(lat, lng, element.lat || element.center?.lat, element.lon || element.center?.lon),
-          description: this.getDescription(element.tags),
           latitude: element.lat || element.center?.lat,
-          longitude: element.lon || element.center?.lon
+          longitude: element.lon || element.center?.lon,
+          rating: this.estimateRating(element.tags),
+          huntCount: Math.floor(Math.random() * 20) + 5,
+          distance: this.calculateDistance(lat, lng, element.lat || element.center?.lat, element.lon || element.center?.lon),
+          description: this.getDescription(element.tags)
         }))
         .filter((spot: any) => spot.latitude && spot.longitude)
         .sort((a: any, b: any) => a.distance - b.distance);
