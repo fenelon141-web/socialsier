@@ -1,6 +1,6 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// Development and production URL detection
+// Development and production URL detection - updated
 const API_BASE_URL = import.meta.env.DEV 
   ? 'http://localhost:5000'
   : 'https://hot-girl-hunt-fenelon141.replit.app';
