@@ -65,6 +65,24 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Add explicit middleware to ensure API routes are handled first
+  app.use((req, res, next) => {
+    // Log API route attempts for debugging
+    if (req.path.startsWith('/upload-') || req.path.startsWith('/api/') || req.path.startsWith('/public-objects/')) {
+      console.log(`API route attempt: ${req.method} ${req.path}`);
+      
+      // If this is an API route but no handler was found, return proper JSON error
+      if (!res.headersSent) {
+        return res.status(404).json({ 
+          error: 'API endpoint not found',
+          path: req.path,
+          method: req.method 
+        });
+      }
+    }
+    next();
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
