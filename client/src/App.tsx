@@ -41,8 +41,8 @@ function Router() {
       ) : Home} />
       <Route path="/home" component={Home} />
       <Route path="/map" component={MapView} />
-      <Route path="/social" component={Social} />
-      <Route path="/squads" component={Squads} />
+      {/* <Route path="/social" component={Social} /> Temporarily disabled for App Store submission */}
+      {/* <Route path="/squads" component={Squads} /> Temporarily disabled for App Store submission */}
       <Route path="/taste-makers" component={TasteMakers} />
       <Route path="/discover" component={DiscoverFeed} />
       <Route path="/badges" component={Badges} />

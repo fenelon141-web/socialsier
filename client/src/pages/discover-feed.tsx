@@ -129,9 +129,9 @@ export default function DiscoverFeed() {
         <PullToRefreshContainer onRefresh={handleRefresh}>
           <div className="pb-24">
             {/* Stories Section */}
-            <div className="bg-white border-b border-gray-100">
+            {/* <div className="bg-white border-b border-gray-100">
               <StoriesStrip />
-            </div>
+            </div> Temporarily disabled for App Store submission */}
 
             <Tabs value={feedType} onValueChange={(value) => setFeedType(value as any)} className="w-full">
               {/* Tab Navigation */}
@@ -176,12 +176,15 @@ export default function DiscoverFeed() {
               <TabsContent value="vertical" className="mt-0">
                 {/* This will trigger the full-screen vertical feed */}
                 <div className="h-40 flex items-center justify-center">
-                  <Button 
+                  {/* <Button 
                     onClick={() => setFeedType("vertical")}
                     className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
                   >
                     Enter Full Screen Stories
-                  </Button>
+                  </Button> Temporarily disabled for App Store submission */}
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">Stories feature coming soon</p>
+                  </div>
                 </div>
               </TabsContent>
 
