@@ -295,6 +295,52 @@ class MemStorage implements IStorage {
     return newUser;
   }
 
+  async upsertUser(userData: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    profileImageUrl?: string;
+  }): Promise<User> {
+    // Convert string ID to number
+    const numId = parseInt(userData.id) || this.users.length + 1;
+    
+    // Check if user exists
+    let existingUser = this.users.find(u => u.id === numId || u.email === userData.email);
+    
+    if (existingUser) {
+      // Update existing user
+      existingUser.email = userData.email;
+      if (userData.firstName) existingUser.firstName = userData.firstName;
+      if (userData.lastName) existingUser.lastName = userData.lastName;
+      if (userData.profileImageUrl) existingUser.avatar = userData.profileImageUrl;
+      return existingUser;
+    } else {
+      // Create new user
+      const newUser: User = {
+        id: numId,
+        username: userData.email.split('@')[0],
+        email: userData.email,
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        dateOfBirth: null,
+        password: null,
+        level: 1,
+        totalPoints: 0,
+        spotsHunted: 0,
+        avatar: userData.profileImageUrl || null,
+        acceptedTerms: new Date(),
+        pushToken: null,
+        notifyFriendActivity: true,
+        notifyNearbySpots: true,
+        notifyChallengeReminders: true,
+        createdAt: new Date()
+      };
+      this.users.push(newUser);
+      return newUser;
+    }
+  }
+
   async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
     const userIndex = this.users.findIndex(user => user.id === id);
     if (userIndex === -1) return undefined;
