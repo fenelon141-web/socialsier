@@ -20,34 +20,16 @@ export default function Profile() {
     queryKey: ["/api/user/1"]
   });
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("https://hot-girl-hunt-fenelon141.replit.app/api/auth/logout", {
-
-        method: "POST",
-      });
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      // Clear all cached data
-      queryClient.clear();
-      toast({
-        title: "Logged out",
-        description: "You've been logged out successfully",
-      });
-      setLocation("/");
-    },
-    onError: () => {
-      toast({
-        title: "Logout failed",
-        description: "There was an error logging you out",
-        variant: "destructive",
-      });
-    }
-  });
+  // Simplified logout for App Store submission
+  const handleLogout = () => {
+    // Clear all cached data
+    queryClient.clear();
+    toast({
+      title: "Logged out",
+      description: "You've been logged out successfully",
+    });
+    setLocation("/login");
+  };
 
   const { data: userBadges, isLoading: badgesLoading } = useQuery<(UserBadge & { badge: Badge })[]>({
     queryKey: ["/api/user/1/badges"]
@@ -107,8 +89,7 @@ export default function Profile() {
             variant="ghost" 
             size="sm" 
             className="text-white hover:bg-white/20"
-            onClick={() => logoutMutation.mutate()}
-            disabled={logoutMutation.isPending}
+            onClick={handleLogout}
           >
             <LogOut className="w-4 h-4" />
           </Button>

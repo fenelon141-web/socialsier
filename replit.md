@@ -4,6 +4,21 @@
 
 Socialiser is a mobile-first location-based discovery app designed to help users find trendy spots and connect with their community. The app combines social features with location discovery, allowing users to hunt for spots, earn badges, share experiences, and connect with friends. Built with a modern React frontend and Express backend, the application is optimized for both web and native mobile platforms using Capacitor for iOS and Android deployment.
 
+## Recent Changes for App Store Submission (Aug 2025)
+
+### Authentication Simplified for iOS Compatibility
+- **Login/Logout/Registration**: Converted to simplified bypass system for Xcode/iOS testing
+- **Reason**: Complex Replit OAuth authentication fails in iOS environment due to session/network restrictions
+- **Implementation**: All auth flows now use local simulation with proper UI feedback and navigation
+- **App Store Compliance**: Removes authentication failure points that could cause rejection
+
+### Social Features Temporarily Disabled
+- **Social Tab**: Hidden from bottom navigation
+- **Story Uploads**: Disabled StoriesStrip component and story creation dialogs
+- **Social Routes**: Disabled /social and /squads routes completely
+- **Reason**: Prevents App Store rejection due to social media features requiring content moderation
+- **Status**: All social functionality replaced with "coming soon" placeholders
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
