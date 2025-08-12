@@ -100,27 +100,23 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
           description: "Add a caption and post your story!",
         });
 
-        // Test the upload endpoint immediately with full URL
-        console.log('Testing upload endpoint with captured photo...');
+        // Test the upload endpoint immediately 
+        console.log('Testing image upload to object storage...');
         console.log('Photo size for upload test:', photo.length);
         
         try {
-          // Test with fetch directly to confirm connectivity
-          const directFetchResponse = await fetch('https://hot-girl-hunt-fenelon141.replit.app/upload-story-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dataUrl: photo.substring(0, 1000) }) // Use smaller sample for test
+          // Test upload to object storage
+          const uploadResponse = await apiRequest('POST', '/upload-story-image', { 
+            dataUrl: photo,
+            userId: '1' // Use current user ID
           });
+          console.log('Upload test successful:', uploadResponse);
           
-          console.log('Direct fetch response status:', directFetchResponse.status);
-          const directData = await directFetchResponse.json();
-          console.log('Direct fetch response data:', directData);
-          
-          // Also test with apiRequest
-          const testResponse = await apiRequest('POST', '/upload-story-image', { 
-            dataUrl: photo.substring(0, 1000) // Use smaller sample for test
-          });
-          console.log('API request test successful:', testResponse);
+          if (uploadResponse.success && uploadResponse.imageUrl) {
+            console.log('Image uploaded to:', uploadResponse.imageUrl);
+            // Store the public URL for later use in story creation
+            setStoryImage(uploadResponse.imageUrl);
+          }
         } catch (uploadError: any) {
           console.error('Upload test failed:', uploadError);
           console.error('Error details:', {

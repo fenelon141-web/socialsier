@@ -992,29 +992,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ message: 'Server is working!', timestamp: new Date().toISOString() });
   });
   
-  app.all('/upload-story-image', (req, res) => {
+  // Image upload endpoint - converts base64 to object storage URL
+  app.post('/upload-story-image', async (req, res) => {
     console.log('===============================');
-    console.log('Upload route hit!');
+    console.log('Image upload endpoint hit!');
     console.log('Request method:', req.method);
-    console.log('Request URL:', req.url);
-    console.log('Request path:', req.path);
     console.log('===============================');
     
-    if (req.method === 'OPTIONS') {
-      res.status(200).end();
-      return;
+    try {
+      const { dataUrl, userId } = req.body;
+      
+      if (!dataUrl) {
+        return res.status(400).json({ error: 'dataUrl is required' });
+      }
+      
+      if (!userId) {
+        return res.status(400).json({ error: 'userId is required' });
+      }
+      
+      console.log(`Uploading image for user ${userId}, size: ${dataUrl.length} chars`);
+      
+      // Import ObjectStorageService
+      const { ObjectStorageService } = await import('./objectStorage');
+      const objectStorage = new ObjectStorageService();
+      
+      // Upload base64 image and get public URL
+      const imageUrl = await objectStorage.uploadBase64Image(dataUrl, userId);
+      
+      console.log('Upload successful, returning URL:', imageUrl);
+      res.json({ 
+        success: true, 
+        imageUrl: imageUrl,
+        message: 'Image uploaded successfully!' 
+      });
+      
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ 
+        error: 'Failed to upload image',
+        details: errorMessage
+      });
     }
-    
-    if (req.body && req.body.dataUrl) {
-      console.log('Received image size:', req.body.dataUrl.length);
-    } else {
-      console.log('No dataUrl in request body');
-      console.log('Request body keys:', Object.keys(req.body || {}));
-    }
-
-    console.log('Sending success response');
-    res.json({ success: true, message: 'Image uploaded!', method: req.method });
-    console.log('Response sent');
   });
 
   // Authentication routes
