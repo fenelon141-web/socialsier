@@ -55,7 +55,8 @@ export default function AuthLogin({ onAuthSuccess }: AuthLoginProps) {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterFormData) => {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("https://hot-girl-hunt-fenelon141.replit.app/api/auth/register", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",

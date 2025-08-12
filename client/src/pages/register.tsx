@@ -21,7 +21,8 @@ export default function Register() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("https://hot-girl-hunt-fenelon141.replit.app/api/auth/register", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",

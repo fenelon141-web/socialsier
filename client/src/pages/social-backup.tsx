@@ -56,7 +56,8 @@ export default function Social() {
   // Create post mutation
   const createPostMutation = useMutation({
     mutationFn: async (postData: any) => {
-      const response = await fetch("/api/posts", {
+      const response = await fetch("https://hot-girl-hunt-fenelon141.replit.app/api/spots/gym", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +83,7 @@ export default function Social() {
   // Like post mutation
   const likePostMutation = useMutation({
     mutationFn: async ({ postId, userId }: { postId: number; userId: string }) => {
-      const response = await fetch(`/api/posts/${postId}/like`, {
+      const response = await fetch(`https://hot-girl-hunt-fenelon141.replit.app/api/posts/${postId}/like`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

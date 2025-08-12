@@ -19,7 +19,8 @@ export default function SetPassword() {
 
   const setPasswordMutation = useMutation({
     mutationFn: async (data: { email: string; newPassword: string }) => {
-      const response = await fetch("/api/auth/set-password", {
+      const response = await fetch("https://hot-girl-hunt-fenelon141.replit.app/api/auth/set-password", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",

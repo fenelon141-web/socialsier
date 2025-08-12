@@ -22,7 +22,8 @@ export default function Profile() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch("/api/auth/logout", {
+      const response = await fetch("https://hot-girl-hunt-fenelon141.replit.app/api/auth/logout", {
+
         method: "POST",
       });
       if (!response.ok) {
