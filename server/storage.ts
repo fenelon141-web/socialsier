@@ -288,7 +288,7 @@ class MemStorage implements IStorage {
       level: insertUser.level || 1,
       totalPoints: insertUser.totalPoints || 0,
       spotsHunted: insertUser.spotsHunted || 0,
-      avatar: insertUser.avatar,
+      avatar: insertUser.avatar || null,
       createdAt: new Date()
     };
     this.users.push(newUser);
@@ -323,7 +323,7 @@ class MemStorage implements IStorage {
         email: userData.email,
         firstName: userData.firstName || '',
         lastName: userData.lastName || '',
-        dateOfBirth: null,
+        dateOfBirth: new Date(),
         password: null,
         level: 1,
         totalPoints: 0,
@@ -424,7 +424,7 @@ class MemStorage implements IStorage {
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.read = true;
-      notification.updatedAt = new Date();
+      // notification.updatedAt = new Date(); // Remove this line as updatedAt doesn't exist on notification type
     }
   }
 
@@ -434,7 +434,7 @@ class MemStorage implements IStorage {
     
     const newSpotHunt: SpotHunt = {
       id: this.spotHunts.length + 1,
-      userId: userId.toString(),
+      userId,
       spotId,
       pointsEarned,
       huntedAt: new Date()
@@ -450,7 +450,7 @@ class MemStorage implements IStorage {
       });
       
       // Check for badge achievements based on hunts
-      const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId.toString());
+      const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId);
       
       // Award "First Hunt Cutie" badge for first hunt (only if not already earned)
       if (userHunts.length === 1) {
@@ -591,16 +591,16 @@ class MemStorage implements IStorage {
     if (this.userBadges.length === 0 && userId === 1) {
       await this.getAllBadges(); // Ensure badges are initialized
       this.userBadges = [
-        { id: 1, userId: "1", badgeId: 41, earnedAt: new Date() }, // First Hunt Cutie
-        { id: 2, userId: "1", badgeId: 1, earnedAt: new Date() },  // Boba Princess
-        { id: 3, userId: "1", badgeId: 12, earnedAt: new Date() }, // Avo Toast Angel
-        { id: 4, userId: "1", badgeId: 25, earnedAt: new Date() }, // Barre Bestie
-        { id: 5, userId: "1", badgeId: 33, earnedAt: new Date() }  // Pink Paradise
+        { id: 1, userId: 1, badgeId: 41, earnedAt: new Date() }, // First Hunt Cutie
+        { id: 2, userId: 1, badgeId: 1, earnedAt: new Date() },  // Boba Princess
+        { id: 3, userId: 1, badgeId: 12, earnedAt: new Date() }, // Avo Toast Angel
+        { id: 4, userId: 1, badgeId: 25, earnedAt: new Date() }, // Barre Bestie
+        { id: 5, userId: 1, badgeId: 33, earnedAt: new Date() }  // Pink Paradise
       ];
     }
     
     return this.userBadges
-      .filter(ub => ub.userId === userId.toString())
+      .filter(ub => ub.userId === userId)
       .map(ub => ({
         ...ub,
         badge: this.badges.find(b => b.id === ub.badgeId)!
@@ -610,7 +610,7 @@ class MemStorage implements IStorage {
   async awardBadge(userId: number, badgeId: number): Promise<UserBadge> {
     const newUserBadge: UserBadge = {
       id: this.userBadges.length + 1,
-      userId: userId.toString(),
+      userId,
       badgeId,
       earnedAt: new Date()
     };
@@ -621,7 +621,7 @@ class MemStorage implements IStorage {
   // Helper method to check if user already has a specific badge
   async hasUserBadge(userId: number, badgeId: number): Promise<boolean> {
     return this.userBadges.some(ub => 
-      ub.userId === userId.toString() && ub.badgeId === badgeId
+      ub.userId === userId && ub.badgeId === badgeId
     );
   }
 
@@ -632,7 +632,7 @@ class MemStorage implements IStorage {
 
   async getUserChallengeProgress(userId: number): Promise<(UserChallengeProgress & { challenge: DailyChallenge })[]> {
     return this.userChallengeProgress
-      .filter(ucp => ucp.userId === userId.toString())
+      .filter(ucp => ucp.userId === userId)
       .map(ucp => ({
         ...ucp,
         challenge: this.dailyChallenges.find(c => c.id === ucp.challengeId)!
@@ -641,7 +641,7 @@ class MemStorage implements IStorage {
 
   async updateChallengeProgress(userId: number, challengeId: number, progress: number): Promise<UserChallengeProgress> {
     const existingProgress = this.userChallengeProgress.find(
-      ucp => ucp.userId === userId.toString() && ucp.challengeId === challengeId
+      ucp => ucp.userId === userId && ucp.challengeId === challengeId
     );
 
     if (existingProgress) {
