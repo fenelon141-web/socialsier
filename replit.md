@@ -20,10 +20,10 @@ Socialiser is a mobile-first location-based discovery app designed to help users
 - **Status**: All social functionality replaced with "coming soon" placeholders
 
 ### Production API Configuration (Aug 12, 2025)
-- **API URL**: Updated queryClient.ts to use configurable production URL pattern
+- **API URL**: Updated queryClient.ts to use production Replit domain
 - **Development**: Uses localhost:5000 for local development
-- **Production**: Uses https://socialiser.MYDOMAIN.com placeholder for deployment
-- **Note**: Replace MYDOMAIN with actual domain before deployment
+- **Production**: Uses https://hot-girl-hunt-fenelon141.replit.app for deployment
+- **Status**: Ready for mobile app deployment with correct API endpoint
 
 ## User Preferences
 
