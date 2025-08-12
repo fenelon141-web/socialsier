@@ -1,10 +1,13 @@
-import { Storage, File } from "@google-cloud/storage";
-import { Response } from "express";
+// storage.ts
+import { Storage } from "@google-cloud/storage";
 import { randomUUID } from "crypto";
 
 const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
 
-// Object storage client
+/**
+ * Initialize Google Cloud Storage client
+ * Uses Replit sidecar for credentials
+ */
 export const objectStorageClient = new Storage({
   credentials: {
     audience: "replit",
@@ -20,7 +23,7 @@ export const objectStorageClient = new Storage({
     },
     universe_domain: "googleapis.com",
   },
-  projectId: "",
+  projectId: process.env.GCP_PROJECT_ID || "",
 });
 
 export class ObjectNotFoundError extends Error {
@@ -32,69 +35,74 @@ export class ObjectNotFoundError extends Error {
 }
 
 export class ObjectStorageService {
-  constructor() {}
-
-  // Upload base64 image data to object storage and return public URL
+  /**
+   * Upload a base64 image to object storage
+   * @param base64Data Base64 image string (with or without data:image/... prefix)
+   * @param userId User ID for storage folder structure
+   * @returns Fully qualified public URL
+   */
   async uploadBase64Image(base64Data: string, userId: string): Promise<string> {
+    console.log("🔄 Starting base64 image upload...");
+
     try {
-      console.log('Starting base64 image upload...');
-      
-      // Extract image type and data from base64 string
-      const matches = base64Data.match(/^data:image\/([a-zA-Z]+);base64,(.+)$/);
-      if (!matches) {
-        throw new Error('Invalid base64 image data format');
-      }
-      
-      const [, imageType, imageData] = matches;
-      const buffer = Buffer.from(imageData, 'base64');
-      
-      console.log(`Image type: ${imageType}, Size: ${buffer.length} bytes`);
-      
-      // Generate unique filename
-      const filename = `stories/${userId}/${randomUUID()}.${imageType}`;
-      console.log(`Generated filename: ${filename}`);
-      
-      // Get bucket from environment
+      // Ensure bucket is configured
       const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
       if (!bucketId) {
-        throw new Error('Object storage bucket not configured');
+        throw new Error("❌ DEFAULT_OBJECT_STORAGE_BUCKET_ID environment variable not set");
       }
-      
+
+      // Normalize base64 input
+      let imageType = "jpeg"; // default
+      let cleanBase64 = base64Data;
+
+      const matches = base64Data.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+      if (matches) {
+        imageType = matches[1];
+        cleanBase64 = matches[2];
+      }
+
+      const buffer = Buffer.from(cleanBase64, "base64");
+      console.log(`📸 Image type: ${imageType}, Size: ${(buffer.length / 1024).toFixed(1)} KB`);
+
+      // Create filename
+      const filename = `stories/${userId}/${randomUUID()}.${imageType}`;
+      console.log(`📝 Generated filename: ${filename}`);
+
+      // Upload to storage
       const bucket = objectStorageClient.bucket(bucketId);
       const file = bucket.file(filename);
-      
-      console.log('Uploading to object storage...');
-      
-      // Upload the buffer to object storage
+
+      console.log("⬆️ Uploading to object storage...");
       await file.save(buffer, {
         metadata: {
           contentType: `image/${imageType}`,
-          cacheControl: 'public, max-age=31536000',
+          cacheControl: "public, max-age=31536000",
         },
       });
-      
-      console.log('Upload completed successfully');
-      
-      // Return a public URL that we'll serve through our own endpoint
-      // This works around bucket permission restrictions
-      const publicUrl = `/public-objects/${filename}`;
-      console.log(`Public URL (via our server): ${publicUrl}`);
-      
+
+      console.log("✅ Upload completed successfully");
+
+      // Build fully qualified public URL
+      const serverUrl = process.env.SERVER_URL || "https://hot-girl-hunt-fenelon141.replit.app";
+      const publicUrl = `${serverUrl}/public-objects/${filename}`;
+      console.log(`🌍 Public URL: ${publicUrl}`);
+
       return publicUrl;
-      
     } catch (error) {
-      console.error('Error uploading image to object storage:', error);
-      throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("💥 Error uploading image to object storage:", error);
+      throw new Error(
+        `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
   }
 
-  // Get private object directory
+  /**
+   * Get private object directory path
+   */
   getPrivateObjectDir(): string {
     const dir = process.env.PRIVATE_OBJECT_DIR || "";
     if (!dir) {
-      throw new Error(
-        "PRIVATE_OBJECT_DIR not set. Object storage not properly configured."
-      );
+      throw new Error("❌ PRIVATE_OBJECT_DIR not set. Object storage not properly configured.");
     }
     return dir;
   }
