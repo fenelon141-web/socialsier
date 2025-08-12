@@ -81,32 +81,9 @@ function App() {
   useEffect(() => {
     initializeIOSOptimizations();
     
-    // Initialize global WebSocket for iOS compatibility
-    const initWebSocket = () => {
-      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
-      const wsUrl = isCapacitor 
-        ? 'wss://hot-girl-hunt-fenelon141.replit.app/ws'
-        : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
-      
-      console.log(`[App] Initializing global WebSocket: ${wsUrl}`);
-      const ws = new WebSocket(wsUrl);
-      
-      ws.onopen = () => {
-        console.log('[App] Global WebSocket connected');
-        (window as any).webSocket = ws;
-      };
-      
-      ws.onclose = () => {
-        console.log('[App] WebSocket disconnected, reconnecting in 3s...');
-        setTimeout(initWebSocket, 3000);
-      };
-      
-      ws.onerror = (error) => {
-        console.error('[App] WebSocket error:', error);
-      };
-    };
-    
-    initWebSocket();
+    // Let specific WebSocket handlers manage their own connections
+    // Global WebSocket disabled to avoid conflicts with spots WebSocket
+    console.log('[App] Using dedicated WebSocket handlers for different features');
   }, []);
 
   return (

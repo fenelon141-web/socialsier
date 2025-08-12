@@ -39,7 +39,7 @@ export function initializeWebSocket(): Promise<WebSocket> {
       clearTimeout(connectionTimeout);
       console.log('[WebSocketSpots] Connected successfully');
       globalWebSocket = ws;
-      (window as any).webSocket = ws;
+      // Don't override the global window.webSocket to avoid conflicts
       reconnectAttempts = 0; // Reset on successful connection
       resolve(ws);
     };
@@ -110,19 +110,26 @@ export async function fetchSpotsViaWebSocket(
       const messageHandler = (event: MessageEvent) => {
         try {
           const message = JSON.parse(event.data);
+          console.log(`[WebSocketSpots] Received message type: ${message.type}, requestId: ${message.requestId}, expected: ${requestId}`);
+          
           if (message.type === 'spotsNearbyResponse' && message.requestId === requestId) {
             responseReceived = true;
             ws.removeEventListener('message', messageHandler);
             
             if (message.error) {
+              console.error(`[WebSocketSpots] Error response: ${message.error}`);
               reject(new Error(message.error));
             } else {
-              console.log(`[WebSocketSpots] Received ${message.spots?.length || 0} spots`);
+              console.log(`[WebSocketSpots] Success! Received ${message.spots?.length || 0} spots`);
+              console.log(`[WebSocketSpots] Sample spot:`, message.spots?.[0]);
               resolve(message.spots || []);
             }
+          } else {
+            console.log(`[WebSocketSpots] Ignoring message type: ${message.type}`);
           }
         } catch (error) {
           console.error('[WebSocketSpots] Message parsing error:', error);
+          console.log('[WebSocketSpots] Raw message data:', event.data);
         }
       };
       
