@@ -113,7 +113,7 @@ export class GoogleMapsService {
 
         allResults.push(...trendyResults);
       } catch (error) {
-        console.warn(`Failed to search for ${type}:`, error);
+        
       }
     }
 

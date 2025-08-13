@@ -22,7 +22,7 @@ export function initializeWebSocket(): Promise<WebSocket> {
         ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`
         : fallbackUrl;
     
-    console.log(`[WebSocketSpots] Connecting to: ${wsUrl} (attempt ${reconnectAttempts + 1})`);
+    
     
     const ws = new WebSocket(wsUrl);
     
@@ -37,7 +37,7 @@ export function initializeWebSocket(): Promise<WebSocket> {
     
     ws.onopen = () => {
       clearTimeout(connectionTimeout);
-      console.log('[WebSocketSpots] Connected successfully');
+      
       globalWebSocket = ws;
       // Don't override the global window.webSocket to avoid conflicts
       reconnectAttempts = 0; // Reset on successful connection
@@ -46,14 +46,14 @@ export function initializeWebSocket(): Promise<WebSocket> {
     
     ws.onerror = (error) => {
       clearTimeout(connectionTimeout);
-      console.error('[WebSocketSpots] Connection error:', error);
+      
       connectionPromise = null;
       reject(error);
     };
     
     ws.onclose = () => {
       clearTimeout(connectionTimeout);
-      console.log('[WebSocketSpots] Connection closed');
+      
       globalWebSocket = null;
       connectionPromise = null;
       
@@ -61,10 +61,10 @@ export function initializeWebSocket(): Promise<WebSocket> {
       if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
         const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
         reconnectAttempts++;
-        console.log(`[WebSocketSpots] Reconnecting in ${delay}ms (attempt ${reconnectAttempts})`);
+        
         setTimeout(() => initializeWebSocket(), delay);
       } else {
-        console.warn('[WebSocketSpots] Max reconnection attempts reached');
+        
         reconnectAttempts = 0; // Reset for future attempts
       }
     };
@@ -102,7 +102,7 @@ export async function fetchSpotsViaWebSocket(
         filters
       };
       
-      console.log(`[WebSocketSpots] Sending request (attempt ${retryCount + 1}):`, requestData);
+      
       
       let responseReceived = false;
       
@@ -110,26 +110,26 @@ export async function fetchSpotsViaWebSocket(
       const messageHandler = (event: MessageEvent) => {
         try {
           const message = JSON.parse(event.data);
-          console.log(`[WebSocketSpots] Received message type: ${message.type}, requestId: ${message.requestId}, expected: ${requestId}`);
+          
           
           if (message.type === 'spotsNearbyResponse' && message.requestId === requestId) {
             responseReceived = true;
             ws.removeEventListener('message', messageHandler);
             
             if (message.error) {
-              console.error(`[WebSocketSpots] Error response: ${message.error}`);
+              
               reject(new Error(message.error));
             } else {
-              console.log(`[WebSocketSpots] Success! Received ${message.spots?.length || 0} spots`);
-              console.log(`[WebSocketSpots] Sample spot:`, message.spots?.[0]);
+              
+              
               resolve(message.spots || []);
             }
           } else {
-            console.log(`[WebSocketSpots] Ignoring message type: ${message.type}`);
+            
           }
         } catch (error) {
-          console.error('[WebSocketSpots] Message parsing error:', error);
-          console.log('[WebSocketSpots] Raw message data:', event.data);
+          
+          
         }
       };
       
@@ -154,12 +154,12 @@ export async function fetchSpotsViaWebSocket(
     });
     
   } catch (error) {
-    console.error(`[WebSocketSpots] Attempt ${retryCount + 1} failed:`, error);
+    
     
     // Retry logic
     if (retryCount < MAX_RETRIES) {
       const delay = 1000 * (retryCount + 1); // Progressive delay
-      console.log(`[WebSocketSpots] Retrying in ${delay}ms...`);
+      
       await new Promise(resolve => setTimeout(resolve, delay));
       return fetchSpotsViaWebSocket(latitude, longitude, filters, retryCount + 1);
     }

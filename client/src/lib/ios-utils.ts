@@ -77,6 +77,6 @@ export const getNetworkStatus = () => {
 export const initializeIOSOptimizations = () => {
   if (isIOS || isCapacitor) {
     optimizeForIOS();
-    console.log('iOS optimizations initialized');
+    
   }
 };

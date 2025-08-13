@@ -46,7 +46,6 @@ export const testServerConnection = async (): Promise<boolean> => {
     });
     return response.ok;
   } catch (error) {
-    console.error('Server connectivity test failed:', error);
     return false;
   }
 };

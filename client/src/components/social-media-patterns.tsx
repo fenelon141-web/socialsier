@@ -53,10 +53,10 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       
       try {
         const response = await apiRequest("POST", "/api/stories", storyData);
-        console.log("Story creation successful:", response);
+        
         return response;
       } catch (error) {
-        console.error("Story creation failed:", error);
+        
         throw error;
       }
     },
@@ -71,7 +71,7 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       });
     },
     onError: (error: any) => {
-      console.error("Story mutation error:", error);
+      
       const errorMessage = error.message || "Couldn't post your story. Try again!";
       toast({
         title: "Story failed 😢",
@@ -82,7 +82,7 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   });
 
   const handleTakePhoto = async () => {
-    console.log('=== PHOTO CAPTURE INITIATED ===');
+    
     
     try {
       const photo = await choosePhotoSource();
@@ -94,15 +94,15 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       
       if (photo) {
         setStoryImage(photo);
-        console.log('SUCCESS: Photo set for story');
+        
         toast({
           title: "Photo captured! 📸",
           description: "Add a caption and post your story!",
         });
 
         // Test the upload endpoint immediately 
-        console.log('Testing image upload to object storage...');
-        console.log('Photo size for upload test:', photo.length);
+        
+        
         
         try {
           // Test upload to object storage
@@ -110,25 +110,25 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
             dataUrl: photo,
             userId: '1' // Use current user ID
           });
-          console.log('Upload test successful:', uploadResponse);
+          
           
           if (uploadResponse.success && uploadResponse.imageUrl) {
-            console.log('Image uploaded to:', uploadResponse.imageUrl);
+            
             // Store the public URL for later use in story creation
             setStoryImage(uploadResponse.imageUrl);
           }
         } catch (uploadError: any) {
-          console.error('Upload test failed:', uploadError);
+          
           console.error('Error details:', {
             message: uploadError?.message || 'Unknown error',
             stack: uploadError?.stack || 'No stack trace'
           });
         }
       } else {
-        console.log('No photo returned from camera');
+        
       }
     } catch (error) {
-      console.error('Photo capture error:', error);
+      
       toast({
         title: "Photo failed 😢",
         description: "Please try taking a photo again!",
@@ -138,10 +138,10 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   };
 
   const handleCreateStory = () => {
-    console.log('=== STORY CREATION INITIATED ===');
+    
     
     if (!storyImage) {
-      console.log('ERROR: No story image available');
+      
       toast({
         title: "Photo required!",
         description: "Take a photo first to create your story.",

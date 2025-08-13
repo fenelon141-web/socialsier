@@ -60,7 +60,7 @@ export function usePushNotifications() {
       setIsTracking(true);
     },
     onSuccess: (data: any) => {
-      console.log('Nearby check result:', data);
+      
       
       if (data.newNotifications > 0) {
         toast({
@@ -81,7 +81,7 @@ export function usePushNotifications() {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications/status'] });
     },
     onError: (error) => {
-      console.error('Error testing nearby spots:', error);
+      
       toast({
         title: "Error",
         description: "Failed to check nearby trending spots",

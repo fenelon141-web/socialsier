@@ -21,7 +21,7 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
   // WebSocket connection with iOS-specific handling
   const connect = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN || wsRef.current?.readyState === WebSocket.CONNECTING) {
-      console.log('[LocationWebSocket] Connection already exists, skipping');
+
       return;
     }
 
@@ -38,11 +38,11 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
         ? 'wss://hot-girl-hunt-fenelon141.replit.app/ws'
         : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
       
-      console.log(`[LocationWebSocket] Connecting to: ${wsUrl}`);
+
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
-        console.log('[LocationWebSocket] Connected successfully');
+
         setIsConnected(true);
         
         // Authenticate immediately
@@ -63,21 +63,21 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
       wsRef.current.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data);
-          console.log('[LocationWebSocket] Message received:', message);
+
 
           switch (message.type) {
             case 'authenticated':
-              console.log(`[LocationWebSocket] Authenticated as user ${message.userId}`);
+
               break;
               
             case 'nearby_spots_update':
-              console.log('[LocationWebSocket] Nearby spots updated:', message.spots);
+
               setNearbySpots(message.spots || []);
               onNearbySpots?.(message.spots || []);
               break;
               
             case 'location_tracked':
-              console.log('[LocationWebSocket] Location tracked successfully');
+
               onLocationUpdate?.(message.location);
               break;
               
@@ -96,22 +96,22 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
               break;
           }
         } catch (error) {
-          console.error('[LocationWebSocket] Error parsing message:', error);
+          // Message parsing error
         }
       };
 
       wsRef.current.onerror = (error) => {
-        console.error('[LocationWebSocket] Connection error:', error);
+        // Connection error
         setIsConnected(false);
       };
 
       wsRef.current.onclose = (event) => {
-        console.log('[LocationWebSocket] Connection closed:', event.code, event.reason);
+
         setIsConnected(false);
         
         // Prevent multiple reconnection attempts
         if (event.code !== 1000 && enabled && !wsRef.current) {
-          console.log('[LocationWebSocket] Attempting to reconnect in 5 seconds...');
+
           setTimeout(() => {
             if (!wsRef.current || wsRef.current.readyState === WebSocket.CLOSED) {
               connect();
@@ -121,7 +121,7 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
       };
 
     } catch (error) {
-      console.error('[LocationWebSocket] Failed to create connection:', error);
+      // Failed to create connection
       setIsConnected(false);
     }
   };
@@ -137,7 +137,7 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
         timestamp: Date.now()
       };
       
-      console.log('[LocationWebSocket] Sending location update:', message);
+
       wsRef.current.send(JSON.stringify(message));
     }
   };
@@ -156,7 +156,7 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
         radius: 1500 // 1.5km radius
       };
       
-      console.log('[LocationWebSocket] Requesting nearby spots:', message);
+
       wsRef.current.send(JSON.stringify(message));
     }
   };

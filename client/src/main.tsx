@@ -4,7 +4,7 @@ import "./index.css";
 
 // Global error handling for unhandled promise rejections
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
+  
   // Prevent the default browser behavior 
   event.preventDefault();
 });

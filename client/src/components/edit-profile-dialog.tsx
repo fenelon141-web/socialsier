@@ -110,7 +110,7 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
         input.click();
       }
     } catch (error) {
-      console.error('Photo capture error:', error);
+      
       toast({
         title: "Photo capture failed 😢",
         description: "Couldn't capture photo. Try again!",
@@ -172,7 +172,7 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
         input.click();
       }
     } catch (error) {
-      console.error('Photo selection error:', error);
+      
       toast({
         title: "Photo selection failed 😢",
         description: "Couldn't select photo. Try again!",

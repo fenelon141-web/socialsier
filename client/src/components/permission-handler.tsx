@@ -62,7 +62,7 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
           }
         }
       } catch (error) {
-        console.error('Native location permission error:', error);
+        // Native location permission error
         setLocationPermission('pending');
         setPermissionsGranted(false);
       }
@@ -104,7 +104,7 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
         setPermissionsGranted(true);
       }
     } catch (error) {
-      console.error('Location permission error:', error);
+      // Location permission error
       setLocationPermission('denied');
     }
   };
@@ -119,7 +119,7 @@ export default function PermissionHandler({ children }: PermissionHandlerProps) 
       const permission = await Notification.requestPermission();
       setNotificationPermission(permission === 'granted' ? 'granted' : 'denied');
     } catch (error) {
-      console.error('Notification permission error:', error);
+      // Notification permission error
       setNotificationPermission('denied');
     }
   };

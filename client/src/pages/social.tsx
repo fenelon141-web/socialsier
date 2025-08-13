@@ -159,12 +159,12 @@ export default function Social() {
 
   const handleCreateStory = async () => {
     try {
-      console.log('📸 Starting story creation process...');
+      
       const photo = await choosePhotoSource();
       
       if (photo) {
-        console.log('Photo captured, length:', photo.length);
-        console.log('Photo preview:', photo.substring(0, 50) + '...');
+        
+        
         
         const storyData = {
           userId: "1",
@@ -174,7 +174,7 @@ export default function Social() {
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
         };
         
-        console.log('Sending story data:', { ...storyData, imageUrl: storyData.imageUrl.substring(0, 50) + '...' });
+        
         
         await createStoryMutation.mutateAsync(storyData);
         
@@ -184,10 +184,10 @@ export default function Social() {
         });
         setShowCreateStory(false);
       } else {
-        console.log('No photo captured');
+        
       }
     } catch (error) {
-      console.error('Story creation error:', error);
+      
       toast({
         title: "Error creating story",
         description: error instanceof Error ? error.message : "Please try again",

@@ -37,7 +37,7 @@ export function useCreateStory() {
       type: 'photo' | 'video';
       expiresAt: Date;
     }) => {
-      console.log('=== STORY MUTATION STARTED ===');
+      
       console.log('Story data being sent:', {
         ...storyData,
         imageUrlLength: storyData.imageUrl.length,
@@ -48,7 +48,7 @@ export function useCreateStory() {
       let finalImageUrl = storyData.imageUrl;
       
       if (storyData.imageUrl.startsWith('data:')) {
-        console.log('Converting base64 to object storage URL...');
+        
         const uploadResponse = await apiRequest('POST', '/upload-story-image', {
           dataUrl: storyData.imageUrl,
           userId: storyData.userId
@@ -56,7 +56,7 @@ export function useCreateStory() {
         
         if (uploadResponse.success && uploadResponse.imageUrl) {
           finalImageUrl = uploadResponse.imageUrl;
-          console.log('Image converted to URL:', finalImageUrl);
+          
         } else {
           throw new Error('Failed to upload image to object storage');
         }
@@ -67,9 +67,9 @@ export function useCreateStory() {
         imageUrl: finalImageUrl
       };
       
-      console.log('Final story data:', finalStoryData);
+      
       const response = await apiRequest('POST', '/api/stories', finalStoryData);
-      console.log('=== STORY MUTATION SUCCESS ===');
+      
       return response;
     },
     onSuccess: () => {

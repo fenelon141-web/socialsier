@@ -14,11 +14,11 @@ function getStoredSpots() {
     const stored = localStorage.getItem('nearby_spots');
     if (stored) {
       const spots = JSON.parse(stored);
-      console.log(`[SimpleMap] Found ${spots.length} stored spots from localStorage`);
+      
       return spots;
     }
   } catch (error) {
-    console.error('[SimpleMap] Error reading stored spots:', error);
+    
   }
   
   // Generate spots around user's location - covering full 1.8km radius
@@ -136,12 +136,12 @@ export default function SimpleMapView() {
   // Calculate distances and filter nearby spots (within 1.8km)
   useEffect(() => {
     if (latitude && longitude) {
-      console.log(`[SimpleMap] User location: ${latitude}, ${longitude}`);
-      console.log(`[SimpleMap] Processing ${allSpots.length} total spots`);
+      
+      
       
       let spotsWithDistance = allSpots.map(spot => {
         const distance = calculateDistance(latitude, longitude, spot.latitude, spot.longitude);
-        console.log(`[SimpleMap] ${spot.name}: ${Math.round(distance)}m away`);
+        
         return {
           ...spot,
           distance
@@ -154,12 +154,12 @@ export default function SimpleMapView() {
         spotsWithDistance = spotsWithDistance.filter(spot => 
           spot.category === currentFilter
         );
-        console.log(`[SimpleMap] Filtered to ${spotsWithDistance.length} ${currentFilter} spots`);
+        
       }
       
       spotsWithDistance = spotsWithDistance.sort((a, b) => a.distance - b.distance);
 
-      console.log(`[SimpleMap] Found ${spotsWithDistance.length} spots within 1.8km`);
+      
       setNearbySpots(spotsWithDistance);
       
       if (spotsWithDistance.length > 0) {

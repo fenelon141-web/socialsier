@@ -55,7 +55,7 @@ export function useCamera() {
         });
       }
     } catch (error) {
-      console.error('Camera error:', error);
+      
       toast({
         title: "Camera Error",
         description: "Unable to access camera. Please check permissions.",
@@ -109,7 +109,7 @@ export function useCamera() {
         });
       }
     } catch (error) {
-      console.error('Gallery error:', error);
+      
       toast({
         title: "Gallery Error",
         description: "Unable to access photo library. Please check permissions.",
@@ -153,7 +153,7 @@ export function useCamera() {
         }
       });
     } catch (error) {
-      console.error('Photo source selection error:', error);
+      
       toast({
         title: "Camera Error",
         description: "Unable to access camera or photo library",
@@ -175,7 +175,7 @@ export function useCamera() {
       }
       return true; // Web assumes permission is handled by browser
     } catch (error) {
-      console.error('Permission check error:', error);
+      
       return false;
     }
   };
@@ -190,7 +190,7 @@ export function useCamera() {
       }
       return true; // Web assumes permission is handled by browser
     } catch (error) {
-      console.error('Permission request error:', error);
+      
       return false;
     }
   };

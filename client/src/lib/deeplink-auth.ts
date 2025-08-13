@@ -15,7 +15,7 @@ export class DeepLinkAuth {
 
   private setupDeepLinkListener() {
     App.addListener('appUrlOpen', (event) => {
-      console.log('Deep link received:', event.url);
+      
       
       if (event.url.startsWith('com.adamfenelon.iykyk://auth/callback')) {
         this.handleAuthCallback(event.url);
@@ -42,7 +42,7 @@ export class DeepLinkAuth {
         if (email) localStorage.setItem('userEmail', email);
       }
     } catch (error) {
-      console.error('Error parsing auth callback URL:', error);
+      
     }
   }
 

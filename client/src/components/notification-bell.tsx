@@ -28,7 +28,7 @@ export default function NotificationBell() {
     // If it's a trending spot notification, we could navigate to the map
     if (notification.type === 'nearby_trending' && notification.data?.latitude) {
       // TODO: Navigate to map with spot highlighted
-      console.log('Navigate to spot:', notification.data);
+      
     }
   };
 

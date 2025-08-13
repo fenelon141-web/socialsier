@@ -30,7 +30,12 @@ export default function SetPassword() {
       });
       
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: "Failed to set password" }));
+        let error;
+        try {
+          error = await response.json();
+        } catch {
+          error = { message: "Failed to set password" };
+        }
         throw new Error(error.message || "Failed to set password");
       }
       

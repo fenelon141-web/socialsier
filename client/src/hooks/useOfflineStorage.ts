@@ -40,7 +40,7 @@ export function useOfflineStorage() {
           setPendingActions(JSON.parse(actions));
         }
       } catch (error) {
-        console.error('Error loading offline data:', error);
+        // Error loading offline data - continue with empty state
       }
     };
 
@@ -48,13 +48,12 @@ export function useOfflineStorage() {
 
     // Listen for online/offline events
     const handleOnline = () => {
-      console.log('App came online, syncing pending actions...');
       setIsOnline(true);
       syncPendingActions();
     };
 
     const handleOffline = () => {
-      console.log('App went offline, enabling offline mode...');
+      
       setIsOnline(false);
     };
 
@@ -72,7 +71,7 @@ export function useOfflineStorage() {
     try {
       localStorage.setItem('savedSpots', JSON.stringify(savedSpots));
     } catch (error) {
-      console.error('Error saving spots to localStorage:', error);
+      
     }
   }, [savedSpots]);
 
@@ -81,7 +80,7 @@ export function useOfflineStorage() {
     try {
       localStorage.setItem('pendingActions', JSON.stringify(pendingActions));
     } catch (error) {
-      console.error('Error saving actions to localStorage:', error);
+      // Error saving actions - continue silently
     }
   }, [pendingActions]);
 
@@ -139,7 +138,7 @@ export function useOfflineStorage() {
       return;
     }
 
-    console.log(`Syncing ${pendingActions.length} pending actions...`);
+
 
     for (const action of pendingActions.filter(a => !a.synced)) {
       try {
@@ -164,7 +163,7 @@ export function useOfflineStorage() {
           markActionSynced(action.id);
         }
       } catch (error) {
-        console.error(`Failed to sync action ${action.id}:`, error);
+        
       }
     }
 
@@ -185,7 +184,7 @@ export function useOfflineStorage() {
       });
       return response.ok;
     } catch (error) {
-      console.error('Error syncing spot hunt:', error);
+      
       return false;
     }
   };
@@ -199,7 +198,7 @@ export function useOfflineStorage() {
       });
       return response.ok;
     } catch (error) {
-      console.error('Error syncing post creation:', error);
+      
       return false;
     }
   };
@@ -213,7 +212,7 @@ export function useOfflineStorage() {
       });
       return response.ok;
     } catch (error) {
-      console.error('Error syncing friend request:', error);
+      
       return false;
     }
   };
@@ -227,7 +226,7 @@ export function useOfflineStorage() {
       });
       return response.ok;
     } catch (error) {
-      console.error('Error syncing squad join:', error);
+      
       return false;
     }
   };
