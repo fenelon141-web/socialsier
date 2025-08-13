@@ -14,11 +14,14 @@ Socialiser is a mobile-first location-based discovery app designed to help users
 - **Bulletproof System**: Simplified to direct OpenStreetMap queries without complex fallbacks
 - **Status**: App now targets female-inspired wellness trends and aesthetic lifestyle spots
 
-### Authentication Simplified for iOS Compatibility
+### Authentication Simplified for iOS Compatibility (Aug 13, 2025)
 - **Login/Logout/Registration**: Converted to simplified bypass system for Xcode/iOS testing
+- **Fixed Registration Route**: Added missing `/register` route to App.tsx for "Create Account" button
+- **Native Registration Form**: Built SimpleRegister component that works offline in iOS
+- **Local Account Storage**: User accounts stored in device localStorage for iOS compatibility
+- **Age Verification**: 13+ age validation built-in for App Store compliance
 - **Reason**: Complex Replit OAuth authentication fails in iOS environment due to session/network restrictions
-- **Implementation**: All auth flows now use local simulation with proper UI feedback and navigation
-- **App Store Compliance**: Removes authentication failure points that could cause rejection
+- **Status**: Account creation now works seamlessly in iOS without network dependencies
 
 ### Native iOS Story Support (Aug 13, 2025)
 - **Local Storage**: Stories now save directly to device localStorage in iOS native app

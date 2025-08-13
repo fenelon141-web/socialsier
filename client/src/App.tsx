@@ -24,6 +24,7 @@ import { useCapacitor } from "./hooks/use-capacitor";
 // Lazy load components
 const AuthLogin = lazy(() => import("./pages/auth-login"));
 const Login = lazy(() => import("./pages/login"));
+const SimpleRegister = lazy(() => import("./pages/simple-register"));
 
 function Router() {
   // For iOS simulator testing, show login page at root
@@ -54,6 +55,13 @@ function Router() {
           <div className="text-pink-600">Loading...</div>
         </div>}>
           <AuthLogin onAuthSuccess={() => window.location.href = "/home"} />
+        </Suspense>
+      )} />
+      <Route path="/register" component={() => (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center">
+          <div className="text-pink-600">Loading...</div>
+        </div>}>
+          <SimpleRegister />
         </Suspense>
       )} />
       <Route path="/login" component={() => (
