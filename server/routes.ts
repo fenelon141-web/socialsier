@@ -382,25 +382,27 @@ function calculateDistance(
 
 async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
   try {
-    console.log(`[findNearbyTrendySpots] Searching for spots around ${lat}, ${lng} within ${radius}m`);
+
     
-    // Optimized Overpass API query - reduced timeout and more focused search
+    // Trendy spots query focusing on chai lattes, matcha, poki bowls, acai spots, reformer pilates, cute workout classes
     const query = `
       [out:json][timeout:15];
       (
-        node["amenity"~"^(cafe|restaurant|juice_bar|gym)$"](around:${radius},${lat},${lng});
-        way["amenity"~"^(cafe|restaurant|juice_bar|gym)$"](around:${radius},${lat},${lng});
-        node["shop"~"^(coffee|tea|bakery|sports)$"](around:${radius},${lat},${lng});
-        way["shop"~"^(coffee|tea|bakery|sports)$"](around:${radius},${lat},${lng});
+        node["amenity"~"^(cafe|restaurant|juice_bar|bar)$"](around:${radius},${lat},${lng});
+        way["amenity"~"^(cafe|restaurant|juice_bar|bar)$"](around:${radius},${lat},${lng});
+        node["shop"~"^(coffee|tea|bakery|health_food|sports|organic)$"](around:${radius},${lat},${lng});
+        way["shop"~"^(coffee|tea|bakery|health_food|sports|organic)$"](around:${radius},${lat},${lng});
         node["leisure"~"^(fitness_centre|sports_centre)$"](around:${radius},${lat},${lng});
         way["leisure"~"^(fitness_centre|sports_centre)$"](around:${radius},${lat},${lng});
-        node["sport"~"^(fitness|yoga|pilates)$"](around:${radius},${lat},${lng});
-        way["sport"~"^(fitness|yoga|pilates)$"](around:${radius},${lat},${lng});
+        node["sport"~"^(fitness|yoga|pilates|dance|climbing)$"](around:${radius},${lat},${lng});
+        way["sport"~"^(fitness|yoga|pilates|dance|climbing)$"](around:${radius},${lat},${lng});
+        node["cuisine"~"^(japanese|korean|thai|vietnamese|healthy|vegan|raw_food)$"](around:${radius},${lat},${lng});
+        way["cuisine"~"^(japanese|korean|thai|vietnamese|healthy|vegan|raw_food)$"](around:${radius},${lat},${lng});
       );
       out geom;
     `;
     
-    console.log(`[findNearbyTrendySpots] Overpass query: ${query.trim()}`);
+
 
     const response = await fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
@@ -411,15 +413,15 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
     });
 
     if (!response.ok) {
-      console.warn(`[findNearbyTrendySpots] Overpass API request failed: ${response.status} ${response.statusText}`);
+
       return [];
     }
 
     const data = await response.json();
-    console.log(`[findNearbyTrendySpots] Overpass API returned ${data.elements?.length || 0} elements`);
+
     
     if (!data.elements || data.elements.length === 0) {
-      console.log(`[findNearbyTrendySpots] No elements found in API response`);
+
       return [];
     }
 
@@ -431,23 +433,23 @@ async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
       .map((element: any) => convertOSMToSpot(element, lat, lng))
       .filter((spot: any) => spot && isTrendyPlace(spot));
 
-    console.log(`[findNearbyTrendySpots] Processed ${spots.length} spots before deduplication`);
+
     const uniqueResults = removeDuplicates(spots);
-    console.log(`[findNearbyTrendySpots] ${uniqueResults.length} unique spots after deduplication`);
+
     
     // Sort by distance for nearby spots and limit early for performance
     const finalResults = uniqueResults
       .sort((a, b) => (a.distance || 0) - (b.distance || 0))
       .slice(0, 20); // Reduced from 25 to 20 for faster response
     
-    console.log(`[findNearbyTrendySpots] Returning ${finalResults.length} final spots`);
+
     return finalResults;
 
   } catch (error) {
-    console.warn('Failed to fetch nearby spots from OSM:', error);
+
     
     // Failsafe: Return a minimal set of known London spots if OSM fails
-    console.log('[findNearbyTrendySpots] Using emergency fallback spots');
+
     return [
       {
         id: 'emergency-starbucks',
@@ -985,17 +987,17 @@ function sortByTrendiness(spots: any[]): any[] {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Test routes - Register these FIRST before other middleware
-  console.log('Registering test routes...');
+
   
   app.get('/test-server', (req, res) => {
-    console.log('Test server endpoint hit!');
+
     res.json({ message: 'Server is working!', timestamp: new Date().toISOString() });
   });
   
   // Serve uploaded images from object storage
   app.get("/public-objects/:filePath(*)", async (req, res) => {
     const filePath = req.params.filePath;
-    console.log(`Serving public object: ${filePath}`);
+
     
     try {
       // Get bucket from environment
@@ -1028,7 +1030,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Stream the file to the response
       const stream = file.createReadStream();
       stream.on('error', (err) => {
-        console.error('Stream error:', err);
+
         if (!res.headersSent) {
           res.status(500).json({ error: 'Error streaming file' });
         }
@@ -1037,17 +1039,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       stream.pipe(res);
       
     } catch (error) {
-      console.error("Error serving public object:", error);
+
       return res.status(500).json({ error: "Internal server error" });
     }
   });
 
   // Image upload endpoint - converts base64 to object storage URL
   app.post('/upload-story-image', async (req, res) => {
-    console.log('===============================');
-    console.log('Image upload endpoint hit!');
-    console.log('Request method:', req.method);
-    console.log('===============================');
+
+
+
+
     
     try {
       const { dataUrl, userId } = req.body;
@@ -1060,7 +1062,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'userId is required' });
       }
       
-      console.log(`Uploading image for user ${userId}, size: ${dataUrl.length} chars`);
+
       
       // Import ObjectStorageService
       const { ObjectStorageService } = await import('./objectStorage');
@@ -1069,7 +1071,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Upload base64 image and get public URL
       const imageUrl = await objectStorage.uploadBase64Image(dataUrl, userId);
       
-      console.log('Upload successful, returning URL:', imageUrl);
+
       res.json({ 
         success: true, 
         imageUrl: imageUrl,
@@ -1077,7 +1079,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
     } catch (error) {
-      console.error('Error uploading image:', error);
+
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       res.status(500).json({ 
         error: 'Failed to upload image',
@@ -1129,7 +1131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
     } catch (error) {
-      console.error('Registration error:', error);
+
       res.status(500).json({ message: "Failed to create account" });
     }
   });
@@ -1206,7 +1208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Spots routes
   app.get("/api/spots", async (req, res) => {
     const { lat, lng, radius } = req.query;
-    console.log(`[/api/spots] Request params:`, { lat, lng, radius });
+
     
     if (lat && lng) {
       // Get spots from OpenStreetMap
@@ -1214,13 +1216,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const longitude = parseFloat(lng as string);
       const searchRadius = radius ? parseInt(radius as string) : 1000;
       
-      console.log(`[/api/spots] Searching OSM for spots at ${latitude}, ${longitude} within ${searchRadius}m`);
+
       const spots = await findNearbyTrendySpots(latitude, longitude, searchRadius);
-      console.log(`[/api/spots] Returning ${spots.length} spots`);
+
       res.json(spots);
     } else {
       // Fallback to database spots if no location provided
-      console.log(`[/api/spots] No location provided, getting database spots`);
+
       const spots = await storage.getAllSpots();
       res.json(spots);
     }
@@ -1251,7 +1253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
         
         // Only use real fitness spots - no fake generated ones
-        console.log(`Found ${gymSpots.length} real fitness spots`);
+
         
         // Filter and enhance real gym spots only
         const allGymSpots = gymSpots
@@ -1269,7 +1271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json(spots);
       }
     } catch (error) {
-      console.error("Error fetching gym spots:", error);
+
       // Fallback to stored spots on error
       const spots = await storage.getGymClasses();
       res.json(spots);
@@ -1302,7 +1304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const searchRadius = parseInt(radius as string);
       const maxResults = parseInt(limit as string);
       
-      console.log(`Finding nearby spots for location: ${userLat}, ${userLng} within ${searchRadius}m (limit: ${maxResults})`);
+
       
       // Create cache key for this request
       const cacheKey = `spots:${Math.round(userLat * 1000) / 1000}:${Math.round(userLng * 1000) / 1000}:${Math.round(searchRadius / 500) * 500}:${JSON.stringify({ category, search, priceRange, dietary, ambiance })}`;
@@ -1310,7 +1312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check cache first for faster response
       const cachedSpots = getFromCache(cacheKey);
       if (cachedSpots) {
-        console.log(`Cache hit for ${cacheKey} - returning ${cachedSpots.length} cached spots`);
+
         res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
         res.set('X-Cache', 'HIT');
         return res.json(cachedSpots.slice(0, maxResults));
@@ -1323,7 +1325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Use OpenStreetMap to find nearby trendy spots (completely free)
       let nearbySpots = await findNearbyTrendySpots(userLat, userLng, searchRadius);
       
-      console.log(`Found ${nearbySpots.length} spots from OSM for ${userLat}, ${userLng}`);
+
       
       // Apply advanced filters
       if (priceRange) {
@@ -1373,7 +1375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If we have very few fitness spots, supplement with trendy workout classes
       if (category === 'fitness' && nearbySpots.length < 8) {
-        console.log(`Only ${nearbySpots.length} fitness spots found, adding trendy workout classes`);
+
         const trendyWorkouts = generateTrendyWorkoutSpots(userLat, userLng, searchRadius);
         nearbySpots = [...nearbySpots, ...trendyWorkouts].slice(0, 15);
       }
@@ -1428,7 +1430,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(nearbySpots);
       
     } catch (error) {
-      console.error("Error fetching nearby spots:", error);
+
       res.status(500).json({ message: "Failed to get nearby spots" });
     }
   });
@@ -1530,7 +1532,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         spotsHunted: updatedUser?.spotsHunted || 0
       });
     } catch (error) {
-      console.error("Hunt spot error:", error);
+
       res.status(500).json({ message: "Failed to hunt spot", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
@@ -1874,7 +1876,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notifications: newNotifications
       });
     } catch (error) {
-      console.error('Error checking nearby trendy spots:', error);
+
       res.status(500).json({ message: 'Failed to check nearby spots' });
     }
   });
@@ -1903,7 +1905,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const squad = await storage.createSquad(req.body);
       res.json(squad);
     } catch (error) {
-      console.error("Error creating squad:", error);
+
       res.status(500).json({ error: "Failed to create squad" });
     }
   });
@@ -1914,7 +1916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const squads = await storage.getUserSquads(userId);
       res.json(squads);
     } catch (error) {
-      console.error("Error fetching user squads:", error);
+
       res.status(500).json({ error: "Failed to fetch squads" });
     }
   });
@@ -1926,7 +1928,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const member = await storage.joinSquad(squadId, userId);
       res.json(member);
     } catch (error) {
-      console.error("Error joining squad:", error);
+
       res.status(400).json({ error: (error as Error).message || "Failed to join squad" });
     }
   });
@@ -1937,7 +1939,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const members = await storage.getSquadMembers(squadId);
       res.json(members);
     } catch (error) {
-      console.error("Error fetching squad members:", error);
+
       res.status(500).json({ error: "Failed to fetch squad members" });
     }
   });
@@ -1948,7 +1950,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const squads = await storage.getSquadsByCity(city, country);
       res.json(squads);
     } catch (error) {
-      console.error("Error fetching city squads:", error);
+
       res.status(500).json({ error: "Failed to fetch city squads" });
     }
   });
@@ -1959,7 +1961,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const challenge = await storage.createGroupChallenge(req.body);
       res.json(challenge);
     } catch (error) {
-      console.error("Error creating group challenge:", error);
+
       res.status(500).json({ error: "Failed to create challenge" });
     }
   });
@@ -1970,7 +1972,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const challenges = await storage.getActiveGroupChallenges(city as string, country as string);
       res.json(challenges);
     } catch (error) {
-      console.error("Error fetching group challenges:", error);
+
       res.status(500).json({ error: "Failed to fetch challenges" });
     }
   });
@@ -1982,7 +1984,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const participant = await storage.joinGroupChallenge(challengeId, participantId, participantType);
       res.json(participant);
     } catch (error) {
-      console.error("Error joining challenge:", error);
+
       res.status(500).json({ error: "Failed to join challenge" });
     }
   });
@@ -1993,7 +1995,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const leaderboard = await storage.getChallengeLeaderboard(challengeId);
       res.json(leaderboard);
     } catch (error) {
-      console.error("Error fetching challenge leaderboard:", error);
+
       res.status(500).json({ error: "Failed to fetch leaderboard" });
     }
   });
@@ -2006,7 +2008,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const leaderboard = await storage.getCityLeaderboard(city, country, period as any, type as any);
       res.json(leaderboard);
     } catch (error) {
-      console.error("Error fetching city leaderboard:", error);
+
       res.status(500).json({ error: "Failed to fetch leaderboard" });
     }
   });
@@ -2020,7 +2022,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const activeConnections = new Map<string, WebSocket>();
   
   wss.on('connection', (ws: WebSocket, req) => {
-    console.log('New WebSocket connection');
+
     
     // Store user connection when they authenticate
     ws.on('message', async (message: string) => {
@@ -2031,7 +2033,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const userId = data.userId;
           if (userId) {
             activeConnections.set(userId, ws);
-            console.log(`User ${userId} authenticated via WebSocket`);
+
             
             // Send confirmation
             ws.send(JSON.stringify({
@@ -2059,11 +2061,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Handle spots request via WebSocket for iOS compatibility
         if (data.type === 'getSpotsNearby') {
           try {
-            console.log(`[WebSocket] Received spots request for ${data.latitude}, ${data.longitude} with radius ${data.radius || 1800}m`);
+
             
             const spots = await findNearbyTrendySpots(data.latitude, data.longitude, data.radius || 1800);
             
-            console.log(`[WebSocket] Found ${spots.length} spots, sending response to client`);
+
             
             // Ensure spots are properly formatted for iOS
             const formattedSpots = spots.map(spot => ({
@@ -2080,9 +2082,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               location: { lat: data.latitude, lng: data.longitude }
             }));
             
-            console.log(`[WebSocket] Successfully sent ${formattedSpots.length} spots to iOS client`);
+
           } catch (error) {
-            console.error('[WebSocket] Spots request error:', error);
+
             ws.send(JSON.stringify({
               type: 'spotsNearbyResponse',
               requestId: data.requestId,
@@ -2127,7 +2129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
       } catch (error) {
-        console.error('WebSocket message error:', error);
+
       }
     });
     
@@ -2136,7 +2138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       for (const [userId, connection] of Array.from(activeConnections.entries())) {
         if (connection === ws) {
           activeConnections.delete(userId);
-          console.log(`User ${userId} disconnected`);
+
           
           // Broadcast to friends that this user is now offline
           broadcastToFriends(userId, {
@@ -2161,7 +2163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
     } catch (error) {
-      console.error('Error broadcasting to friends:', error);
+
     }
   }
   
@@ -2176,7 +2178,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
     } catch (error) {
-      console.error('Error broadcasting to squad members:', error);
+
     }
   }
   
@@ -2200,7 +2202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
     } catch (error) {
-      console.error('Error notifying nearby friends:', error);
+
     }
   }
   
@@ -2217,16 +2219,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         await fs.access(updatedFile);
         fileToServe = updatedFile;
-        console.log('Serving updated iOS file');
+
       } catch {
-        console.log('Serving clean-minimal iOS file');
+
       }
       
       res.setHeader('Content-Disposition', 'attachment; filename=socialiser-ios.tar.gz');
       res.setHeader('Content-Type', 'application/gzip');
       res.sendFile(fileToServe);
     } catch (error) {
-      console.error("Error serving download:", error);
+
       res.status(404).json({ message: "File not found" });
     }
   });
@@ -2238,16 +2240,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stories = await storage.getActiveStories();
       res.json(stories);
     } catch (error) {
-      console.error("Error fetching stories:", error);
+
       res.status(500).json({ message: "Failed to fetch stories" });
     }
   });
 
   app.post("/api/stories", async (req, res) => {
-    console.log('=== STORY CREATION ENDPOINT CALLED ===');
-    console.log('Request method:', req.method);
-    console.log('Request headers:', req.headers);
-    console.log('Request body keys:', Object.keys(req.body));
+
+
+
+
     
     try {
       console.log("Detailed story upload request:", {
@@ -2261,11 +2263,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate required fields
       if (!req.body.imageUrl) {
-        console.log("VALIDATION ERROR: Image is required");
+
         return res.status(400).json({ message: "Image is required" });
       }
       if (!req.body.userId) {
-        console.log("VALIDATION ERROR: User ID is required");
+
         return res.status(400).json({ message: "User ID is required" });
       }
 
@@ -2283,17 +2285,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const story = await storage.createStory(storyData);
-      console.log("SUCCESS: Story created with ID:", story.id);
+
       
       const response = story;
-      console.log("Sending story response:", { id: response.id, userId: response.userId });
+
       res.json(response);
-      console.log('=== STORY CREATION ENDPOINT COMPLETED SUCCESSFULLY ===');
+
     } catch (error) {
-      console.error("=== STORY CREATION ENDPOINT ERROR ===", error);
+
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       const errorStack = error instanceof Error ? error.stack : "No stack trace";
-      console.error("Error stack:", errorStack);
+
       res.status(500).json({ 
         message: "Failed to create story",
         error: errorMessage,

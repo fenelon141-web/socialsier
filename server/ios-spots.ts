@@ -7,7 +7,7 @@ export async function getIOSSpotsHandler(req: Request, res: Response) {
   try {
     const { lat, lng, radius = 2000, limit = 25 } = req.query;
     
-    console.log(`[iOS-Spots] Request from iOS: lat=${lat}, lng=${lng}, radius=${radius}`);
+
     
     if (!lat || !lng) {
       return res.status(400).json({ 
@@ -28,18 +28,18 @@ export async function getIOSSpotsHandler(req: Request, res: Response) {
       });
     }
     
-    console.log(`[iOS-Spots] Searching for spots around ${latitude}, ${longitude} within ${radiusMeters}m`);
+
     
     // Get real-time trendy spots from OpenStreetMap
     const spots = await findNearbyTrendySpots(latitude, longitude, radiusMeters, limitNum);
     
     if (!spots || spots.length === 0) {
-      console.log(`[iOS-Spots] No spots found, returning empty array`);
+
       return res.json([]);
     }
     
-    console.log(`[iOS-Spots] Returning ${spots.length} spots to iOS client`);
-    console.log(`[iOS-Spots] Closest spots: ${spots.slice(0, 3).map((s: any) => `${s.name}: ${s.distance}m`).join(', ')}`);
+
+
     
     // Set iOS-friendly headers
     res.set({
@@ -53,7 +53,7 @@ export async function getIOSSpotsHandler(req: Request, res: Response) {
     return res.json(spots);
     
   } catch (error) {
-    console.error('[iOS-Spots] Error:', error);
+
     return res.status(500).json({ 
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error',
@@ -64,7 +64,7 @@ export async function getIOSSpotsHandler(req: Request, res: Response) {
 
 // Dedicated iOS WebSocket handler for spots
 export function handleIOSWebSocketSpots(ws: WebSocket, data: any) {
-  console.log('[iOS-WebSocket] Spots request received:', data);
+
   
   const { latitude, longitude, radius = 2000, limit = 25, requestId } = data;
   
@@ -80,7 +80,7 @@ export function handleIOSWebSocketSpots(ws: WebSocket, data: any) {
   // Fetch spots and send via WebSocket
   findNearbyTrendySpots(latitude, longitude, radius, limit)
     .then((spots: any[]) => {
-      console.log(`[iOS-WebSocket] Sending ${spots.length} spots to iOS client`);
+
       ws.send(JSON.stringify({
         type: 'spotsResponse',
         requestId,
@@ -89,7 +89,7 @@ export function handleIOSWebSocketSpots(ws: WebSocket, data: any) {
       }));
     })
     .catch((error: Error) => {
-      console.error('[iOS-WebSocket] Error fetching spots:', error);
+
       ws.send(JSON.stringify({
         type: 'spotsError',
         requestId,

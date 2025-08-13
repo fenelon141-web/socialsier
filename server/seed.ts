@@ -5,7 +5,7 @@ import {
 } from "@shared/schema";
 
 async function seed() {
-  console.log("Seeding database...");
+
 
   // Seed users
   const [defaultUser] = await db.insert(users).values({
@@ -234,7 +234,6 @@ async function seed() {
 
   await db.insert(rewards).values(rewardData);
 
-  console.log("Database seeded successfully!");
+
 }
 
-seed().catch(console.error);
