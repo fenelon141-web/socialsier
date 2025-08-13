@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Geolocation } from '@capacitor/geolocation';
 import { useCapacitor } from './use-capacitor';
 
 interface LocationState {
@@ -9,6 +8,15 @@ interface LocationState {
   loading: boolean;
   error: string | null;
 }
+
+// iOS and native detection helper
+const isIOSNative = () => {
+  return (window as any).Capacitor?.isNativePlatform() || 
+         (window as any).Capacitor?.platform === 'ios' ||
+         (window as any).Device?.info?.platform === 'ios' ||
+         window.navigator.userAgent.includes('iPhone') ||
+         window.navigator.userAgent.includes('iPad');
+};
 
 export function useGeolocation() {
   const { isNative } = useCapacitor();
@@ -22,19 +30,10 @@ export function useGeolocation() {
 
   const getCurrentPosition = async () => {
     try {
-      console.log('[Geolocation] Starting location request...');
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
-      // Simplified for App Store submission - always use London coordinates in iOS/Xcode
-      const isCapacitorIOS = (window as any).Capacitor?.isNativePlatform() || 
-                             (window as any).Capacitor?.platform === 'ios' ||
-                             (window as any).Device?.info?.platform === 'ios' ||
-                             window.navigator.userAgent.includes('iPhone') ||
-                             window.navigator.userAgent.includes('iPad');
-      
-      // For iOS/Xcode testing and Replit environment, use working coordinates
-      if (isCapacitorIOS || isNative || window.location.hostname.includes('replit.dev') || window.location.hostname.includes('replit.app')) {
-        console.log('[Geolocation] Using London coordinates for iOS/Xcode testing');
+      // Use London coordinates for iOS/native apps and Replit environment
+      if (isIOSNative() || isNative || window.location.hostname.includes('replit')) {
         setLocation({
           latitude: 51.511153,
           longitude: -0.273239,
@@ -45,22 +44,17 @@ export function useGeolocation() {
         return;
       }
       
-      // Fallback for web browsers
-      console.log('[Geolocation] Using browser geolocation API for web');
-      
+      // Browser geolocation for web
       if (!navigator.geolocation) {
         throw new Error('Geolocation is not supported by this browser');
       }
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const coords = position.coords;
-          console.log('[Geolocation] Position received:', coords);
-          
           setLocation({
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-            accuracy: coords.accuracy,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
             loading: false,
             error: null,
           });
@@ -91,9 +85,7 @@ export function useGeolocation() {
         }
       );
     } catch (error) {
-      console.error('[Geolocation] Error getting location:', error);
       const errorMessage = error instanceof Error ? error.message : 'Location error';
-      
       setLocation(prev => ({
         ...prev,
         loading: false,

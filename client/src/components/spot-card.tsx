@@ -166,7 +166,7 @@ function SpotCard({ spot }: SpotCardProps) {
       });
       
     } catch (error) {
-      console.error('Navigation error:', error);
+
       toast({
         title: "Navigation error",
         description: "Unable to open directions",

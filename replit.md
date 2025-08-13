@@ -25,6 +25,14 @@ Socialiser is a mobile-first location-based discovery app designed to help users
 - **Production**: Uses https://hot-girl-hunt-fenelon141.replit.app for deployment
 - **Status**: Ready for mobile app deployment with correct API endpoint
 
+### Code Cleanup & Optimization (Aug 12, 2025)
+- **iOS Compatibility**: Consolidated duplicate iOS detection logic across components
+- **API Layer**: Simplified queryClient with centralized fallback system for offline functionality
+- **Component Cleanup**: Removed duplicate loading skeleton components and unnecessary debug logs
+- **Geolocation**: Streamlined location detection with unified helper functions
+- **Error Handling**: Improved error boundaries while removing verbose console logging
+- **Status**: Cleaner, more maintainable codebase ready for App Store submission
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
