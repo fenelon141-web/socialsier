@@ -13,7 +13,7 @@ const TRENDY_QUERIES: OverpassQuery[] = [
   {
     category: 'chai_matcha',
     query: `
-      [out:json][timeout:25];
+      [out:json][timeout:10];
       (
         nwr["amenity"="cafe"]["cuisine"~"tea|matcha|chai|bubble_tea"](around:2000,{lat},{lng});
         nwr["shop"="tea"](around:2000,{lat},{lng});
@@ -28,7 +28,7 @@ const TRENDY_QUERIES: OverpassQuery[] = [
   {
     category: 'healthy_bowls',
     query: `
-      [out:json][timeout:25];
+      [out:json][timeout:10];
       (
         nwr["amenity"="restaurant"]["cuisine"~"poke|acai|healthy|raw_food|smoothie"](around:2000,{lat},{lng});
         nwr["name"~"poke|poki|acai|bowl|juice"~i](around:2000,{lat},{lng});
@@ -43,7 +43,7 @@ const TRENDY_QUERIES: OverpassQuery[] = [
   {
     category: 'trendy_fitness',
     query: `
-      [out:json][timeout:25];
+      [out:json][timeout:10];
       (
         nwr["leisure"="fitness_centre"]["sport"~"pilates|yoga|barre"](around:2000,{lat},{lng});
         nwr["name"~"pilates|reformer|barre|yoga|soul|cycle|pure"~i](around:2000,{lat},{lng});
@@ -58,7 +58,7 @@ const TRENDY_QUERIES: OverpassQuery[] = [
   {
     category: 'asian_trendy',
     query: `
-      [out:json][timeout:25];
+      [out:json][timeout:10];
       (
         nwr["amenity"="restaurant"]["cuisine"~"japanese|korean|thai|vietnamese|ramen|sushi"](around:2000,{lat},{lng});
         nwr["amenity"="cafe"]["cuisine"~"japanese|korean|bubble_tea"](around:2000,{lat},{lng});
@@ -72,7 +72,7 @@ const TRENDY_QUERIES: OverpassQuery[] = [
   {
     category: 'specialty_coffee',
     query: `
-      [out:json][timeout:25];
+      [out:json][timeout:10];
       (
         nwr["amenity"="cafe"]["cuisine"~"coffee|specialty_coffee"](around:2000,{lat},{lng});
         nwr["name"~"blue bottle|intelligentsia|stumptown|third wave|roasters"~i](around:2000,{lat},{lng});
