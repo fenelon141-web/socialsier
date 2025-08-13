@@ -37,7 +37,6 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
-        console.log('WebSocket connected');
         setIsConnected(true);
         setConnectionStatus('connected');
         
@@ -52,20 +51,17 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         onConnect?.();
       };
 
-      wsRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+      wsRef.current.onerror = () => {
         setConnectionStatus('error');
         setIsConnected(false);
       };
 
       wsRef.current.onclose = (event) => {
-        console.log('WebSocket closed:', event.code, event.reason);
         setIsConnected(false);
         setConnectionStatus('disconnected');
         
         // Auto-reconnect for iOS (network interruptions are common)
         if (event.code !== 1000) { // Don't reconnect if closed intentionally
-          console.log('Attempting to reconnect WebSocket...');
           setTimeout(() => connect(), 3000);
         }
       };
@@ -73,65 +69,19 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       wsRef.current.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data) as WebSocketMessage;
-          console.log('WebSocket message received:', message);
           
-          // Handle built-in message types
+          // Handle built-in message types silently (social features disabled)
           if (message.type === 'authenticated') {
-            console.log(`Authenticated as user ${message.userId}`);
-          } else if (message.type === 'friend_online') {
-            toast({
-              title: "Friend Online 🟢",
-              description: "One of your friends is now online!",
-            });
-          } else if (message.type === 'friend_nearby') {
-            toast({
-              title: "Friend Nearby 📍",
-              description: message.message || "A friend is nearby!",
-            });
-          } else if (message.type === 'friend_activity') {
-            const activity = message.activity;
-            if (activity.type === 'spot_hunt') {
-              toast({
-                title: "Squad Activity ✨",
-                description: `Your friend just hunted a new spot and earned ${activity.points} points!`,
-              });
-            }
-          } else if (message.type === 'squad_activity') {
-            const activity = message.activity;
-            if (activity.type === 'challenge_complete') {
-              toast({
-                title: "Squad Challenge 🏆",
-                description: "A squad member completed a challenge!",
-              });
-            }
+            // Authentication success - no UI needed
           }
           
           onMessage?.(message);
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
+          // Message parsing failed - continue silently
         }
       };
 
-      wsRef.current.onclose = () => {
-        console.log('WebSocket disconnected');
-        setIsConnected(false);
-        setConnectionStatus('disconnected');
-        onDisconnect?.();
-        
-        // Attempt to reconnect after 3 seconds
-        reconnectTimeoutRef.current = setTimeout(() => {
-          console.log('Attempting to reconnect WebSocket...');
-          connect();
-        }, 3000);
-      };
-
-      wsRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        setConnectionStatus('error');
-      };
-
     } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
       setConnectionStatus('error');
     }
   };
@@ -155,10 +105,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
       return true;
-    } else {
-      console.warn('WebSocket not connected, message not sent:', message);
-      return false;
     }
+    return false;
   };
 
   // Auto-connect when userId is provided
@@ -212,11 +160,11 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   return {
     isConnected,
     connectionStatus,
+    connect,
+    disconnect,
     sendMessage,
     sendLocationUpdate,
     sendSpotHunt,
-    sendSquadChallengeComplete,
-    connect,
-    disconnect
+    sendSquadChallengeComplete
   };
 }

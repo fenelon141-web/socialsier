@@ -23,8 +23,7 @@ export default function MapView() {
   const geoLocation = useGeolocation();
   const { latitude, longitude, loading: locationLoading, error: locationError } = geoLocation;
   
-  // Debug location state
-  console.log('[MapView] Location state:', { latitude, longitude, locationLoading, locationError });
+
   const [searchFilters, setSearchFilters] = useState({});
   const { saveSpot, isSaved, savedSpots, isOnline } = useOfflineStorage();
   const { toast } = useToast();
@@ -62,16 +61,32 @@ export default function MapView() {
   const [spotsLoading, setSpotsLoading] = useState(true);
   const [nearbyError, setNearbyError] = useState<Error | null>(null);
   
-  // Direct HTTP API call (WebSocket conflicts resolved by using proven working endpoint)
+  // iOS-compatible spots fetching with fallback to embedded data
   const fetchRealTimeSpots = async (lat: number, lng: number) => {
-    console.log(`[MapView] Fetching spots for ${lat}, ${lng} with 1.8km radius`);
     setSpotsLoading(true);
     setNearbyError(null);
     
+    // iOS fallback: Use embedded spots immediately for native apps
+    const isIOSNative = (window as any).Capacitor?.isNativePlatform() || 
+                        (window as any).Capacitor?.platform === 'ios' ||
+                        window.navigator.userAgent.includes('iPhone');
+    
+    if (isIOSNative) {
+      try {
+        const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
+        setNearbySpots(embeddedValleyGirlSpots);
+        setSpotsLoading(false);
+        return;
+      } catch (error) {
+        setNearbyError(new Error('Failed to load embedded spots'));
+        setSpotsLoading(false);
+        return;
+      }
+    }
+    
     try {
-      // Use the local API endpoint that server logs show is working perfectly
+      // Web browser API call
       const apiUrl = `/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`;
-      console.log(`[MapView] Calling local API: ${apiUrl}`);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -86,45 +101,29 @@ export default function MapView() {
       }
       
       const spots = await response.json();
-      console.log(`[MapView] ✅ Successfully received ${spots.length} spots from API`);
-      console.log(`[MapView] Sample spot:`, spots[0]);
-      
       setNearbySpots(spots);
       setSpotsLoading(false);
       
     } catch (error) {
-      console.error('[MapView] API request failed:', error);
       setNearbyError(new Error('Unable to load spots - server error'));
       setSpotsLoading(false);
     }
   };
 
-  // Real-time location-based spots fetching
+  // Location-based spots fetching
   useEffect(() => {
-    console.log('[MapView] Location effect triggered:', { 
-      latitude, 
-      longitude, 
-      hasLatitude: !!latitude, 
-      hasLongitude: !!longitude,
-      locationLoading,
-      locationError
-    });
-    
     if (locationLoading) {
-      console.log('[MapView] Location still loading, waiting...');
       return;
     }
     
-    // Don't block on minor location errors if we have coordinates
+    // Handle location errors
     if (locationError && !latitude && !longitude) {
-      console.log('[MapView] Location error without coordinates:', locationError);
       setSpotsLoading(false);
       setNearbyError(new Error(typeof locationError === 'string' ? locationError : 'Location error'));
       return;
     }
     
     if (!latitude || !longitude) {
-      console.log('[MapView] No location available yet, skipping spots fetch');
       return;
     }
     
