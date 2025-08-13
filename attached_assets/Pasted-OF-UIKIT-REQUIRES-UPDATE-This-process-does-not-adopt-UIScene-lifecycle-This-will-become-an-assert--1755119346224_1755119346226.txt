@@ -1,0 +1,563 @@
+OF UIKIT REQUIRES UPDATE: This process does not adopt UIScene lifecycle. This will become an assert in a future version.
+Could not create a sandbox extension for '/var/containers/Bundle/Application/21D34829-35A4-44A9-B257-FA53A4817B5A/App.app'
+⚡️  Loading app at capacitor://localhost...
+Networking process (0x114000800) took 1.207006 seconds to launch
+App is being debugged, do not track this hang
+Hang detected: 0.38s (debugger attached, not reporting)
+App is being debugged, do not track this hang
+Hang detected: 0.28s (debugger attached, not reporting)
+App is being debugged, do not track this hang
+Hang detected: 0.26s (debugger attached, not reporting)
+⚡️  WebView loaded
+⚡️  To Native ->  Device getInfo 65015132
+⚡️  To Native ->  Device getInfo 65015133
+⚡️  [log] - iOS optimizations initialized
+⚡️  [log] - [App] Initializing global WebSocket: wss://hot-girl-hunt-fenelon141.replit.app/ws
+⚡️  TO JS {"webViewVersion":"18.5","memUsed":119095296,"operatingSystem":"ios","iOSVersion":180500,"model":"iPhone14,5","manufacturer":"Apple","name":"iPhone","platform":"ios","isVirtual":false,"osVersion":"18.5"}
+⚡️  TO JS {"model":"iPhone14,5","manufacturer":"Apple","name":"iPhone","webViewVersion":"18.5","iOSVersion":180500,"isVirtual":false,"operatingSystem":"ios","osVersion":"18.5","memUsed":119209984,"platform":"ios"}
+⚡️  To Native ->  SplashScreen hide 65015134
+⚡️  To Native ->  SplashScreen hide 65015135
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  To Native ->  App addListener 65015136
+⚡️  To Native ->  App addListener 65015137
+⚡️  To Native ->  App addListener 65015138
+⚡️  To Native ->  App addListener 65015139
+⚡️  [log] - [App] Global WebSocket connected
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+	(Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) 
+(
+    "<NSAutoresizingMaskLayoutConstraint:0x1268d7200 h=--& v=--& _UIToolbarContentView:0x115813200.width == 0   (active)>",
+    "<NSLayoutConstraint:0x106b7ce10 H:|-(0)-[_UIButtonBarStackView:0x115b26140]   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x106b7e3f0 H:[_UIButtonBarStackView:0x115b26140]-(0)-|   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x1268d57c0 'IB_Leading_Leading' H:|-(0)-[_UIModernBarButton:0x115b94600]   (active, names: '|':_UIButtonBarButton:0x1268fc200 )>",
+    "<NSLayoutConstraint:0x1268d5d10 'IB_Leading_Leading' H:|-(>=5)-[_UIModernBarButton:0x115b94900]   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>",
+    "<NSLayoutConstraint:0x1268d5810 'IB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94600]-(>=8)-|   (active, names: '|':_UIButtonBarButton:0x1268fc200 )>",
+    "<NSLayoutConstraint:0x1268d5d60 'IB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94900]-(>=5)-|   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>",
+    "<NSLayoutConstraint:0x1268d62b0 'TB_Leading_Leading' H:|-(8)-[_UIModernBarButton:0x115b94c00]   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d6300 'TB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94c00]-(0)-|   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d6620 'UISV-canvas-connection' UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.leading == _UIButtonBarButton:0x1268fc200.leading   (active)>",
+    "<NSLayoutConstraint:0x1268d68a0 'UISV-canvas-connection' UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.trailing == _UIButtonBarButton:0x1268fca00.trailing   (active)>",
+    "<NSLayoutConstraint:0x1268d68f0 'UISV-spacing' H:[_UIButtonBarButton:0x1268fc200]-(0)-[UIView:0x115bc9c80]   (active)>",
+    "<NSLayoutConstraint:0x1268d6940 'UISV-spacing' H:[UIView:0x115bc9c80]-(0)-[_UIButtonBarButton:0x1268fc600]   (active)>",
+    "<NSLayoutConstraint:0x1268d6990 'UISV-spacing' H:[_UIButtonBarButton:0x1268fc600]-(0)-[UIView:0x115bcaa00]   (active)>",
+    "<NSLayoutConstraint:0x1268d69e0 'UISV-spacing' H:[UIView:0x115bcaa00]-(0)-[_UIButtonBarButton:0x1268fca00]   (active)>",
+    "<NSLayoutConstraint:0x106b7d2c0 'UIView-leftMargin-guide-constraint' H:|-(0)-[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'](LTR)   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>",
+    "<NSLayoutConstraint:0x106b7ce60 'UIView-rightMargin-guide-constraint' H:[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']-(0)-|(LTR)   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x1268d5810 'IB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94600]-(>=8)-|   (active, names: '|':_UIButtonBarButton:0x1268fc200 )>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+	(Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) 
+(
+    "<NSAutoresizingMaskLayoutConstraint:0x1268d7200 h=--& v=--& _UIToolbarContentView:0x115813200.width == 0   (active)>",
+    "<NSLayoutConstraint:0x106b7ce10 H:|-(0)-[_UIButtonBarStackView:0x115b26140]   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x106b7e3f0 H:[_UIButtonBarStackView:0x115b26140]-(0)-|   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x1268d5d10 'IB_Leading_Leading' H:|-(>=5)-[_UIModernBarButton:0x115b94900]   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>",
+    "<NSLayoutConstraint:0x1268d5d60 'IB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94900]-(>=5)-|   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>",
+    "<NSLayoutConstraint:0x1268d62b0 'TB_Leading_Leading' H:|-(8)-[_UIModernBarButton:0x115b94c00]   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d6300 'TB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94c00]-(0)-|   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d6620 'UISV-canvas-connection' UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.leading == _UIButtonBarButton:0x1268fc200.leading   (active)>",
+    "<NSLayoutConstraint:0x1268d68a0 'UISV-canvas-connection' UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.trailing == _UIButtonBarButton:0x1268fca00.trailing   (active)>",
+    "<NSLayoutConstraint:0x1268d68f0 'UISV-spacing' H:[_UIButtonBarButton:0x1268fc200]-(0)-[UIView:0x115bc9c80]   (active)>",
+    "<NSLayoutConstraint:0x1268d6940 'UISV-spacing' H:[UIView:0x115bc9c80]-(0)-[_UIButtonBarButton:0x1268fc600]   (active)>",
+    "<NSLayoutConstraint:0x1268d6990 'UISV-spacing' H:[_UIButtonBarButton:0x1268fc600]-(0)-[UIView:0x115bcaa00]   (active)>",
+    "<NSLayoutConstraint:0x1268d69e0 'UISV-spacing' H:[UIView:0x115bcaa00]-(0)-[_UIButtonBarButton:0x1268fca00]   (active)>",
+    "<NSLayoutConstraint:0x106b7d2c0 'UIView-leftMargin-guide-constraint' H:|-(0)-[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'](LTR)   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>",
+    "<NSLayoutConstraint:0x106b7ce60 'UIView-rightMargin-guide-constraint' H:[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']-(0)-|(LTR)   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x1268d5d60 'IB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94900]-(>=5)-|   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+	(Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) 
+(
+    "<NSAutoresizingMaskLayoutConstraint:0x1268d7200 h=--& v=--& _UIToolbarContentView:0x115813200.width == 0   (active)>",
+    "<NSLayoutConstraint:0x106b7ce10 H:|-(0)-[_UIButtonBarStackView:0x115b26140]   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x106b7e3f0 H:[_UIButtonBarStackView:0x115b26140]-(0)-|   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x1268d62b0 'TB_Leading_Leading' H:|-(8)-[_UIModernBarButton:0x115b94c00]   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d6300 'TB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94c00]-(0)-|   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d6620 'UISV-canvas-connection' UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.leading == _UIButtonBarButton:0x1268fc200.leading   (active)>",
+    "<NSLayoutConstraint:0x1268d68a0 'UISV-canvas-connection' UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.trailing == _UIButtonBarButton:0x1268fca00.trailing   (active)>",
+    "<NSLayoutConstraint:0x1268d68f0 'UISV-spacing' H:[_UIButtonBarButton:0x1268fc200]-(0)-[UIView:0x115bc9c80]   (active)>",
+    "<NSLayoutConstraint:0x1268d6940 'UISV-spacing' H:[UIView:0x115bc9c80]-(0)-[_UIButtonBarButton:0x1268fc600]   (active)>",
+    "<NSLayoutConstraint:0x1268d6990 'UISV-spacing' H:[_UIButtonBarButton:0x1268fc600]-(0)-[UIView:0x115bcaa00]   (active)>",
+    "<NSLayoutConstraint:0x1268d69e0 'UISV-spacing' H:[UIView:0x115bcaa00]-(0)-[_UIButtonBarButton:0x1268fca00]   (active)>",
+    "<NSLayoutConstraint:0x106b7d2c0 'UIView-leftMargin-guide-constraint' H:|-(0)-[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'](LTR)   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>",
+    "<NSLayoutConstraint:0x106b7ce60 'UIView-rightMargin-guide-constraint' H:[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']-(0)-|(LTR)   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x1268d6300 'TB_Trailing_Trailing' H:[_UIModernBarButton:0x115b94c00]-(0)-|   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+	(Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) 
+(
+    "<NSAutoresizingMaskLayoutConstraint:0x1268d72a0 h=--& v=--& _UIToolbarContentView:0x115813200.height == 0   (active)>",
+    "<NSLayoutConstraint:0x106b7e440 V:|-(0)-[_UIButtonBarStackView:0x115b26140]   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x106b7f0c0 _UIButtonBarStackView:0x115b26140.bottom == _UIToolbarContentView:0x115813200.bottom   (active)>",
+    "<NSLayoutConstraint:0x1268d7700 UIImageView:0x1268fc400.centerY == _UIModernBarButton:0x115b94600.centerY   (active)>",
+    "<NSLayoutConstraint:0x1268d5a90 'IB_Baseline_Baseline' _UIModernBarButton:0x115b94600.lastBaseline == UILayoutGuide:0x115b9c9a0'UIViewLayoutMarginsGuide'.bottom   (active)>",
+    "<NSLayoutConstraint:0x1268d5ae0 'IB_Top_Top' V:|-(>=0)-[_UIModernBarButton:0x115b94600]   (active, names: '|':_UIButtonBarButton:0x1268fc200 )>",
+    "<NSLayoutConstraint:0x1268d5bd0 'UIButtonBar.maximumAlignmentSize' _UIButtonBarButton:0x1268fc200.height == UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.height   (active)>",
+    "<NSLayoutConstraint:0x106b7d270 'UIView-bottomMargin-guide-constraint' V:[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']-(0)-|   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>",
+    "<NSLayoutConstraint:0x1268d59f0 'UIView-bottomMargin-guide-constraint' V:[UILayoutGuide:0x115b9c9a0'UIViewLayoutMarginsGuide']-(11)-|   (active, names: '|':_UIButtonBarButton:0x1268fc200 )>",
+    "<NSLayoutConstraint:0x106b7d450 'UIView-topMargin-guide-constraint' V:|-(0)-[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x1268d7700 UIImageView:0x1268fc400.centerY == _UIModernBarButton:0x115b94600.centerY   (active)>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+	(Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) 
+(
+    "<NSAutoresizingMaskLayoutConstraint:0x1268d72a0 h=--& v=--& _UIToolbarContentView:0x115813200.height == 0   (active)>",
+    "<NSLayoutConstraint:0x106b7e440 V:|-(0)-[_UIButtonBarStackView:0x115b26140]   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x106b7f0c0 _UIButtonBarStackView:0x115b26140.bottom == _UIToolbarContentView:0x115813200.bottom   (active)>",
+    "<NSLayoutConstraint:0x1268d78e0 UIImageView:0x1268fc800.centerY == _UIModernBarButton:0x115b94900.centerY   (active)>",
+    "<NSLayoutConstraint:0x1268d5fe0 'IB_Baseline_Baseline' _UIModernBarButton:0x115b94900.lastBaseline == UILayoutGuide:0x115b9cb60'UIViewLayoutMarginsGuide'.bottom   (active)>",
+    "<NSLayoutConstraint:0x1268d6030 'IB_Top_Top' V:|-(>=0)-[_UIModernBarButton:0x115b94900]   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>",
+    "<NSLayoutConstraint:0x1268d6120 'UIButtonBar.maximumAlignmentSize' _UIButtonBarButton:0x1268fc600.height == UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.height   (active)>",
+    "<NSLayoutConstraint:0x106b7d270 'UIView-bottomMargin-guide-constraint' V:[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']-(0)-|   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>",
+    "<NSLayoutConstraint:0x1268d5f40 'UIView-bottomMargin-guide-constraint' V:[UILayoutGuide:0x115b9cb60'UIViewLayoutMarginsGuide']-(11)-|   (active, names: '|':_UIButtonBarButton:0x1268fc600 )>",
+    "<NSLayoutConstraint:0x106b7d450 'UIView-topMargin-guide-constraint' V:|-(0)-[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x1268d78e0 UIImageView:0x1268fc800.centerY == _UIModernBarButton:0x115b94900.centerY   (active)>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+	(Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) 
+(
+    "<NSAutoresizingMaskLayoutConstraint:0x1268d72a0 h=--& v=--& _UIToolbarContentView:0x115813200.height == 0   (active)>",
+    "<NSLayoutConstraint:0x106b7e440 V:|-(0)-[_UIButtonBarStackView:0x115b26140]   (active, names: '|':_UIToolbarContentView:0x115813200 )>",
+    "<NSLayoutConstraint:0x106b7f0c0 _UIButtonBarStackView:0x115b26140.bottom == _UIToolbarContentView:0x115813200.bottom   (active)>",
+    "<NSLayoutConstraint:0x1268d7ac0 UIButtonLabel:0x1158b3800.centerY == _UIModernBarButton:0x115b94c00.centerY + 1.5   (active)>",
+    "<NSLayoutConstraint:0x1268d6490 'TB_Baseline_Baseline' _UIModernBarButton:0x115b94c00.lastBaseline == UILayoutGuide:0x115b9cc40'UIViewLayoutMarginsGuide'.bottom   (active)>",
+    "<NSLayoutConstraint:0x1268d64e0 'TB_Top_Top' V:|-(>=0)-[_UIModernBarButton:0x115b94c00]   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x1268d65d0 'UIButtonBar.maximumAlignmentSize' _UIButtonBarButton:0x1268fca00.height == UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide'.height   (active)>",
+    "<NSLayoutConstraint:0x106b7d270 'UIView-bottomMargin-guide-constraint' V:[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']-(0)-|   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>",
+    "<NSLayoutConstraint:0x1268d63f0 'UIView-bottomMargin-guide-constraint' V:[UILayoutGuide:0x115b9cc40'UIViewLayoutMarginsGuide']-(11)-|   (active, names: '|':_UIButtonBarButton:0x1268fca00 )>",
+    "<NSLayoutConstraint:0x106b7d450 'UIView-topMargin-guide-constraint' V:|-(0)-[UILayoutGuide:0x106a06a00'UIViewLayoutMarginsGuide']   (active, names: '|':_UIButtonBarStackView:0x115b26140 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x1268d7ac0 UIButtonLabel:0x1158b3800.centerY == _UIModernBarButton:0x115b94c00.centerY + 1.5   (active)>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+-[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = 106FD8A7-7AEE-4E39-A1BE-7479E5BC27C7
+App is being debugged, do not track this hang
+Hang detected: 1.20s (debugger attached, not reporting)
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+(
+    "<NSLayoutConstraint:0x1268d40f0 'accessoryView.bottom' _UIRemoteKeyboardPlaceholderView:0x12687da40.bottom == _UIKBCompatInputView:0x115b26a00.top   (active)>",
+    "<NSLayoutConstraint:0x126975810 'assistantHeight' SystemInputAssistantView.height == 45   (active, names: SystemInputAssistantView:0x115811900 )>",
+    "<NSLayoutConstraint:0x115b77f70 'assistantView.bottom' SystemInputAssistantView.bottom == _UIKBCompatInputView:0x115b26a00.top   (active, names: SystemInputAssistantView:0x115811900 )>",
+    "<NSLayoutConstraint:0x115b77f20 'assistantView.top' V:[_UIRemoteKeyboardPlaceholderView:0x12687da40]-(0)-[SystemInputAssistantView]   (active, names: SystemInputAssistantView:0x115811900 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x126975810 'assistantHeight' SystemInputAssistantView.height == 45   (active, names: SystemInputAssistantView:0x115811900 )>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+App is being debugged, do not track this hang
+Hang detected: 0.89s (debugger attached, not reporting)
+-[RTIInputSystemClient remoteTextInputSessionWithID:performInputOperation:]  perform input operation requires a valid sessionID. inputModality = Keyboard, inputOperation = <null selector>, customInfoType = UIEmojiSearchOperations
+-[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = 106FD8A7-7AEE-4E39-A1BE-7479E5BC27C7
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+(
+    "<NSLayoutConstraint:0x1269771b0 'accessoryView.bottom' _UIRemoteKeyboardPlaceholderView:0x126a05dc0.bottom == _UIKBCompatInputView:0x115b26a00.top   (active)>",
+    "<NSLayoutConstraint:0x115b77660 'assistantHeight' SystemInputAssistantView.height == 45   (active, names: SystemInputAssistantView:0x115811900 )>",
+    "<NSLayoutConstraint:0x115915b80 'assistantView.bottom' SystemInputAssistantView.bottom == _UIKBCompatInputView:0x115b26a00.top   (active, names: SystemInputAssistantView:0x115811900 )>",
+    "<NSLayoutConstraint:0x115916df0 'assistantView.top' V:[_UIRemoteKeyboardPlaceholderView:0x126a05dc0]-(0)-[SystemInputAssistantView]   (active, names: SystemInputAssistantView:0x115811900 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x115b77660 'assistantHeight' SystemInputAssistantView.height == 45   (active, names: SystemInputAssistantView:0x115811900 )>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+-[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = 106FD8A7-7AEE-4E39-A1BE-7479E5BC27C7
+Unable to simultaneously satisfy constraints.
+	Probably at least one of the constraints in the following list is one you don't want. 
+	Try this: 
+		(1) look at each constraint and try to figure out which you don't expect; 
+		(2) find the code that added the unwanted constraint or constraints and fix it. 
+(
+    "<NSLayoutConstraint:0x126976670 'accessoryView.bottom' _UIRemoteKeyboardPlaceholderView:0x12687e840.bottom == _UIKBCompatInputView:0x115b26a00.top   (active)>",
+    "<NSLayoutConstraint:0x126a9cb40 'assistantHeight' SystemInputAssistantView.height == 45   (active, names: SystemInputAssistantView:0x115811900 )>",
+    "<NSLayoutConstraint:0x115915b80 'assistantView.bottom' SystemInputAssistantView.bottom == _UIKBCompatInputView:0x115b26a00.top   (active, names: SystemInputAssistantView:0x115811900 )>",
+    "<NSLayoutConstraint:0x126977c00 'assistantView.top' V:[_UIRemoteKeyboardPlaceholderView:0x12687e840]-(0)-[SystemInputAssistantView]   (active, names: SystemInputAssistantView:0x115811900 )>"
+)
+
+Will attempt to recover by breaking constraint 
+<NSLayoutConstraint:0x126a9cb40 'assistantHeight' SystemInputAssistantView.height == 45   (active, names: SystemInputAssistantView:0x115811900 )>
+
+Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
+The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in <UIKitCore/UIView.h> may also be helpful.
+⚡️  To Native ->  Device getInfo 65015140
+⚡️  To Native ->  Geolocation checkPermissions 65015141
+⚡️  To Native ->  Device getInfo 65015142
+⚡️  To Native ->  Geolocation checkPermissions 65015143
+⚡️  To Native ->  Device getInfo 65015144
+⚡️  To Native ->  Geolocation checkPermissions 65015145
+⚡️  To Native ->  Device getInfo 65015146
+⚡️  To Native ->  Geolocation checkPermissions 65015147
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"operatingSystem":"ios","isVirtual":false,"manufacturer":"Apple","model":"iPhone14,5","webViewVersion":"18.5","iOSVersion":180500,"platform":"ios","memUsed":117145600,"name":"iPhone","osVersion":"18.5"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"iOSVersion":180500,"manufacturer":"Apple","isVirtual":false,"platform":"ios","webViewVersion":"18.5","operatingSystem":"ios","model":"iPhone14,5","memUsed":117358592,"name":"iPhone","osVersion":"18.5"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"platform":"ios","operatingSystem":"ios","name":"iPhone","isVirtual":false,"iOSVersion":180500,"manufacturer":"Apple","webViewVersion":"18.5","osVersion":"18.5","memUsed":117358592,"model":"iPhone14,5"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"iOSVersion":180500,"webViewVersion":"18.5","memUsed":117358592,"model":"iPhone14,5","operatingSystem":"ios","platform":"ios","name":"iPhone","osVersion":"18.5","isVirtual":false,"manufacturer":"Apple"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  SplashScreen hide 65015148
+⚡️  To Native ->  Geolocation getCurrentPosition 65015149
+⚡️  To Native ->  SplashScreen hide 65015150
+⚡️  To Native ->  Geolocation getCurrentPosition 65015151
+⚡️  To Native ->  SplashScreen hide 65015152
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Geolocation checkPermissions 65015153
+⚡️  To Native ->  Geolocation checkPermissions 65015154
+⚡️  To Native ->  Geolocation checkPermissions 65015155
+⚡️  To Native ->  Geolocation getCurrentPosition 65015156
+⚡️  To Native ->  SplashScreen hide 65015157
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 65015158
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {"timestamp":1755119250694.7061,"coords":{"speed":-1,"altitudeAccuracy":30,"latitude":51.511153042040313,"heading":-1,"accuracy":9.2916059489683462,"altitude":27.53757066043849,"longitude":-0.2732396084576787}}
+⚡️  TO JS {"timestamp":1755119250694.7061,"coords":{"latitude":51.511153042040313,"accuracy":9.2916059489683462,"speed":-1,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}}
+⚡️  TO JS {"coords":{"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.2916059489683462,"latitude":51.511153042040313,"altitudeAccuracy":30,"heading":-1,"speed":-1},"timestamp":1755119250694.7061}
+⚡️  TO JS {"coords":{"latitude":51.511153042040313,"accuracy":9.2916059489683462,"speed":-1,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787},"timestamp":1755119250694.7061}
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  Geolocation checkPermissions 65015159
+⚡️  To Native ->  App addListener 65015160
+⚡️  To Native ->  App addListener 65015161
+⚡️  To Native ->  App addListener 65015162
+⚡️  To Native ->  App addListener 65015163
+⚡️  To Native ->  App addListener 65015164
+⚡️  To Native ->  App addListener 65015165
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 65015166
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 65015167
+⚡️  To Native ->  Geolocation getCurrentPosition 65015168
+⚡️  To Native ->  App addListener 65015169
+⚡️  To Native ->  App addListener 65015170
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Position received: {"speed":-1,"altitudeAccuracy":30,"latitude":51.51115304204031,"heading":-1,"accuracy":9.291605948968346,"altitude":27.53757066043849,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"accuracy":9.291605948968346,"speed":-1,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.291605948968346,"latitude":51.51115304204031,"altitudeAccuracy":30,"heading":-1,"speed":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"accuracy":9.291605948968346,"speed":-1,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  To Native ->  Geolocation getCurrentPosition 65015171
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {"coords":{"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.2916059489683462,"latitude":51.511153042040313,"altitudeAccuracy":30,"heading":-1,"speed":-1},"timestamp":1755119276847.001}
+⚡️  TO JS {"timestamp":1755119276847.001,"coords":{"latitude":51.511153042040313,"speed":-1,"accuracy":9.2916059489683462,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}}
+⚡️  TO JS {"timestamp":1755119276847.001,"coords":{"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.2916059489683462,"latitude":51.511153042040313,"altitudeAccuracy":30,"heading":-1,"speed":-1}}
+⚡️  TO JS {"coords":{"latitude":51.511153042040313,"speed":-1,"accuracy":9.2916059489683462,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787},"timestamp":1755119276847.001}
+⚡️  To Native ->  Device getInfo 65015172
+⚡️  To Native ->  Geolocation checkPermissions 65015173
+⚡️  To Native ->  Device getInfo 65015174
+⚡️  To Native ->  Geolocation checkPermissions 65015175
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"iOSVersion":180500,"manufacturer":"Apple","isVirtual":false,"platform":"ios","webViewVersion":"18.5","operatingSystem":"ios","model":"iPhone14,5","memUsed":117948416,"name":"iPhone","osVersion":"18.5"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"iOSVersion":180500,"manufacturer":"Apple","isVirtual":false,"platform":"ios","webViewVersion":"18.5","operatingSystem":"ios","model":"iPhone14,5","memUsed":117948416,"name":"iPhone","osVersion":"18.5"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.291605948968346,"latitude":51.51115304204031,"altitudeAccuracy":30,"heading":-1,"speed":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"speed":-1,"accuracy":9.291605948968346,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.291605948968346,"latitude":51.51115304204031,"altitudeAccuracy":30,"heading":-1,"speed":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  To Native ->  SplashScreen hide 65015176
+⚡️  To Native ->  Geolocation getCurrentPosition 65015177
+⚡️  To Native ->  SplashScreen hide 65015178
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"speed":-1,"accuracy":9.291605948968346,"altitude":27.53757066043849,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}
+⚡️  To Native ->  Geolocation getCurrentPosition 65015179
+⚡️  To Native ->  Geolocation checkPermissions 65015180
+⚡️  To Native ->  Geolocation checkPermissions 65015181
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  To Native ->  App addListener 65015182
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  TO JS {"coords":{"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.2916059489683462,"latitude":51.511153042040313,"altitudeAccuracy":30,"heading":-1,"speed":-1},"timestamp":1755119276860.4771}
+⚡️  TO JS {"timestamp":1755119276860.4771,"coords":{"latitude":51.511153042040313,"altitude":27.53757066043849,"accuracy":9.2916059489683462,"speed":-1,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}}
+⚡️  To Native ->  App addListener 65015183
+⚡️  To Native ->  App addListener 65015184
+⚡️  To Native ->  App addListener 65015185
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.291605948968346,"latitude":51.51115304204031,"altitudeAccuracy":30,"heading":-1,"speed":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  To Native ->  Geolocation getCurrentPosition 65015186
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"altitude":27.53757066043849,"accuracy":9.291605948968346,"speed":-1,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 65015187
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  TO JS {"timestamp":1755119276889.968,"coords":{"longitude":-0.2732396084576787,"altitude":27.53757066043849,"accuracy":9.2916059489683462,"latitude":51.511153042040313,"altitudeAccuracy":30,"heading":-1,"speed":-1}}
+⚡️  TO JS {"coords":{"latitude":51.511153042040313,"accuracy":9.2916059489683462,"altitude":27.53757066043849,"speed":-1,"altitudeAccuracy":30,"heading":-1,"longitude":-0.2732396084576787},"timestamp":1755119276889.968}
+⚡️  [log] - [Geolocation] Position received: {"longitude":-0.2732396084576787,"altitude":27.53757066043849,"accuracy":9.291605948968346,"latitude":51.51115304204031,"altitudeAccuracy":30,"heading":-1,"speed":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"accuracy":9.291605948968346,"altitude":27.53757066043849,"speed":-1,"altitudeAccuracy":30,"heading":-1,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [warn] - iOS network error, skipping retry: Load failed
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationLoading":true,"locationError":null}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  To Native ->  App removeAllListeners ⚡️  [log] - [MapView] Location effect triggered: {"latitude":null,"longitude":null,"hasLatitude":false,"hasLongitude":false,"locationLoading":true,"locationError":null}
+65015188
+⚡️  To Native ->  App removeAllListeners 65015189
+⚡️  [log] - [MapView] Location still loading, waiting...
+⚡️  To Native ->  App removeAllListeners 65015190
+⚡️  [log] - [MapView] Component state: {"latitude":null,"longitude":null,"spotsLoading":true,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  To Native ->  App removeAllListeners 65015191
+⚡️  TO JS undefined
+⚡️  To Native ->  App removeAllListeners 65015192
+⚡️  TO JS undefined
+⚡️  To Native ->  App removeAllListeners 65015193
+⚡️  TO JS undefined
+⚡️  To Native ->  Device getInfo 65015194
+⚡️  TO JS undefined
+⚡️  TO JS undefined
+⚡️  To Native ->  Geolocation checkPermissions 65015195
+⚡️  TO JS undefined
+⚡️  TO JS {"iOSVersion":180500,"manufacturer":"Apple","isVirtual":false,"platform":"ios","webViewVersion":"18.5","operatingSystem":"ios","model":"iPhone14,5","memUsed":114655232,"name":"iPhone","osVersion":"18.5"}
+⚡️  TO JS {"location":"granted","coarseLocation":"granted"}
+⚡️  To Native ->  SplashScreen hide 65015196
+⚡️  TO JS undefined
+⚡️  [log] - [Geolocation] Current permissions: {"location":"granted","coarseLocation":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 65015197
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationLoading":true,"locationError":null}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [Geolocation] Starting location request...
+⚡️  [log] - [Geolocation] Native iOS app - using real location
+⚡️  [log] - [Geolocation] Using Capacitor for native app
+⚡️  [log] - [MapView] Component state: {"latitude":null,"longitude":null,"spotsLoading":true,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationLoading":true,"locationError":null}
+⚡️  To Native ->  Geolocation checkPermissions 65015198
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":null,"longitude":null,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Component state: {"latitude":null,"longitude":null,"spotsLoading":true,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  TO JS {"coarseLocation":"granted","location":"granted"}
+⚡️  TO JS {"coords":{"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.2916059489683462,"latitude":51.511153042040313,"altitudeAccuracy":30,"heading":-1,"speed":-1},"timestamp":1755119276911.8408}
+⚡️  To Native ->  App addListener 65015199
+⚡️  To Native ->  App addListener 65015200
+⚡️  [log] - [Geolocation] Current permissions: {"coarseLocation":"granted","location":"granted"}
+⚡️  [log] - [Geolocation] Getting current position...
+⚡️  To Native ->  Geolocation getCurrentPosition 65015201
+⚡️  TO JS {"coords":{"latitude":51.511153042040313,"speed":-1,"altitude":27.53757066043849,"accuracy":9.2916059489683462,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787},"timestamp":1755119283846.8679}
+⚡️  [log] - [Geolocation] Position received: {"altitude":27.53757066043849,"longitude":-0.2732396084576787,"accuracy":9.291605948968346,"latitude":51.51115304204031,"altitudeAccuracy":30,"heading":-1,"speed":-1}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [MapView] Location state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"locationLoading":false,"locationError":null}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Location effect triggered: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"hasLatitude":true,"hasLongitude":true,"locationLoading":false,"locationError":null}
+⚡️  [log] - [MapView] ✅ Starting real-time spots fetch for 51.51115304204031, -0.2732396084576787
+⚡️  [log] - [MapView] Fetching spots for 51.51115304204031, -0.2732396084576787 with 1.8km radius
+⚡️  [log] - [MapView] Attempting WebSocket connection...
+⚡️  [log] - [WebSocketSpots] Connecting to: wss://hot-girl-hunt-fenelon141.replit.app/ws (attempt 1)
+⚡️  [log] - [MapView] Component state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"spotsLoading":true,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  [log] - [Geolocation] Position received: {"latitude":51.51115304204031,"speed":-1,"altitude":27.53757066043849,"accuracy":9.291605948968346,"heading":-1,"altitudeAccuracy":30,"longitude":-0.2732396084576787}
+⚡️  [log] - [Geolocation] Location state updated: {"lat":51.51115304204031,"lng":-0.2732396084576787,"accuracy":9.291605948968346}
+⚡️  [log] - [MapView] Location state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"locationLoading":false,"locationError":null}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Component state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"spotsLoading":true,"nearbySpots":0,"allSpots":0,"finalSpots":0}
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [error] - WebSocket error: {"isTrusted":true}
+⚡️  [log] - WebSocket disconnected
+⚡️  [log] - [WebSocketSpots] Connected successfully
+⚡️  [log] - [WebSocketSpots] Sending request (attempt 1): {"type":"getSpotsNearby","requestId":"175511928412601cxph84s","latitude":51.51115304204031,"longitude":-0.2732396084576787,"radius":1800,"limit":25,"filters":{}}
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - Attempting to reconnect WebSocket...
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - WebSocket connected
+⚡️  [log] - WebSocket message received: {"type":"authenticated","userId":"1"}
+⚡️  [log] - Authenticated as user 1
+⚡️  [log] - [MapView] WebSocket failed, falling back to HTTP: {}
+⚡️  [log] - [MapView] HTTP attempt 1: https://hot-girl-hunt-fenelon141.replit.app/api/spots?lat=51.51115304204031&lng=-0.2732396084576787&radius=1800&limit=25
+⚡️  [warn] - [MapView] HTTP attempt 1 failed: {}
+⚡️  [log] - [MapView] HTTP attempt 2: /api/spots?lat=51.51115304204031&lng=-0.2732396084576787&radius=1800&limit=25
+⚡️  [warn] - [MapView] HTTP attempt 2 failed: {"line":343,"column":164138,"sourceURL":"capacitor://localhost/assets/index-B6L_YNij.js"}
+⚡️  [error] - [MapView] All networking attempts failed
+⚡️  [log] - [MapView] Location state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"locationLoading":false,"locationError":null}
+⚡️  [log] - [MapView] Processing 0 spots for display
+⚡️  [log] - [MapView] nearbySpots: 0 allSpots: 0
+⚡️  [log] - [MapView] Location state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"locationError":null}
+⚡️  [log] - [MapView] Processed spots ready for render: 0
+⚡️  [log] - [MapView] Component state: {"latitude":51.51115304204031,"longitude":-0.2732396084576787,"spotsLoading":false,"nearbySpots":0,"allSpots":0,"nearbyError":"Unable to load spots - check network connection","finalSpots":0}
+⚡️  [error] - [App] WebSocket error: {"isTrusted":true}
+⚡️  [log] - [App] WebSocket disconnected, reconnecting in 3s...
+⚡️  [log] - [App] Initializing global WebSocket: wss://hot-girl-hunt-fenelon141.replit.app/ws
+⚡️  [log] - [App] Global WebSocket connected

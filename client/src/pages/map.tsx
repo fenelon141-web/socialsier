@@ -70,15 +70,24 @@ export default function MapView() {
     // This ensures users get real-time data based on their actual location
     
     try {
-      // Web browser API call
-      const apiUrl = `/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`;
+      // Detect iOS/native environment for API URL
+      const isIOSNative = (window as any).Capacitor?.isNativePlatform() || 
+                          (window as any).Capacitor?.platform === 'ios' ||
+                          window.navigator.userAgent.includes('iPhone');
+      
+      // Use full production URL for iOS, relative URL for web
+      const baseUrl = isIOSNative ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
+      const apiUrl = `${baseUrl}/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`;
+      
+      console.log(`[iOS] Fetching spots from: ${apiUrl}`);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: isIOSNative ? 'omit' : 'include' // Avoid CORS issues on iOS
       });
       
       if (!response.ok) {
@@ -86,8 +95,16 @@ export default function MapView() {
       }
       
       const spots = await response.json();
+      console.log(`[iOS] Received ${spots.length} spots for coordinates ${lat}, ${lng}`);
       setNearbySpots(spots);
       setSpotsLoading(false);
+      
+      if (isIOSNative && spots.length > 0) {
+        toast({
+          title: `Found ${spots.length} trendy spots`,
+          description: "Real-time data from your location",
+        });
+      }
       
     } catch (error) {
       // Fallback to embedded spots only if API is completely unavailable

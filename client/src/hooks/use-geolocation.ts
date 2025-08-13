@@ -1,6 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useCapacitor } from './use-capacitor';
 
+// Import Capacitor Geolocation for native GPS access
+declare global {
+  interface Window {
+    Capacitor?: {
+      Geolocation?: {
+        getCurrentPosition: (options?: any) => Promise<any>;
+      };
+      isNativePlatform: () => boolean;
+      platform?: string;
+    };
+  }
+}
+
 interface LocationState {
   latitude: number | null;
   longitude: number | null;
@@ -32,17 +45,42 @@ export function useGeolocation() {
     try {
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
-      // First try to get real GPS location, even for iOS/native
+      const isNativeOrIOS = isIOSNative() || isNative;
+      
+      // Try Capacitor native geolocation first for iOS apps
+      if (isNativeOrIOS && (window as any).Capacitor?.Geolocation) {
+        try {
+          console.log('[iOS] Using Capacitor native geolocation');
+          const position = await (window as any).Capacitor.Geolocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 30000
+          });
+          
+          console.log(`[iOS] Capacitor GPS coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            loading: false,
+            error: null,
+          });
+          return;
+        } catch (capacitorError) {
+          console.log('[iOS] Capacitor geolocation failed, trying web API');
+        }
+      }
+      
+      // Fallback to web geolocation API
       if (!navigator.geolocation) {
         throw new Error('Geolocation is not supported by this browser');
       }
 
-      // For iOS/native apps, try real GPS first, then fallback to London
-      const isNativeOrIOS = isIOSNative() || isNative;
-      const timeout = isNativeOrIOS ? 5000 : 10000; // Shorter timeout for native apps
+      const timeout = isNativeOrIOS ? 8000 : 10000; // Timeout for native apps
       
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log(`[iOS] GPS coordinates received: ${position.coords.latitude}, ${position.coords.longitude}`);
           setLocation({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -54,6 +92,7 @@ export function useGeolocation() {
         (error) => {
           // For native/iOS apps, fallback to London coordinates if GPS fails
           if (isNativeOrIOS) {
+            console.log(`[iOS] GPS failed, using fallback coordinates: 51.511153, -0.273239`);
             setLocation({
               latitude: 51.511153,
               longitude: -0.273239,
