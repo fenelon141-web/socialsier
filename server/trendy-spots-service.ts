@@ -160,46 +160,98 @@ function generateDescription(element: any, config: OverpassQuery): string {
   const tags = element.tags || {};
   const name = (tags.name || '').toLowerCase();
   
+  // Generate unique descriptions based on name hash for variety
+  const nameHash = name.split('').reduce((hash, char) => hash + char.charCodeAt(0), 0);
+  
   if (config.category === 'coffee_shops') {
     if (name.includes('blue bottle')) return 'Blue Bottle Coffee – Third-wave coffee with minimalist aesthetic';
     if (name.includes('stumptown')) return 'Stumptown Coffee – Artisanal roasting and specialty drinks';
     if (name.includes('starbucks')) return 'Starbucks – Familiar coffee chain with seasonal specialty drinks';
-    return 'Coffee shop serving espresso drinks and cozy vibes';
+    if (name.includes('costa')) return 'Costa Coffee – European-style coffee with Italian roasting tradition';
+    if (name.includes('nero')) return 'Caffè Nero – Authentic Italian coffee experience with premium blends';
+    if (name.includes('pret')) return 'Pret A Manger – Fresh coffee and organic options in urban setting';
+    if (name.includes('independent') || name.includes('local')) return 'Independent coffee house with artisanal roasts and local charm';
+    
+    const coffeeDescriptions = [
+      'Cozy coffee spot perfect for laptop sessions and people watching',
+      'Local coffee house with expertly crafted espresso and friendly baristas',
+      'Specialty coffee shop featuring single-origin beans and latte art',
+      'Artisanal coffee roaster with carefully sourced beans and brewing expertise',
+      'Neighborhood coffee hub with community vibes and quality drinks',
+      'Modern coffee bar with innovative brewing methods and seasonal specials'
+    ];
+    return coffeeDescriptions[nameHash % coffeeDescriptions.length];
   }
   
   if (config.category === 'matcha_tea') {
     if (name.includes('matcha')) return 'Matcha cafe with Instagram-worthy lattes and wellness vibes';
     if (name.includes('chai')) return 'Chai spot serving authentic spiced tea and trendy beverages';
-    if (name.includes('tea')) return 'Tea house with specialty blends and peaceful atmosphere';
-    return 'Tea shop with specialty drinks and aesthetic vibes';
+    if (name.includes('bubble') || name.includes('boba')) return 'Bubble tea shop with colorful drinks and chewy tapioca pearls';
+    
+    const teaDescriptions = [
+      'Tea house specializing in premium loose-leaf blends and ceremonial preparations',
+      'Zen tea lounge with calming atmosphere and traditional brewing methods',
+      'Modern tea bar featuring innovative blends and wellness-focused drinks',
+      'Traditional tea shop with authentic preparations and peaceful ambiance'
+    ];
+    return teaDescriptions[nameHash % teaDescriptions.length];
   }
   
   if (config.category === 'juice_bowls') {
     if (name.includes('poke') || name.includes('poki')) return 'Fresh poke bowls with sustainable fish and trendy toppings';
     if (name.includes('acai')) return 'Acai bowl spot with superfood toppings and Instagram presentation';
-    if (name.includes('juice')) return 'Juice bar with cold-pressed blends and wellness shots';
-    return 'Health-focused spot with nourishing bowls and fresh ingredients';
+    if (name.includes('juice')) return 'Cold-pressed juice bar with detox blends and wellness shots';
+    
+    const healthyDescriptions = [
+      'Health-focused cafe with nourishing bowls and fresh superfood ingredients',
+      'Wellness bar featuring smoothie bowls, cold-pressed juices, and plant-based options',
+      'Fresh juice spot with organic ingredients and customizable healthy bowls',
+      'Nutritious bowl bar with sustainable ingredients and Instagram-worthy presentations'
+    ];
+    return healthyDescriptions[nameHash % healthyDescriptions.length];
   }
   
   if (config.category === 'pilates') {
     if (name.includes('reformer')) return 'Reformer Pilates – Aesthetic core burn with grip socks and mirrors';
     if (name.includes('pure')) return 'Pure Barre – Tiny movements, massive results, balletcore vibes';
     if (name.includes('barre')) return 'Barre classes – Ballet-inspired workouts for toning and flexibility';
-    return 'Pilates studio with female-focused classes and community vibes';
+    
+    const pilatesDescriptions = [
+      'Boutique Pilates studio with small-group classes and personalized attention',
+      'Modern Pilates center featuring mat and equipment-based strengthening',
+      'Female-focused fitness studio with core-strengthening Pilates sessions',
+      'Wellness-centered Pilates practice emphasizing mind-body connection'
+    ];
+    return pilatesDescriptions[nameHash % pilatesDescriptions.length];
   }
   
   if (config.category === 'yoga') {
     if (name.includes('hot') || name.includes('bikram')) return 'Hot Yoga – Sweat therapy in heated rooms for detox and flexibility';
     if (name.includes('gentle')) return 'Gentle Yoga – Restorative practice for stress relief and mindfulness';
     if (name.includes('vinyasa')) return 'Vinyasa Flow – Dynamic sequences linking breath and movement';
-    return 'Yoga studio offering mindful movement and wellness experiences';
+    if (name.includes('ashtanga')) return 'Ashtanga Yoga – Traditional practice building strength and discipline';
+    
+    const yogaDescriptions = [
+      'Peaceful yoga studio offering multiple styles for all experience levels',
+      'Modern yoga space with heated classes and mindfulness-focused sessions',
+      'Community yoga center featuring inclusive classes and wellness workshops',
+      'Traditional yoga practice emphasizing alignment, breathing, and meditation'
+    ];
+    return yogaDescriptions[nameHash % yogaDescriptions.length];
   }
   
   if (config.category === 'spin') {
     if (name.includes('soul')) return 'SoulCycle – High-energy cycling with motivational coaching and playlists';
     if (name.includes('flywheel')) return 'Flywheel Sports – Data-driven indoor cycling with performance tracking';
     if (name.includes('peloton')) return 'Peloton Studio – Live classes with leaderboard competition';
-    return 'Spin class studio with energizing music and group motivation';
+    
+    const spinDescriptions = [
+      'High-energy spin studio with motivating music and group cycling classes',
+      'Indoor cycling center featuring rhythm-based rides and cardio conditioning',
+      'Boutique fitness studio with spin classes and performance tracking technology',
+      'Community-focused cycling studio with energizing instructors and playlists'
+    ];
+    return spinDescriptions[nameHash % spinDescriptions.length];
   }
   
   return 'Trendy wellness spot with aesthetic vibes and female-inspired energy';
