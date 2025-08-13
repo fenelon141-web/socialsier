@@ -20,12 +20,13 @@ Socialiser is a mobile-first location-based discovery app designed to help users
 - **Implementation**: All auth flows now use local simulation with proper UI feedback and navigation
 - **App Store Compliance**: Removes authentication failure points that could cause rejection
 
-### Social Features Temporarily Disabled
-- **Social Tab**: Hidden from bottom navigation
-- **Story Uploads**: Disabled StoriesStrip component and story creation dialogs
-- **Social Routes**: Disabled /social and /squads routes completely
-- **Reason**: Prevents App Store rejection due to social media features requiring content moderation
-- **Status**: All social functionality replaced with "coming soon" placeholders
+### Native iOS Story Support (Aug 13, 2025)
+- **Local Storage**: Stories now save directly to device localStorage in iOS native app
+- **No API Dependencies**: Eliminates network failures that were causing story upload issues
+- **Dual Mode**: Web uses API upload, iOS uses local storage for reliability
+- **24-Hour Expiry**: Local stories automatically expire after 24 hours
+- **Base64 Support**: Photos stored as data URLs directly on device without conversion
+- **Status**: Story uploads now work seamlessly in iOS without API route dependencies
 
 ### Production API Configuration (Aug 12, 2025)
 - **API URL**: Updated queryClient.ts to use production Replit domain

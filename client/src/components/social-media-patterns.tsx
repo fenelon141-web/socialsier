@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useCamera } from "@/hooks/useCamera";
-import { apiRequest } from "@/lib/queryClient";
+import { useCreateStory } from "@/hooks/useStories";
 import { Camera, X, Plus } from "lucide-react";
+
+// Check if we're in iOS native app
+const isIOSNative = typeof window !== 'undefined' && (window as any).Capacitor;
 
 // Simple social media components
 export function VerticalFeed({ children }: { children: React.ReactNode }) {
@@ -38,99 +40,26 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   const [storyImage, setStoryImage] = useState<string>("");
   const [storyCaption, setStoryCaption] = useState("");
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const { choosePhotoSource } = useCamera();
 
-  // Create story mutation
-  const createStoryMutation = useMutation({
-    mutationFn: async (storyData: any) => {
-      console.log("Attempting to create story:", {
-        hasImageUrl: !!storyData.imageUrl,
-        imageUrlLength: storyData.imageUrl?.length || 0,
-        caption: storyData.caption,
-        userId: storyData.userId
-      });
-      
-      try {
-        const response = await apiRequest("POST", "/api/stories", storyData);
-        
-        return response;
-      } catch (error) {
-        
-        throw error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
-      setShowCreateStory(false);
-      setStoryImage("");
-      setStoryCaption("");
-      toast({
-        title: "Story posted! ✨",
-        description: "Your story is active for 24 hours!",
-      });
-    },
-    onError: (error: any) => {
-      
-      const errorMessage = error.message || "Couldn't post your story. Try again!";
-      toast({
-        title: "Story failed 😢",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    },
-  });
+  // Use the new native-compatible story creation hook
+  const createStoryMutation = useCreateStory();
 
   const handleTakePhoto = async () => {
-    
-    
     try {
-      const photo = await choosePhotoSource();
-      console.log('Photo capture result:', {
-        hasPhoto: !!photo,
-        photoLength: photo?.length || 0,
-        photoPrefix: photo?.substring(0, 50) + '...' || 'No photo'
-      });
+      const imageDataUrl = await choosePhotoSource();
       
-      if (photo) {
-        setStoryImage(photo);
+      if (imageDataUrl) {
+        setStoryImage(imageDataUrl);
         
         toast({
           title: "Photo captured! 📸",
-          description: "Add a caption and post your story!",
+          description: isIOSNative ? "Add a caption to save your story locally" : "Add a caption and post your story.",
         });
-
-        // Test the upload endpoint immediately 
-        
-        
-        
-        try {
-          // Test upload to object storage
-          const uploadResponse = await apiRequest('POST', '/upload-story-image', { 
-            dataUrl: photo,
-            userId: '1' // Use current user ID
-          });
-          
-          
-          if (uploadResponse.success && uploadResponse.imageUrl) {
-            
-            // Store the public URL for later use in story creation
-            setStoryImage(uploadResponse.imageUrl);
-          }
-        } catch (uploadError: any) {
-          
-          console.error('Error details:', {
-            message: uploadError?.message || 'Unknown error',
-            stack: uploadError?.stack || 'No stack trace'
-          });
-        }
-      } else {
-        
       }
     } catch (error) {
-      
       toast({
-        title: "Photo failed 😢",
+        title: "Photo failed",
         description: "Please try taking a photo again!",
         variant: "destructive",
       });
@@ -138,10 +67,7 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
   };
 
   const handleCreateStory = () => {
-    
-    
     if (!storyImage) {
-      
       toast({
         title: "Photo required!",
         description: "Take a photo first to create your story.",
@@ -150,31 +76,22 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
       return;
     }
 
-    console.log('Story image details:', {
-      hasImage: !!storyImage,
-      imageLength: storyImage.length,
-      imagePrefix: storyImage.substring(0, 50) + '...',
-      caption: storyCaption || 'No caption',
-      captionLength: storyCaption.length
-    });
-    
     const storyData = {
       userId: "1",
       imageUrl: storyImage,
       caption: storyCaption || "",
-      type: "photo",
+      type: "photo" as const,
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
     };
 
-    console.log('Calling createStoryMutation with data:', {
-      userId: storyData.userId,
-      hasImageUrl: !!storyData.imageUrl,
-      imageUrlLength: storyData.imageUrl.length,
-      caption: storyData.caption,
-      type: storyData.type
+    createStoryMutation.mutate(storyData, {
+      onSuccess: () => {
+        // Reset the form
+        setStoryImage("");
+        setStoryCaption("");
+        setShowCreateStory(false);
+      }
     });
-
-    createStoryMutation.mutate(storyData);
   };
 
   return (
@@ -191,8 +108,6 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
           </button>
           <span className="text-xs text-gray-600 text-center">Your Story</span>
         </div>
-
-        {/* No placeholder content - stories will be loaded from API */}
       </div>
 
       {/* Create Story Dialog */}
@@ -200,7 +115,7 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
         <DialogContent className="max-w-md mx-auto">
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-bold text-pink-600">
-              Create Story ✨
+              {isIOSNative ? "Save Story Locally ✨" : "Create Story ✨"}
             </DialogTitle>
           </DialogHeader>
           
@@ -213,59 +128,72 @@ export function StoriesStrip({ onCreateStory }: StoriesStripProps) {
                   alt="Story preview" 
                   className="w-full h-64 object-cover rounded-lg"
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => setStoryImage("")}
-                  className="absolute top-2 right-2 bg-black/50 text-white hover:bg-black/70"
+                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                 >
                   <X className="w-4 h-4" />
-                </Button>
+                </button>
               </div>
             ) : (
-              <div className="border-2 border-dashed border-pink-200 rounded-lg p-8 text-center">
-                <Camera className="w-12 h-12 text-pink-300 mx-auto mb-4" />
-                <p className="text-gray-500 mb-4">Take a photo for your story</p>
-                <Button
-                  onClick={handleTakePhoto}
-                  className="bg-gradient-to-r from-pink-500 to-purple-500"
-                >
-                  <Camera className="w-4 h-4 mr-2" />
-                  Take Photo
-                </Button>
+              <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <Camera className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                  <p className="text-gray-500">No photo selected</p>
+                </div>
               </div>
             )}
 
-            {/* Caption */}
-            <div>
-              <Textarea
-                placeholder="Add a caption to your story..."
-                value={storyCaption}
-                onChange={(e) => setStoryCaption(e.target.value)}
-                className="border-pink-200 focus:border-pink-400"
-                rows={3}
-              />
-            </div>
-
-            {/* Submit Buttons */}
-            <div className="flex space-x-3">
+            {/* Photo Actions */}
+            <div className="flex gap-2">
               <Button
-                type="button"
+                onClick={handleTakePhoto}
                 variant="outline"
-                onClick={() => setShowCreateStory(false)}
                 className="flex-1"
                 disabled={createStoryMutation.isPending}
               >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleCreateStory}
-                className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500"
-                disabled={createStoryMutation.isPending || !storyImage}
-              >
-                {createStoryMutation.isPending ? "Posting..." : "Share Story"}
+                <Camera className="w-4 h-4 mr-2" />
+                {storyImage ? "Retake Photo" : "Take Photo"}
               </Button>
             </div>
+
+            {/* Caption Input */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Caption (optional)
+              </label>
+              <Textarea
+                placeholder={isIOSNative ? "Add a caption for your local story..." : "What's happening?"}
+                value={storyCaption}
+                onChange={(e) => setStoryCaption(e.target.value)}
+                className="min-h-20"
+                maxLength={280}
+              />
+              <p className="text-xs text-gray-500 text-right">
+                {storyCaption.length}/280 characters
+              </p>
+            </div>
+
+            {/* Post Button */}
+            <Button
+              onClick={handleCreateStory}
+              disabled={!storyImage || createStoryMutation.isPending}
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+            >
+              {createStoryMutation.isPending ? (
+                "Saving..."
+              ) : isIOSNative ? (
+                "Save Story Locally"
+              ) : (
+                "Post Story"
+              )}
+            </Button>
+
+            {isIOSNative && (
+              <p className="text-xs text-gray-500 text-center">
+                Stories are saved locally on your device for 24 hours
+              </p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
