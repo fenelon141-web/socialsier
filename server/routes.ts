@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertSpotHuntSchema } from "@shared/schema";
 import { notificationService } from "./notification-service";
+import { findTrendySpots } from "./trendy-spots-service";
 
 // Simple in-memory cache for faster API responses
 const apiCache = new Map<string, { data: any; timestamp: number; expiry: number }>();
@@ -1209,20 +1210,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/spots", async (req, res) => {
     const { lat, lng, radius } = req.query;
 
-    
     if (lat && lng) {
-      // Get spots from OpenStreetMap
+      // Use bulletproof trendy spots service
       const latitude = parseFloat(lat as string);
       const longitude = parseFloat(lng as string);
-      const searchRadius = radius ? parseInt(radius as string) : 1000;
+      const searchRadius = radius ? parseInt(radius as string) : 2000;
       
-
-      const spots = await findNearbyTrendySpots(latitude, longitude, searchRadius);
-
-      res.json(spots);
+      try {
+        const spots = await findTrendySpots(latitude, longitude, searchRadius);
+        console.log(`Found ${spots.length} trendy spots for ${latitude}, ${longitude}`);
+        res.json(spots);
+      } catch (error) {
+        console.error('Trendy spots service failed:', error);
+        res.status(500).json({ error: 'Failed to load trendy spots' });
+      }
     } else {
       // Fallback to database spots if no location provided
-
       const spots = await storage.getAllSpots();
       res.json(spots);
     }

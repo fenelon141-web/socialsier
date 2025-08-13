@@ -79,7 +79,7 @@ export default function MapView() {
       const baseUrl = isIOSNative ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
       const apiUrl = `${baseUrl}/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`;
       
-      console.log(`[iOS] Fetching spots from: ${apiUrl}`);
+      console.log(`Fetching trendy spots from: ${apiUrl}`);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -87,7 +87,7 @@ export default function MapView() {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        credentials: isIOSNative ? 'omit' : 'include' // Avoid CORS issues on iOS
+        credentials: isIOSNative ? 'omit' : 'include'
       });
       
       if (!response.ok) {
@@ -95,14 +95,14 @@ export default function MapView() {
       }
       
       const spots = await response.json();
-      console.log(`[iOS] Received ${spots.length} spots for coordinates ${lat}, ${lng}`);
+      console.log(`Received ${spots.length} trendy spots for coordinates ${lat}, ${lng}`);
       setNearbySpots(spots);
       setSpotsLoading(false);
       
-      if (isIOSNative && spots.length > 0) {
+      if (spots.length > 0) {
         toast({
           title: `Found ${spots.length} trendy spots`,
-          description: "Real-time data from your location",
+          description: "Chai, matcha, poki bowls, acai, pilates & more",
         });
       }
       
