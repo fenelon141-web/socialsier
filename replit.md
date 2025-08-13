@@ -6,12 +6,13 @@ Socialiser is a mobile-first location-based discovery app designed to help users
 
 ## Recent Changes for App Store Submission (Aug 2025)
 
-### Trendy Spot Categories Enhanced (Aug 13, 2025)
-- **Search Focus**: Updated OpenStreetMap queries to prioritize chai lattes, matcha, poki bowls, acai spots, reformer pilates, cute workout classes
-- **Enhanced Categorization**: Added specialized cuisine filters for japanese, korean, thai, vietnamese, healthy, vegan, raw_food options
-- **Embedded Spots**: Updated offline fallback data with aesthetic names like "Matcha Dreams ✨", "Chai Queen Palace 🫖", "Reformer Society 🤸‍♀️", "Poki Paradise Bowl Co 🍣", "Açaí Queens 🍇"
-- **iOS Optimization**: Systematic console log cleanup reduced unhandled promise rejections from 88+ to near zero
-- **Status**: App now successfully targets trendy wellness and fitness categories for App Store submission
+### Female-Inspired Wellness Focus (Aug 13, 2025)
+- **Targeted Categories**: Refined OpenStreetMap queries for coffee shops, matcha spots, poki/acai bowls, reformer pilates, spin classes, hot yoga, gentle yoga
+- **Removed Restaurants**: Eliminated restaurant queries to focus purely on wellness, fitness, and aesthetic beverage spots
+- **Female Trends**: Prioritized reformer pilates, SoulCycle-style spin, hot yoga, gentle yoga, and boutique fitness studios
+- **Wellness Beverages**: Specialized searches for matcha cafes, chai spots, juice bars, and specialty coffee shops
+- **Bulletproof System**: Simplified to direct OpenStreetMap queries without complex fallbacks
+- **Status**: App now targets female-inspired wellness trends and aesthetic lifestyle spots
 
 ### Authentication Simplified for iOS Compatibility
 - **Login/Logout/Registration**: Converted to simplified bypass system for Xcode/iOS testing

@@ -7,79 +7,91 @@ interface OverpassQuery {
   spotType: 'café' | 'gym' | 'restaurant' | 'trendy';
 }
 
-// Direct queries for trendy spot categories
+// Female-inspired wellness and trendy spot categories - NO RESTAURANTS
 const TRENDY_QUERIES: OverpassQuery[] = [
-  // Chai & Matcha spots
+  // Coffee shops only
   {
-    category: 'chai_matcha',
+    category: 'coffee_shops',
     query: `
-      [out:json][timeout:10];
+      [out:json][timeout:6];
       (
-        nwr["amenity"="cafe"]["cuisine"~"tea|matcha|chai|bubble_tea"](around:2000,{lat},{lng});
+        nwr["amenity"="cafe"](around:2000,{lat},{lng});
+        nwr["shop"="coffee"](around:2000,{lat},{lng});
+      );
+      out geom;
+    `,
+    spotType: 'café'
+  },
+
+  // Matcha & specialty tea spots
+  {
+    category: 'matcha_tea',
+    query: `
+      [out:json][timeout:6];
+      (
         nwr["shop"="tea"](around:2000,{lat},{lng});
-        nwr["name"~"matcha|chai|boba|bubble"~i](around:2000,{lat},{lng});
+        nwr["amenity"="cafe"]["name"~"matcha|chai|tea"~i](around:2000,{lat},{lng});
       );
       out geom;
     `,
     spotType: 'café'
   },
   
-  // Poki & Acai bowls
+  // Poki & Acai bowls (juice bars only)
   {
-    category: 'healthy_bowls',
+    category: 'juice_bowls',
     query: `
-      [out:json][timeout:10];
+      [out:json][timeout:6];
       (
-        nwr["amenity"="restaurant"]["cuisine"~"poke|acai|healthy|raw_food|smoothie"](around:2000,{lat},{lng});
-        nwr["name"~"poke|poki|acai|bowl|juice"~i](around:2000,{lat},{lng});
+        nwr["amenity"="juice_bar"](around:2000,{lat},{lng});
         nwr["shop"="health_food"](around:2000,{lat},{lng});
+        nwr["amenity"="cafe"]["name"~"poke|poki|acai|bowl|juice"~i](around:2000,{lat},{lng});
       );
       out geom;
     `,
-    spotType: 'restaurant'
+    spotType: 'café'
   },
   
-  // Reformer Pilates & Cute Workout Classes
+  // Reformer Pilates studios
   {
-    category: 'trendy_fitness',
+    category: 'pilates',
     query: `
-      [out:json][timeout:10];
+      [out:json][timeout:6];
       (
-        nwr["leisure"="fitness_centre"]["sport"~"pilates|yoga|barre"](around:2000,{lat},{lng});
-        nwr["name"~"pilates|reformer|barre|yoga|soul|cycle|pure"~i](around:2000,{lat},{lng});
-        nwr["amenity"="studio"]["sport"~"pilates|yoga|dance"](around:2000,{lat},{lng});
+        nwr["leisure"="fitness_centre"]["sport"="pilates"](around:2000,{lat},{lng});
+        nwr["name"~"reformer|pilates|barre"~i](around:2000,{lat},{lng});
       );
       out geom;
     `,
     spotType: 'gym'
   },
   
-  // Japanese, Korean, Thai, Vietnamese
+  // Yoga studios
   {
-    category: 'asian_trendy',
+    category: 'yoga',
     query: `
-      [out:json][timeout:10];
+      [out:json][timeout:6];
       (
-        nwr["amenity"="restaurant"]["cuisine"~"japanese|korean|thai|vietnamese|ramen|sushi"](around:2000,{lat},{lng});
-        nwr["amenity"="cafe"]["cuisine"~"japanese|korean|bubble_tea"](around:2000,{lat},{lng});
+        nwr["leisure"="fitness_centre"]["sport"="yoga"](around:2000,{lat},{lng});
+        nwr["name"~"yoga|hot.yoga|bikram|vinyasa"~i](around:2000,{lat},{lng});
       );
       out geom;
     `,
-    spotType: 'restaurant'
+    spotType: 'gym'
   },
   
-  // Coffee & Specialty drinks
+  // Spin classes
   {
-    category: 'specialty_coffee',
+    category: 'spin',
     query: `
-      [out:json][timeout:10];
+      [out:json][timeout:6];
       (
-        nwr["amenity"="cafe"]["cuisine"~"coffee|specialty_coffee"](around:2000,{lat},{lng});
-        nwr["name"~"blue bottle|intelligentsia|stumptown|third wave|roasters"~i](around:2000,{lat},{lng});
+        nwr["name"~"soul|cycle|spin|flywheel"~i](around:2000,{lat},{lng});
+        nwr["leisure"="fitness_centre"]["sport"="cycling"](around:2000,{lat},{lng});
       );
       out geom;
     `,
-    spotType: 'café'
+    spotType: 'gym'
   }
 ];
 
@@ -146,29 +158,51 @@ export async function findTrendySpots(lat: number, lng: number, radius: number =
 
 function generateDescription(element: any, config: OverpassQuery): string {
   const tags = element.tags || {};
+  const name = (tags.name || '').toLowerCase();
   
-  if (config.category === 'chai_matcha') {
-    if (tags.cuisine?.includes('matcha')) return 'Matcha cafe with specialty drinks and aesthetic vibes';
-    if (tags.cuisine?.includes('chai')) return 'Chai spot serving authentic spiced tea and trendy beverages';
-    if (tags.cuisine?.includes('bubble_tea')) return 'Bubble tea location with Instagram-worthy drinks';
+  if (config.category === 'coffee_shops') {
+    if (name.includes('blue bottle')) return 'Blue Bottle Coffee – Third-wave coffee with minimalist aesthetic';
+    if (name.includes('stumptown')) return 'Stumptown Coffee – Artisanal roasting and specialty drinks';
+    if (name.includes('starbucks')) return 'Starbucks – Familiar coffee chain with seasonal specialty drinks';
+    return 'Coffee shop serving espresso drinks and cozy vibes';
   }
   
-  if (config.category === 'healthy_bowls') {
-    if (tags.cuisine?.includes('poke')) return 'Fresh poke bowls with sustainable fish and trendy toppings';
-    if (tags.cuisine?.includes('acai')) return 'Acai bowl spot with superfood toppings and aesthetic presentation';
-    if (tags.shop === 'health_food') return 'Health food store with organic and trendy wellness products';
+  if (config.category === 'matcha_tea') {
+    if (name.includes('matcha')) return 'Matcha cafe with Instagram-worthy lattes and wellness vibes';
+    if (name.includes('chai')) return 'Chai spot serving authentic spiced tea and trendy beverages';
+    if (name.includes('tea')) return 'Tea house with specialty blends and peaceful atmosphere';
+    return 'Tea shop with specialty drinks and aesthetic vibes';
   }
   
-  if (config.category === 'trendy_fitness') {
-    if (tags.sport?.includes('pilates')) return 'Boutique fitness studio with trendy group classes and personal training';
-    if (tags.sport?.includes('yoga')) return 'Modern yoga studio offering stylish classes and wellness experiences';
-    return 'Trendy fitness studio with Instagram-worthy workouts and community vibes';
+  if (config.category === 'juice_bowls') {
+    if (name.includes('poke') || name.includes('poki')) return 'Fresh poke bowls with sustainable fish and trendy toppings';
+    if (name.includes('acai')) return 'Acai bowl spot with superfood toppings and Instagram presentation';
+    if (name.includes('juice')) return 'Juice bar with cold-pressed blends and wellness shots';
+    return 'Health-focused spot with nourishing bowls and fresh ingredients';
   }
   
-  if (config.spotType === 'café') return 'Coffee shop serving espresso drinks and light refreshments';
-  if (config.spotType === 'restaurant') return 'Restaurant serving trendy cuisine in an aesthetic setting';
+  if (config.category === 'pilates') {
+    if (name.includes('reformer')) return 'Reformer Pilates – Aesthetic core burn with grip socks and mirrors';
+    if (name.includes('pure')) return 'Pure Barre – Tiny movements, massive results, balletcore vibes';
+    if (name.includes('barre')) return 'Barre classes – Ballet-inspired workouts for toning and flexibility';
+    return 'Pilates studio with female-focused classes and community vibes';
+  }
   
-  return 'Trendy spot with aesthetic vibes and Instagram-worthy experiences';
+  if (config.category === 'yoga') {
+    if (name.includes('hot') || name.includes('bikram')) return 'Hot Yoga – Sweat therapy in heated rooms for detox and flexibility';
+    if (name.includes('gentle')) return 'Gentle Yoga – Restorative practice for stress relief and mindfulness';
+    if (name.includes('vinyasa')) return 'Vinyasa Flow – Dynamic sequences linking breath and movement';
+    return 'Yoga studio offering mindful movement and wellness experiences';
+  }
+  
+  if (config.category === 'spin') {
+    if (name.includes('soul')) return 'SoulCycle – High-energy cycling with motivational coaching and playlists';
+    if (name.includes('flywheel')) return 'Flywheel Sports – Data-driven indoor cycling with performance tracking';
+    if (name.includes('peloton')) return 'Peloton Studio – Live classes with leaderboard competition';
+    return 'Spin class studio with energizing music and group motivation';
+  }
+  
+  return 'Trendy wellness spot with aesthetic vibes and female-inspired energy';
 }
 
 function generateAmenities(tags: any): string[] {
