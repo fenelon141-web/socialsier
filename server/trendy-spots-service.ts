@@ -161,7 +161,7 @@ function generateDescription(element: any, config: OverpassQuery): string {
   const name = (tags.name || '').toLowerCase();
   
   // Generate unique descriptions based on name hash for variety
-  const nameHash = name.split('').reduce((hash, char) => hash + char.charCodeAt(0), 0);
+  const nameHash = name.split('').reduce((hash: number, char: string) => hash + char.charCodeAt(0), 0);
   
   if (config.category === 'coffee_shops') {
     if (name.includes('blue bottle')) return 'Blue Bottle Coffee – Third-wave coffee with minimalist aesthetic';
