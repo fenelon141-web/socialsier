@@ -83,7 +83,6 @@ function App() {
     
     // Let specific WebSocket handlers manage their own connections
     // Global WebSocket disabled to avoid conflicts with spots WebSocket
-    console.log('[App] Using dedicated WebSocket handlers for different features');
   }, []);
 
   return (

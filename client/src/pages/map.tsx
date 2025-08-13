@@ -127,7 +127,7 @@ export default function MapView() {
       return;
     }
     
-    console.log(`[MapView] ✅ Starting real-time spots fetch for ${latitude}, ${longitude}`);
+
     fetchRealTimeSpots(latitude, longitude);
   }, [latitude, longitude, searchFilters]);
 
@@ -138,9 +138,6 @@ export default function MapView() {
   // Memoize spots processing for performance
   const spots = useMemo(() => {
     const currentSpots = nearbySpots || allSpots || [];
-    console.log(`[MapView] Processing ${currentSpots.length} spots for display`);
-    console.log(`[MapView] nearbySpots:`, nearbySpots?.length || 0, `allSpots:`, allSpots?.length || 0);
-    console.log(`[MapView] Location state:`, {latitude, longitude, locationError});
     
     // Add calculated distances if missing and sort by distance
     const processedSpots = currentSpots
@@ -154,27 +151,12 @@ export default function MapView() {
       }))
       .sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
     
-    console.log(`[MapView] Processed spots ready for render:`, processedSpots.length);
-    if (processedSpots.length > 0) {
-      console.log(`[MapView] First spot details:`, processedSpots[0]);
-    }
     return processedSpots;
   }, [nearbySpots, allSpots, latitude, longitude, locationError]);
 
   const isLoading = spotsLoading || allSpotsLoading;
   
-  // Debug the query states
-  useEffect(() => {
-    console.log('[MapView] Component state:', {
-      latitude,
-      longitude,
-      spotsLoading,
-      nearbySpots: nearbySpots?.length || 0,
-      allSpots: allSpots?.length || 0,
-      nearbyError: nearbyError?.message,
-      finalSpots: spots?.length || 0
-    });
-  }, [latitude, longitude, spotsLoading, nearbySpots, allSpots, nearbyError, spots]);
+
   
   // Handle saving spots for offline access
   const handleSaveSpot = (spot: Spot) => {
@@ -245,7 +227,7 @@ export default function MapView() {
               center={{ lat: latitude, lng: longitude }}
               spots={spots}
               onSpotClick={(spot) => {
-                console.log('Spot clicked:', spot);
+                // Handle spot selection
               }}
             />
           </Suspense>
@@ -355,9 +337,7 @@ export default function MapView() {
                   Error: {nearbyError.message}
                 </p>
               )}
-              <p className="text-xs text-gray-300 mt-2">
-                Debug: L:{latitude?.toFixed(3)}, spots:{nearbySpots?.length || 0}, loading:{spotsLoading.toString()}
-              </p>
+
             </div>
           ) : (
             // Limit to top 15 spots for better performance
