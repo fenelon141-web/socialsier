@@ -1,9 +1,18 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// Development and production URL detection - updated
-const API_BASE_URL = import.meta.env.DEV 
-  ? 'http://localhost:5000'
-  : 'https://hot-girl-hunt-fenelon141.replit.app';
+// iOS native apps can't connect to localhost, so we need special handling
+const isCapacitorIOS = (window as any).Capacitor?.isNativePlatform() && 
+                       ((window as any).Capacitor?.platform === 'ios' || 
+                        (window as any).Device?.info?.platform === 'ios');
+
+// Development and production URL detection with iOS fallback
+const API_BASE_URL = isCapacitorIOS 
+  ? 'https://hot-girl-hunt-fenelon141.replit.app'  // Always use production for iOS native
+  : import.meta.env.DEV 
+    ? 'http://localhost:5000'
+    : 'https://hot-girl-hunt-fenelon141.replit.app';
+
+console.log(`[QueryClient] API URL: ${API_BASE_URL}, isCapacitorIOS: ${isCapacitorIOS}`);
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -40,6 +49,14 @@ export async function apiRequest(
     return result;
   } catch (error) {
     console.error(`API Request Failed:`, error);
+    
+    // iOS fallback for spots endpoint
+    if (isCapacitorIOS && url.includes('/api/spots')) {
+      console.log('[iOS Fallback] Using embedded spots data');
+      const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
+      return embeddedValleyGirlSpots;
+    }
+    
     throw error;
   }
 }
@@ -50,16 +67,29 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(`${API_BASE_URL}${queryKey[0] as string}`, {
-      credentials: "include",
-    });
+    try {
+      const res = await fetch(`${API_BASE_URL}${queryKey[0] as string}`, {
+        credentials: "include",
+      });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
+
+      await throwIfResNotOk(res);
+      return await res.json();
+    } catch (error) {
+      console.error('Query fetch failed:', error);
+      
+      // iOS fallback for spots endpoint
+      if (isCapacitorIOS && (queryKey[0] as string).includes('/api/spots')) {
+        console.log('[iOS Fallback] Using embedded spots data for query');
+        const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
+        return embeddedValleyGirlSpots as any;
+      }
+      
+      throw error;
     }
-
-    await throwIfResNotOk(res);
-    return await res.json();
   };
 
 export const queryClient = new QueryClient({
