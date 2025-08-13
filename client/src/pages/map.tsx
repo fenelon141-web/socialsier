@@ -66,23 +66,8 @@ export default function MapView() {
     setSpotsLoading(true);
     setNearbyError(null);
     
-    // iOS fallback: Use embedded spots immediately for native apps
-    const isIOSNative = (window as any).Capacitor?.isNativePlatform() || 
-                        (window as any).Capacitor?.platform === 'ios' ||
-                        window.navigator.userAgent.includes('iPhone');
-    
-    if (isIOSNative) {
-      try {
-        const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
-        setNearbySpots(embeddedValleyGirlSpots);
-        setSpotsLoading(false);
-        return;
-      } catch (error) {
-        setNearbyError(new Error('Failed to load embedded spots'));
-        setSpotsLoading(false);
-        return;
-      }
-    }
+    // Try real API first, fallback to embedded spots only if API fails completely
+    // This ensures users get real-time data based on their actual location
     
     try {
       // Web browser API call
@@ -105,7 +90,27 @@ export default function MapView() {
       setSpotsLoading(false);
       
     } catch (error) {
-      setNearbyError(new Error('Unable to load spots - server error'));
+      // Fallback to embedded spots only if API is completely unavailable
+      const isIOSNative = (window as any).Capacitor?.isNativePlatform() || 
+                          (window as any).Capacitor?.platform === 'ios' ||
+                          window.navigator.userAgent.includes('iPhone');
+      
+      if (isIOSNative) {
+        try {
+          const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
+          setNearbySpots(embeddedValleyGirlSpots);
+          setSpotsLoading(false);
+          toast({
+            title: "Using offline data",
+            description: "Enable internet connection for real-time spots near you",
+          });
+          return;
+        } catch (embeddedError) {
+          // If even embedded spots fail, show empty state
+        }
+      }
+      
+      setNearbyError(new Error('Unable to load spots - please check your connection and location permissions'));
       setSpotsLoading(false);
     }
   };
@@ -248,6 +253,46 @@ export default function MapView() {
               <span className="text-xs font-medium text-gray-700">
                 Location Active
               </span>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => {
+                  geoLocation.refetch();
+                  toast({
+                    title: "Refreshing location",
+                    description: "Getting your current position for real-time spots",
+                  });
+                }}
+                className="h-6 w-6 p-0 ml-2"
+              >
+                <Target className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {/* Location error overlay with refresh button */}
+        {locationError && (
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-md">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+              <span className="text-xs font-medium text-gray-700">
+                Location needed
+              </span>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => {
+                  geoLocation.refetch();
+                  toast({
+                    title: "Requesting location",
+                    description: "Please allow location access for real-time spots",
+                  });
+                }}
+                className="h-6 w-6 p-0 ml-2"
+              >
+                <Target className="w-3 h-3" />
+              </Button>
             </div>
           </div>
         )}

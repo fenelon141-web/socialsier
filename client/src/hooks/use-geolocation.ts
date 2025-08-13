@@ -32,23 +32,15 @@ export function useGeolocation() {
     try {
       setLocation(prev => ({ ...prev, loading: true, error: null }));
       
-      // Use London coordinates for iOS/native apps and Replit environment
-      if (isIOSNative() || isNative || window.location.hostname.includes('replit')) {
-        setLocation({
-          latitude: 51.511153,
-          longitude: -0.273239,
-          accuracy: 10,
-          loading: false,
-          error: null,
-        });
-        return;
-      }
-      
-      // Browser geolocation for web
+      // First try to get real GPS location, even for iOS/native
       if (!navigator.geolocation) {
         throw new Error('Geolocation is not supported by this browser');
       }
 
+      // For iOS/native apps, try real GPS first, then fallback to London
+      const isNativeOrIOS = isIOSNative() || isNative;
+      const timeout = isNativeOrIOS ? 5000 : 10000; // Shorter timeout for native apps
+      
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setLocation({
@@ -60,6 +52,18 @@ export function useGeolocation() {
           });
         },
         (error) => {
+          // For native/iOS apps, fallback to London coordinates if GPS fails
+          if (isNativeOrIOS) {
+            setLocation({
+              latitude: 51.511153,
+              longitude: -0.273239,
+              accuracy: 100,
+              loading: false,
+              error: 'Using default location - enable GPS for real-time spots',
+            });
+            return;
+          }
+
           let errorMessage = 'Location error';
           switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -80,8 +84,8 @@ export function useGeolocation() {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000,
+          timeout: timeout,
+          maximumAge: 30000, // Shorter cache for more real-time updates
         }
       );
     } catch (error) {
