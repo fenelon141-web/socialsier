@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import bodyParser from "body-parser";
 import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -17,24 +18,24 @@ app.use(cors({
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With', 'Content-Type', 'Accept', 'Authorization');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
-
+  
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    res.sendStatus(200);
+  } else {
+    next();
   }
-  next();
 });
 
-// Body parsing
+// Single body parsing setup to avoid conflicts
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Request logging
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined;
+  let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
@@ -49,7 +50,11 @@ app.use((req, res, next) => {
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
+
+      if (logLine.length > 80) {
+        logLine = logLine.slice(0, 79) + "…";
+      }
+
       log(logLine);
     }
   });
@@ -60,38 +65,45 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // API route fallback for missing endpoints
+  // Add explicit middleware to ensure API routes are handled first
   app.use((req, res, next) => {
+    // Log API route attempts for debugging
     if (req.path.startsWith('/upload-') || req.path.startsWith('/api/') || req.path.startsWith('/public-objects/')) {
       console.log(`API route attempt: ${req.method} ${req.path}`);
+      
+      // If this is an API route but no handler was found, return proper JSON error
       if (!res.headersSent) {
-        return res.status(404).json({
+        return res.status(404).json({ 
           error: 'API endpoint not found',
           path: req.path,
-          method: req.method
+          method: req.method 
         });
       }
     }
     next();
   });
 
-  // Error handler
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
+
     res.status(status).json({ message });
     throw err;
   });
 
-  // Dev vs prod
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // Use Replit's provided port if available
-  const port = parseInt(process.env.PORT || "5001", 10);
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
   server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
