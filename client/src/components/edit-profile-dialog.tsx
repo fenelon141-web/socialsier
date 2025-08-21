@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,10 +8,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Camera, Image, User } from "lucide-react";
-import type { User as UserType } from "@shared/schema";
+import type { users } from "@shared/schema";
+
+type User = typeof users.$inferSelect;
 
 interface EditProfileDialogProps {
-  user: UserType;
+  user: User;
   children: React.ReactNode;
 }
 
@@ -29,7 +31,7 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
-    mutationFn: async (updates: Partial<UserType>) => {
+    mutationFn: async (updates: Partial<User>) => {
       return apiRequest("PATCH", `/api/user/${user.id}`, updates);
     },
     onSuccess: () => {
