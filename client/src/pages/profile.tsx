@@ -16,45 +16,8 @@ export default function Profile() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // iOS-compatible user data loading
-  const isIOSNative = typeof window !== 'undefined' && (window as any).Capacitor;
-  
   const { data: user, isLoading: userLoading } = useQuery<User>({
-    queryKey: isIOSNative ? ["local-user"] : ["/api/user/1"],
-    queryFn: async () => {
-      if (isIOSNative) {
-        // Load user from localStorage for iOS
-        const storedUser = localStorage.getItem('auth_user');
-        if (storedUser) {
-          return JSON.parse(storedUser);
-        }
-        // Return default demo user if no stored user
-        return {
-          id: 1,
-          username: "Valley Girl",
-          firstName: "Valley",
-          lastName: "Girl",
-          email: "valley@example.com",
-          level: 1,
-          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"
-        };
-      }
-      // Web fallback - use API
-      const response = await fetch('/api/user/1');
-      if (!response.ok) {
-        // Return demo user if API fails
-        return {
-          id: 1,
-          username: "Valley Girl",
-          firstName: "Valley", 
-          lastName: "Girl",
-          email: "valley@example.com",
-          level: 1,
-          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"
-        };
-      }
-      return response.json();
-    }
+    queryKey: ["/api/user/1"]
   });
 
   // Simplified logout for App Store submission
@@ -168,19 +131,13 @@ export default function Profile() {
                     <Share className="w-4 h-4 mr-2" />
                     Share Profile
                   </Button>
-                  <EditProfileDialog user={user || {
-                    id: 1,
-                    username: "Valley Girl",
-                    firstName: "Valley",
-                    lastName: "Girl",
-                    email: "valley@example.com",
-                    level: 1,
-                    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100"
-                  }}>
-                    <Button variant="outline" className="flex-1 rounded-xl">
-                      Edit Profile
-                    </Button>
-                  </EditProfileDialog>
+                  {user && (
+                    <EditProfileDialog user={user}>
+                      <Button variant="outline" className="flex-1 rounded-xl">
+                        Edit Profile
+                      </Button>
+                    </EditProfileDialog>
+                  )}
                 </div>
               </>
             )}

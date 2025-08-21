@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Camera, Image, User, Upload } from "lucide-react";
+import { Camera, Image, User } from "lucide-react";
 import type { User as UserType } from "@shared/schema";
 
 interface EditProfileDialogProps {
@@ -28,30 +28,16 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Check if we're in iOS native app
-  const isIOSNative = typeof window !== 'undefined' && (window as any).Capacitor;
-
   const updateMutation = useMutation({
     mutationFn: async (updates: Partial<UserType>) => {
-      if (isIOSNative) {
-        // Store updates locally for iOS
-        const currentUser = JSON.parse(localStorage.getItem('auth_user') || '{}');
-        const updatedUser = { ...currentUser, ...updates };
-        localStorage.setItem('auth_user', JSON.stringify(updatedUser));
-        return updatedUser;
-      } else {
-        // Use API for web
-        return apiRequest("PATCH", `/api/user/${user.id}`, updates);
-      }
+      return apiRequest("PATCH", `/api/user/${user.id}`, updates);
     },
     onSuccess: () => {
       toast({
         title: "Profile updated! ✨",
         description: "Your changes have been saved successfully.",
       });
-      if (!isIOSNative) {
-        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      }
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       setOpen(false);
     },
     onError: (error: any) => {
@@ -197,45 +183,6 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
     }
   };
 
-  // File upload handler for web
-  const handleFileUpload = async () => {
-    try {
-      setIsLoading(true);
-      
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      
-      input.onchange = (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const dataUrl = e.target?.result as string;
-            if (dataUrl) {
-              handleChange('avatar', dataUrl);
-              toast({
-                title: "Photo uploaded! 📸",
-                description: "Your new profile picture looks amazing!",
-              });
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      };
-      
-      input.click();
-    } catch (error) {
-      toast({
-        title: "Upload failed 😢",
-        description: "Couldn't upload photo. Try again!",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -281,19 +228,6 @@ export default function EditProfileDialog({ user, children }: EditProfileDialogP
                 <Image className="w-4 h-4" />
                 <span>Gallery</span>
               </Button>
-              {!isIOSNative && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleFileUpload}
-                  disabled={isLoading}
-                  className="flex items-center space-x-1"
-                >
-                  <Upload className="w-4 h-4" />
-                  <span>Upload</span>
-                </Button>
-              )}
             </div>
           </div>
 
