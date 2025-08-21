@@ -7,6 +7,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertSpotHuntSchema } from "@shared/schema";
 import { notificationService } from "./notification-service";
 import { findTrendySpots } from "./trendy-spots-service";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
 // Simple in-memory cache for faster API responses
 const apiCache = new Map<string, { data: any; timestamp: number; expiry: number }>();
@@ -1045,13 +1046,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Image upload endpoint - converts base64 to object storage URL
+  // Image upload endpoint - simplified for iOS compatibility
   app.post('/upload-story-image', async (req, res) => {
-
-
-
-
-    
     try {
       const { dataUrl, userId } = req.body;
       
@@ -1063,27 +1059,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'userId is required' });
       }
       
-
-      
-      // Import ObjectStorageService
-      const { ObjectStorageService } = await import('./objectStorage');
-      const objectStorage = new ObjectStorageService();
-      
-      // Upload base64 image and get public URL
-      const imageUrl = await objectStorage.uploadBase64Image(dataUrl, userId);
-      
-
+      // For iOS compatibility, just return the data URL as is
+      // The actual image is stored locally on the device
       res.json({ 
         success: true, 
-        imageUrl: imageUrl,
-        message: 'Image uploaded successfully!' 
+        imageUrl: dataUrl,
+        message: 'Image processed successfully!' 
       });
       
     } catch (error) {
-
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       res.status(500).json({ 
-        error: 'Failed to upload image',
+        error: 'Failed to process image',
         details: errorMessage
       });
     }
