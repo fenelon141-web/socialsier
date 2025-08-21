@@ -8,11 +8,7 @@ import { ArrowLeft, Settings, Share, Trophy, MapPin, Star, LogOut } from "lucide
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 // Authentication removed for demo
-import type { users, userBadges, badges } from "@shared/schema";
-
-type User = typeof users.$inferSelect;
-type UserBadge = typeof userBadges.$inferSelect;
-type Badge = typeof badges.$inferSelect;
+import type { User, UserBadge, Badge } from "@shared/schema";
 
 export default function Profile() {
   // Demo mode - no authentication required
