@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "./db.js";
 import { 
   users, spots, badges, userBadges, dailyChallenges, 
   userChallengeProgress, rewards 
@@ -11,6 +11,9 @@ async function seed() {
   const [defaultUser] = await db.insert(users).values({
     username: "ValleyGirl123",
     email: "valley@example.com",
+    firstName: "Valley",
+    lastName: "Girl",
+    dateOfBirth: new Date("1998-01-01"),
     level: 8,
     totalPoints: 2300,
     spotsHunted: 127,

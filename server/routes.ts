@@ -2,11 +2,11 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import path from "path";
-import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { storage } from "./storage.js";
+import { setupAuth, isAuthenticated } from "./replitAuth.js";
 import { insertSpotHuntSchema } from "@shared/schema";
-import { notificationService } from "./notification-service";
-import { findTrendySpots } from "./trendy-spots-service";
+import { notificationService } from "./notification-service.js";
+import { findTrendySpots } from "./trendy-spots-service.js";
 
 // Simple in-memory cache for faster API responses
 const apiCache = new Map<string, { data: any; timestamp: number; expiry: number }>();
@@ -381,7 +381,7 @@ function calculateDistance(
   return R * c; // Distance in meters
 }
 
-async function findNearbyTrendySpots(lat: number, lng: number, radius: number) {
+export async function findNearbyTrendySpots(lat: number, lng: number, radius: number, limit?: number) {
   try {
 
     
@@ -1007,7 +1007,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "Object storage bucket not configured" });
       }
       
-      const { objectStorageClient } = await import('./objectStorage');
+      const { objectStorageClient } = await import('./objectStorage.js');
       const bucket = objectStorageClient.bucket(bucketId);
       const file = bucket.file(filePath);
       
@@ -1030,7 +1030,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Stream the file to the response
       const stream = file.createReadStream();
-      stream.on('error', (err) => {
+      stream.on('error', (err: Error) => {
 
         if (!res.headersSent) {
           res.status(500).json({ error: 'Error streaming file' });
@@ -1066,7 +1066,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       
       // Import ObjectStorageService
-      const { ObjectStorageService } = await import('./objectStorage');
+      const { ObjectStorageService } = await import('./objectStorage.js');
       const objectStorage = new ObjectStorageService();
       
       // Upload base64 image and get public URL

@@ -1,6 +1,6 @@
 // iOS-optimized spots endpoint for reliable native app data delivery
 import type { Request, Response } from "express";
-import { findNearbyTrendySpots } from "./seed";
+import { findNearbyTrendySpots } from "./routes.js";
 
 // iOS-specific spot fetching with enhanced error handling
 export async function getIOSSpotsHandler(req: Request, res: Response) {

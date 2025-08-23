@@ -13,7 +13,8 @@
     "allowJs": true,                         // allow JS files
     "baseUrl": ".",                          // base path for paths
     "paths": {
-      "@shared/*": ["shared/*"]             // alias for shared folder
+      "@shared/*": ["shared/*"],             // alias for shared folder
+      "@shared/schema": ["shared/schema.ts"]   // explicit TypeScript mapping
     }
   },
   "include": [

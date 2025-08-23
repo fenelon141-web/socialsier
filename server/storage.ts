@@ -285,10 +285,19 @@ class MemStorage implements IStorage {
       id: this.users.length + 1,
       username: insertUser.username!,
       email: insertUser.email!,
+      firstName: insertUser.firstName || '',
+      lastName: insertUser.lastName || '',
+      dateOfBirth: insertUser.dateOfBirth || new Date(),
+      password: insertUser.password || null,
       level: insertUser.level || 1,
       totalPoints: insertUser.totalPoints || 0,
       spotsHunted: insertUser.spotsHunted || 0,
       avatar: insertUser.avatar || null,
+      acceptedTerms: insertUser.acceptedTerms || new Date(),
+      pushToken: insertUser.pushToken || null,
+      notifyFriendActivity: insertUser.notifyFriendActivity ?? true,
+      notifyNearbySpots: insertUser.notifyNearbySpots ?? true,
+      notifyChallengeReminders: insertUser.notifyChallengeReminders ?? true,
       createdAt: new Date()
     };
     this.users.push(newUser);
@@ -502,7 +511,7 @@ class MemStorage implements IStorage {
 
   // Helper method to get user hunts by category/description
   private async getUserSpotHuntsByCategory(userId: number, keyword: string): Promise<SpotHunt[]> {
-    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId.toString());
+    const userHunts = this.spotHunts.filter(hunt => hunt.userId === userId);
     const categoryHunts: SpotHunt[] = [];
     
     for (const hunt of userHunts) {
@@ -650,7 +659,7 @@ class MemStorage implements IStorage {
     } else {
       const newProgress: UserChallengeProgress = {
         id: this.userChallengeProgress.length + 1,
-        userId: userId.toString(),
+        userId: userId,
         challengeId,
         progress,
         completed: false,
@@ -772,6 +781,7 @@ class MemStorage implements IStorage {
     const newPost: Post = {
       id: this.nextPostId++,
       ...post,
+      type: post.type || 'spot_hunt',
       createdAt: new Date()
     };
     this.posts.push(newPost);
@@ -974,7 +984,7 @@ class MemStorage implements IStorage {
     
     let mostActiveTime = "Morning Vibes";
     if (Object.keys(hourCounts).length > 0) {
-      const peakHour = Object.entries(hourCounts).reduce((a, b) => hourCounts[a[0]] > hourCounts[b[0]] ? a : b)[0];
+      const peakHour = Object.entries(hourCounts).reduce((a, b) => hourCounts[parseInt(a[0])] > hourCounts[parseInt(b[0])] ? a : b)[0];
       const hour = parseInt(peakHour);
       if (hour >= 6 && hour < 12) mostActiveTime = "Morning Vibes";
       else if (hour >= 12 && hour < 17) mostActiveTime = "Afternoon Energy";
