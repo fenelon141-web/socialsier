@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2020",                   // modern JS
-    "module": "Node16",                    // Node ESM compatible
-    "moduleResolution": "node16",          // resolves .js/.ts properly
+    "module": "ESNext",                    // Node ESM compatible
+    "moduleResolution": "node",            // more lenient module resolution
     "allowImportingTsExtensions": true,    // allow importing .ts files
     "outDir": "dist",                      // compiled files go here
     "rootDir": ".",                         // project root
@@ -16,7 +16,9 @@
     "baseUrl": ".",                          // base path for paths
     "paths": {
       "@shared/*": ["shared/*"],             // alias for shared folder
-      "@shared/schema": ["shared/schema.ts"]   // explicit TypeScript mapping
+      "@shared/schema": ["shared/schema.ts"],   // explicit TypeScript mapping
+      "../vite.config": ["vite.config.ts"],   // help resolve vite config import from server
+      "../vite.config.ts": ["vite.config.ts"]   // explicit .ts mapping
     }
   },
   "include": [
