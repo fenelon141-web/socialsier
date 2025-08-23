@@ -782,6 +782,9 @@ class MemStorage implements IStorage {
       id: this.nextPostId++,
       ...post,
       type: post.type || 'spot_hunt',
+      rating: post.rating ?? null,
+      imageUrl: post.imageUrl ?? null,
+      spotId: post.spotId ?? null,
       createdAt: new Date()
     };
     this.posts.push(newPost);
@@ -860,6 +863,8 @@ class MemStorage implements IStorage {
     const newReview: SpotReview = {
       id: this.nextReviewId++,
       ...review,
+      imageUrl: review.imageUrl ?? null,
+      review: review.review ?? null,
       createdAt: new Date()
     };
     this.spotReviews.push(newReview);
@@ -1159,6 +1164,11 @@ class MemStorage implements IStorage {
     const newSquad: Squad = {
       id: this.nextSquadId++,
       ...squad,
+      description: squad.description ?? null,
+      city: squad.city ?? null,
+      country: squad.country ?? null,
+      isPublic: squad.isPublic ?? null,
+      maxMembers: squad.maxMembers ?? null,
       totalPoints: 0,
       totalSpotsHunted: 0,
       createdAt: new Date(),
@@ -1225,8 +1235,8 @@ class MemStorage implements IStorage {
     const squad = this.squads.find(s => s.id === squadId);
     if (!squad) throw new Error('Squad not found');
     
-    squad.totalPoints += pointsToAdd;
-    squad.totalSpotsHunted += spotsToAdd;
+    squad.totalPoints = (squad.totalPoints ?? 0) + pointsToAdd;
+    squad.totalSpotsHunted = (squad.totalSpotsHunted ?? 0) + spotsToAdd;
     return squad;
   }
 
@@ -1235,6 +1245,11 @@ class MemStorage implements IStorage {
     const newChallenge: GroupChallenge = {
       id: this.nextGroupChallengeId++,
       ...challenge,
+      createdBy: challenge.createdBy ?? null,
+      city: challenge.city ?? null,
+      country: challenge.country ?? null,
+      isActive: challenge.isActive ?? null,
+      prizeDescription: challenge.prizeDescription ?? null,
       createdAt: new Date(),
     };
     this.groupChallenges.push(newChallenge);
@@ -1281,7 +1296,7 @@ class MemStorage implements IStorage {
   async getChallengeLeaderboard(challengeId: number): Promise<(GroupChallengeParticipant & { user?: User; squad?: Squad & { members: SquadMember[] } })[]> {
     return this.groupChallengeParticipants
       .filter(p => p.challengeId === challengeId)
-      .sort((a, b) => b.currentProgress - a.currentProgress)
+      .sort((a, b) => (b.currentProgress ?? 0) - (a.currentProgress ?? 0))
       .map((participant, index) => {
         participant.rank = index + 1;
         return {
@@ -1332,7 +1347,7 @@ class MemStorage implements IStorage {
     const now = new Date();
     return this.stories
       .filter(story => story.expiresAt > now)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0))
       .map(story => {
         const user = this.users.find(u => u.id.toString() === story.userId);
         return {
@@ -1347,8 +1362,10 @@ class MemStorage implements IStorage {
     const story: Story = {
       id: this.nextStoryId++,
       ...storyData,
-      createdAt: new Date(),
-      views: 0
+      type: storyData.type || 'photo',
+      spotId: storyData.spotId ?? null,
+      caption: storyData.caption ?? null,
+      createdAt: new Date()
     };
     
     this.stories.push(story);

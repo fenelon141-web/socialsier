@@ -3,6 +3,7 @@
     "target": "ES2020",                   // modern JS
     "module": "Node16",                    // Node ESM compatible
     "moduleResolution": "node16",          // resolves .js/.ts properly
+    "allowImportingTsExtensions": true,    // allow importing .ts files
     "outDir": "dist",                      // compiled files go here
     "rootDir": ".",                         // project root
     "strict": true,                         // enable strict type checks
@@ -11,6 +12,7 @@
     "resolveJsonModule": true,              // allow importing JSON
     "skipLibCheck": true,                   // skip type checks in node_modules
     "allowJs": true,                         // allow JS files
+    "noEmit": true,                          // don't emit for type checking
     "baseUrl": ".",                          // base path for paths
     "paths": {
       "@shared/*": ["shared/*"],             // alias for shared folder
