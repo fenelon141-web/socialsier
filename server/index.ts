@@ -1,11 +1,20 @@
+// ------------------------
+// External imports
+// ------------------------
 import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+
+// ------------------------
+// Local imports
+// ------------------------
+import { registerRoutes } from "./routes.js";   // ✅ added .js
+import { setupVite, serveStatic, log } from "./vite.js";  // ✅ added .js
 
 const app = express();
 
-// Enhanced CORS for iOS app
+// ------------------------
+// CORS setup
+// ------------------------
 app.use(cors({
   origin: '*', // Allow all origins for testing
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -13,11 +22,10 @@ app.use(cors({
   credentials: true
 }));
 
-// Additional CORS headers for iOS app
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With', 'Content-Type', 'Accept', 'Authorization');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
@@ -26,11 +34,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// ------------------------
 // Body parsing
+// ------------------------
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// ------------------------
 // Request logging
+// ------------------------
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -57,10 +69,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// ------------------------
+// Server setup
+// ------------------------
 (async () => {
   const server = await registerRoutes(app);
 
-  // API route fallback for missing endpoints
+  // Fallback for missing endpoints
   app.use((req, res, next) => {
     if (req.path.startsWith('/upload-') || req.path.startsWith('/api/') || req.path.startsWith('/public-objects/')) {
       console.log(`API route attempt: ${req.method} ${req.path}`);
@@ -75,7 +90,7 @@ app.use((req, res, next) => {
     next();
   });
 
-  // Error handler
+  // Global error handler
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -90,9 +105,9 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Use Replit's provided port if available
+  // Port
   const port = parseInt(process.env.PORT || "5001", 10);
   server.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port}`);
+    log(`Server running on port ${port}`);
   });
 })();

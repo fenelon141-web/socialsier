@@ -1,23 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "Node16",
-    "outDir": "dist",
-    "rootDir": ".",
-    "strict": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node16",
-    "resolveJsonModule": true,
-    "baseUrl": ".",
+    "target": "ES2020",                   // modern JS
+    "module": "Node16",                    // Node ESM compatible
+    "moduleResolution": "node16",          // resolves .js/.ts properly
+    "outDir": "dist",                      // compiled files go here
+    "rootDir": ".",                         // project root
+    "strict": true,                         // enable strict type checks
+    "esModuleInterop": true,                // allow CJS imports
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,              // allow importing JSON
+    "skipLibCheck": true,                   // skip type checks in node_modules
+    "allowJs": true,                         // allow JS files
+    "baseUrl": ".",                          // base path for paths
     "paths": {
-      "@shared/*": ["shared/*"]
+      "@shared/*": ["shared/*"]             // alias for shared folder
     }
   },
   "include": [
     "server/**/*",
     "shared/**/*",
-    "vite.config.ts",
-    "types/**/*"
+    "types/**/*",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules",

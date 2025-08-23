@@ -5,12 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "tsc && vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build": "tsc --noEmit && vite build && esbuild server/index.ts --bundle --platform=node --format=esm --outfile=dist/server/index.js",
     "start": "NODE_ENV=production node dist/server/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },
-  "main": "postcss.config.js",
+  "main": "dist/server/index.js",
   "dependencies": {
     "@capacitor/android": "^7.4.1",
     "@capacitor/app": "^7.0.1",
@@ -83,6 +83,7 @@
     "lucide-react": "^0.453.0",
     "memoizee": "^0.4.17",
     "memorystore": "^1.6.7",
+    "mysql2": "^3.14.3",
     "next-themes": "^0.4.6",
     "openid-client": "^6.6.2",
     "passport": "^0.7.0",
