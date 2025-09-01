@@ -17,7 +17,7 @@ export function initializeWebSocket(): Promise<WebSocket> {
     const fallbackUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
     
     const wsUrl = isNative 
-      ? fallbackUrl  // Always use production server on native iOS
+      ? 'ws://localhost:5000/ws'  // iOS simulator can access localhost directly
       : window.location.hostname.includes('replit') 
         ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`
         : fallbackUrl;

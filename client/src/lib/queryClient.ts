@@ -6,7 +6,7 @@ const isCapacitorIOS = (window as any).Capacitor?.isNativePlatform() &&
                         (window as any).Device?.info?.platform === 'ios');
 
 const API_BASE_URL = isCapacitorIOS 
-  ? 'https://hot-girl-hunt-fenelon141.replit.app'
+  ? 'http://localhost:5000'  // iOS simulator can access localhost directly
   : (typeof window !== 'undefined' && window.location.hostname === 'localhost')
     ? 'http://localhost:5000'
     : 'https://hot-girl-hunt-fenelon141.replit.app';

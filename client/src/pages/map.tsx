@@ -75,8 +75,8 @@ export default function MapView() {
                           (window as any).Capacitor?.platform === 'ios' ||
                           window.navigator.userAgent.includes('iPhone');
       
-      // Use full production URL for iOS, relative URL for web
-      const baseUrl = isIOSNative ? 'https://hot-girl-hunt-fenelon141.replit.app' : '';
+      // Use localhost for iOS simulator since production API is down
+      const baseUrl = isIOSNative ? 'http://localhost:5000' : '';
       const apiUrl = `${baseUrl}/api/spots?lat=${lat}&lng=${lng}&radius=1800&limit=25`;
       
       console.log(`Fetching trendy spots from: ${apiUrl}`);
