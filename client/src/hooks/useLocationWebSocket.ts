@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useGeolocation } from './use-geolocation';
 import { useToast } from '@/hooks/use-toast';
 
@@ -101,17 +101,19 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
       };
 
       wsRef.current.onerror = (error) => {
-        // Connection error
+        // Connection error - prevent unhandled rejections
+        console.log('[iOS] WebSocket error:', error);
         setIsConnected(false);
+        setConnectionStatus('error');
       };
 
       wsRef.current.onclose = (event) => {
 
         setIsConnected(false);
         
-        // Prevent multiple reconnection attempts
-        if (event.code !== 1000 && enabled && !wsRef.current) {
-
+        // Prevent multiple reconnection attempts (disable for iOS to prevent errors)
+        const isIOSNative = (window as any).Capacitor?.isNativePlatform();
+        if (event.code !== 1000 && enabled && !wsRef.current && !isIOSNative) {
           setTimeout(() => {
             if (!wsRef.current || wsRef.current.readyState === WebSocket.CLOSED) {
               connect();
@@ -121,8 +123,10 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
       };
 
     } catch (error) {
-      // Failed to create connection
+      // Failed to create connection - prevent unhandled rejections
+      console.log('[iOS] WebSocket connection failed:', error);
       setIsConnected(false);
+      setConnectionStatus('error');
     }
   };
 
