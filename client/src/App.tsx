@@ -1,9 +1,9 @@
+import React, { useState, Suspense, lazy, useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useState, Suspense, lazy, useEffect } from "react";
 import { initializeIOSOptimizations } from "@/lib/ios-utils";
 import ErrorBoundary from "@/components/error-boundary";
 import PermissionHandler from "@/components/permission-handler";
@@ -89,9 +89,18 @@ function App() {
   useEffect(() => {
     initializeIOSOptimizations();
     
+    // Hide splash screen for iOS after app loads
+    if (isNative && (window as any).Capacitor?.Plugins?.SplashScreen) {
+      setTimeout(() => {
+        (window as any).Capacitor.Plugins.SplashScreen.hide().catch(() => {
+          // Ignore splash screen errors
+        });
+      }, 1000);
+    }
+    
     // Let specific WebSocket handlers manage their own connections
     // Global WebSocket disabled to avoid conflicts with spots WebSocket
-  }, []);
+  }, [isNative]);
 
   return (
     <ErrorBoundary>
