@@ -1,0 +1,72 @@
+
+Run `npm audit` for details.
+adamfenelon@Adams-MacBook-Air Socialiser-4 % npm run build
+
+> rest-express@1.0.0 build
+> tsc && vite build
+
+vite v5.4.19 building for production...
+transforming (1) index.htmlBrowserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2491 modules transformed.
+../dist/server/public/index.html                            0.92 kB │ gzip:   0.46 kB
+../dist/server/public/assets/leaflet-map-Dgihpmma.css      15.04 kB │ gzip:   6.38 kB
+../dist/server/public/assets/index-Cz8PqMjy.css           117.89 kB │ gzip:  18.24 kB
+../dist/server/public/assets/web-DxHtuJoC.js                0.12 kB │ gzip:   0.13 kB
+../dist/server/public/assets/web-B8X3WJXf.js                0.67 kB │ gzip:   0.33 kB
+../dist/server/public/assets/web-BqNW4dHM.js                0.90 kB │ gzip:   0.47 kB
+../dist/server/public/assets/index-DsmbaX7h.js              0.99 kB │ gzip:   0.51 kB
+../dist/server/public/assets/embedded-spots-D_Z--mMF.js     2.42 kB │ gzip:   0.98 kB
+../dist/server/public/assets/web-D8bHT0sI.js                2.44 kB │ gzip:   1.09 kB
+../dist/server/public/assets/checkbox-BLWB5fKa.js           2.75 kB │ gzip:   1.37 kB
+../dist/server/public/assets/index-nvn5mqWF.js              4.38 kB │ gzip:   1.67 kB
+../dist/server/public/assets/login-PgbarDLZ.js              4.64 kB │ gzip:   1.88 kB
+../dist/server/public/assets/simple-register-tbpcDMxx.js    5.61 kB │ gzip:   1.98 kB
+../dist/server/public/assets/auth-login-5D6A6rUR.js        96.55 kB │ gzip:  27.39 kB
+../dist/server/public/assets/leaflet-map-Dc2nUFb6.js      158.37 kB │ gzip:  46.64 kB
+../dist/server/public/assets/index-BSpo375a.js            597.11 kB │ gzip: 184.06 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.75s
+adamfenelon@Adams-MacBook-Air Socialiser-4 % npx cap copy ios
+[warn] Cannot copy web assets from public to ios/App/App/public
+       Web asset directory specified by webDir does not exist. This is not an
+       error because server.url is set in config.
+✔ Creating capacitor.config.json in ios/App/App in 629.58μs
+✔ copy ios in 73.78ms
+adamfenelon@Adams-MacBook-Air Socialiser-4 % npm install -g typescript
+npm error code EACCES
+npm error syscall symlink
+npm error path ../lib/node_modules/typescript/bin/tsserver
+npm error dest /usr/local/bin/tsserver
+npm error errno -13
+npm error Error: EACCES: permission denied, symlink '../lib/node_modules/typescript/bin/tsserver' -> '/usr/local/bin/tsserver'
+npm error     at async symlink (node:internal/fs/promises:1006:10)
+npm error     at async Promise.all (index 1)
+npm error     at async Promise.all (index 0)
+npm error     at async #createBinLinks (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/rebuild.js:394:5)
+npm error     at async Promise.allSettled (index 0)
+npm error     at async #linkAllBins (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/rebuild.js:375:5)
+npm error     at async #build (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/rebuild.js:160:7)
+npm error     at async Arborist.rebuild (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/rebuild.js:62:5)
+npm error     at async [reifyPackages] (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:325:11)
+npm error     at async Arborist.reify (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:142:5) {
+npm error   errno: -13,
+npm error   code: 'EACCES',
+npm error   syscall: 'symlink',
+npm error   path: '../lib/node_modules/typescript/bin/tsserver',
+npm error   dest: '/usr/local/bin/tsserver'
+npm error }
+npm error
+npm error The operation was rejected by your operating system.
+npm error It is likely you do not have the permissions to access this file as the current user
+npm error
+npm error If you believe this might be a permissions issue, please double-check the
+npm error permissions of the file and its containing directories, or try running
+npm error the command again as root/Administrator.
+npm error A complete log of this run can be found in: /Users/adamfenelon/.npm/_logs/2025-09-01T21_39_07_951Z-debug-0.log
+adamfenelon@Adams-MacBook-Air Socialiser-4 % 
