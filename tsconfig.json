@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",                   // modern JS
     "module": "ESNext",                    // Node ESM compatible
-    "moduleResolution": "node",            // more lenient module resolution
-    "allowImportingTsExtensions": true,    // allow importing .ts files
+    "moduleResolution": "node",            // Node.js module resolution for production builds
     "outDir": "dist",                      // compiled files go here
     "rootDir": ".",                         // project root
     "strict": true,                         // enable strict type checks
@@ -12,7 +11,7 @@
     "resolveJsonModule": true,              // allow importing JSON
     "skipLibCheck": true,                   // skip type checks in node_modules
     "allowJs": true,                         // allow JS files
-    "noEmit": true,                          // don't emit for type checking
+    "noEmit": false,                         // emit compiled files for production
     "baseUrl": ".",                          // base path for paths
     "paths": {
       "@shared/*": ["shared/*"],             // alias for shared folder
