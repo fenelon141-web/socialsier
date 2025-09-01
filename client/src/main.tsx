@@ -7,11 +7,11 @@ import "./index.css";
 window.addEventListener('unhandledrejection', (event) => {
   console.log('[iOS] Unhandled promise rejection caught:', event.reason);
   
-  // For iOS, prevent errors from breaking the app
-  const isIOSNative = (window as any).Capacitor?.isNativePlatform();
-  if (isIOSNative) {
-    event.preventDefault();
-  }
+  // Always prevent these errors from breaking the app completely
+  event.preventDefault();
+  
+  // Stop default error handling that causes black screen
+  return false;
 });
 
 createRoot(document.getElementById("root")!).render(<App />);

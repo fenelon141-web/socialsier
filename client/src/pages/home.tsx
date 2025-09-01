@@ -23,6 +23,7 @@ import NotificationCenter from "@/components/notification-center";
 import NotificationTest from "@/components/notification-test";
 import { apiRequest } from "@/lib/queryClient";
 import type { Spot, UserBadge, Badge, Reward } from "@shared/schema";
+import { embeddedValleyGirlSpots } from "@/data/embedded-spots";
 
 export default function Home() {
   const { latitude, longitude, loading: locationLoading } = useGeolocation();
@@ -47,17 +48,24 @@ export default function Home() {
   // Offline storage capabilities
   const { savedSpots, isOnline, saveSpot, isSaved, getOfflineCapabilities } = useOfflineStorage();
   
-  // Disable failing queries to prevent performance issues
+  // Use embedded spots for iOS to ensure spots always show
+  const isIOSNative = (window as any).Capacitor?.isNativePlatform();
+  
+  // For iOS, use embedded spots; for web, try API with fallback
   const { data: trendingSpots, isLoading: spotsLoading } = useQuery<Spot[]>({
     queryKey: ["/api/spots/trending"],
-    enabled: false, // Disable to prevent iOS failures
+    enabled: !isIOSNative, // Disable for iOS, use embedded instead
   });
 
-  // Get nearby spots using WebSocket fallback for iOS compatibility
   const { data: nearbySpots, isLoading: nearbyLoading } = useQuery({
     queryKey: ["/api/spots/nearby", latitude, longitude],
-    enabled: false, // Using WebSocket instead for iOS
+    enabled: !isIOSNative, // Disable for iOS, use embedded instead
   });
+
+  // Use embedded spots for iOS or fallback when API fails
+  const spotsToShow = isIOSNative 
+    ? embeddedValleyGirlSpots 
+    : (trendingSpots && trendingSpots.length > 0 ? trendingSpots : embeddedValleyGirlSpots);
 
   // Disable non-essential queries to improve performance
   const { data: userBadges, isLoading: badgesLoading } = useQuery<(UserBadge & { badge: Badge })[]>({
@@ -91,6 +99,28 @@ export default function Home() {
   });
 
   const recentBadges = userBadges?.slice(-4) || [];
+
+  // Handle saving spots for offline access
+  const handleSaveSpot = (spot: any) => {
+    try {
+      const success = saveSpot({
+        id: spot.id,
+        name: spot.name,
+        latitude: spot.latitude,
+        longitude: spot.longitude,
+        rating: spot.rating,
+        category: spot.category || 'unknown',
+        description: spot.description || '',
+        imageUrl: spot.imageUrl || '/placeholder-icon.svg'
+      });
+      
+      if (success) {
+        console.log('[iOS] Spot saved successfully:', spot.name);
+      }
+    } catch (error) {
+      console.log('[iOS] Failed to save spot:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -258,15 +288,28 @@ export default function Home() {
             </div>
             
             <div className="space-y-3">
-              <div className="text-center py-4 text-gray-500">
-                <div className="mb-2">🔥</div>
-                <div>Check the Map for trending spots</div>
-                <Link href="/map">
-                  <Button className="mt-2 bg-valley-pink hover:bg-valley-coral text-white">
-                    View Map
-                  </Button>
-                </Link>
-              </div>
+              {spotsToShow && spotsToShow.length > 0 ? (
+                spotsToShow.slice(0, 3).map((spot: any) => (
+                  <SpotCard
+                    key={spot.id}
+                    spot={spot}
+                    isHunted={false}
+                    onHunt={() => {}}
+                    onSave={() => handleSaveSpot(spot)}
+                    isSaved={isSaved(spot.id)}
+                  />
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  <div className="mb-2">🔥</div>
+                  <div>Check the Map for trending spots</div>
+                  <Link href="/map">
+                    <Button className="mt-2 bg-valley-pink hover:bg-valley-coral text-white">
+                      View Map
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -280,15 +323,28 @@ export default function Home() {
             </div>
             
             <div className="space-y-3">
-              <div className="text-center py-4 text-gray-500">
-                <div className="mb-2">💪</div>
-                <div>Check the Map for workout spots</div>
-                <Link href="/map">
-                  <Button className="mt-2 bg-valley-coral hover:bg-valley-pink text-white">
-                    Find Workouts
-                  </Button>
-                </Link>
-              </div>
+              {spotsToShow && spotsToShow.length > 0 ? (
+                spotsToShow.filter((spot: any) => spot.category === 'fitness').slice(0, 2).map((spot: any) => (
+                  <SpotCard
+                    key={spot.id}
+                    spot={spot}
+                    isHunted={false}
+                    onHunt={() => {}}
+                    onSave={() => handleSaveSpot(spot)}
+                    isSaved={isSaved(spot.id)}
+                  />
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  <div className="mb-2">💪</div>
+                  <div>Check the Map for workout spots</div>
+                  <Link href="/map">
+                    <Button className="mt-2 bg-valley-coral hover:bg-valley-pink text-white">
+                      Find Workouts
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

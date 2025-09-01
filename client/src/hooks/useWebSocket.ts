@@ -22,16 +22,19 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   const { toast } = useToast();
 
   const connect = () => {
+    // Disable WebSocket for iOS to prevent promise rejections
+    const isIOSNative = (window as any).Capacitor?.isNativePlatform();
+    if (isIOSNative) {
+      console.log('[iOS] WebSocket disabled for iOS compatibility');
+      return;
+    }
+    
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
     }
 
     try {
-      // iOS Production WebSocket URL with fallback detection
-      const isCapacitor = (window as any).Capacitor?.isNativePlatform();
-      const wsUrl = isCapacitor 
-        ? `wss://hot-girl-hunt-fenelon141.replit.app/ws`
-        : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+      const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
       
       setConnectionStatus('connecting');
       wsRef.current = new WebSocket(wsUrl);
@@ -60,8 +63,9 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         setIsConnected(false);
         setConnectionStatus('disconnected');
         
-        // Auto-reconnect for iOS (network interruptions are common)
-        if (event.code !== 1000) { // Don't reconnect if closed intentionally
+        // Disable auto-reconnect for iOS to prevent endless rejections
+        const isIOSNative = (window as any).Capacitor?.isNativePlatform();
+        if (event.code !== 1000 && !isIOSNative) { // Don't reconnect if closed intentionally or on iOS
           setTimeout(() => connect(), 3000);
         }
       };
@@ -102,11 +106,16 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   };
 
   const sendMessage = (message: WebSocketMessage) => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(message));
-      return true;
+    try {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify(message));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.log('[iOS] WebSocket send failed:', error);
+      return false;
     }
-    return false;
   };
 
   // Auto-connect when userId is provided

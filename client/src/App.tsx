@@ -85,9 +85,13 @@ function Router() {
 function App() {
   const { isNative, deviceInfo } = useCapacitor();
 
-  // Initialize iOS optimizations and global WebSocket on mount
+  // Initialize iOS optimizations 
   useEffect(() => {
-    initializeIOSOptimizations();
+    try {
+      initializeIOSOptimizations();
+    } catch (error) {
+      console.log('[iOS] Optimization init failed:', error);
+    }
     
     // Hide splash screen for iOS after app loads
     if (isNative && (window as any).Capacitor?.Plugins?.SplashScreen) {
@@ -97,9 +101,6 @@ function App() {
         });
       }, 1000);
     }
-    
-    // Let specific WebSocket handlers manage their own connections
-    // Global WebSocket disabled to avoid conflicts with spots WebSocket
   }, [isNative]);
 
   return (

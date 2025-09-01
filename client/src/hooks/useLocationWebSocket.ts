@@ -20,8 +20,14 @@ export function useLocationWebSocket(options: LocationWebSocketOptions) {
 
   // WebSocket connection with iOS-specific handling
   const connect = () => {
+    // Disable WebSocket completely for iOS to prevent promise rejections
+    const isIOSNative = (window as any).Capacitor?.isNativePlatform();
+    if (isIOSNative) {
+      console.log('[iOS] WebSocket disabled for iOS compatibility');
+      return;
+    }
+    
     if (wsRef.current?.readyState === WebSocket.OPEN || wsRef.current?.readyState === WebSocket.CONNECTING) {
-
       return;
     }
 
