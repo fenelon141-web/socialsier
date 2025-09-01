@@ -1,0 +1,164 @@
+        
+        Search for existing GitHub issues similar to yours:
+        https://github.com/CocoaPods/CocoaPods/search?q=%5BXcodeproj%5D+Type+checking+error%3A+got+%60XCBuildConfiguration%60+for+attribute%3A+Attribute+%60children%60+%28type%3A+%60to_many%60%2C+classes%3A+%60%5B%22PBXGroup%22%2C+%22PBXFileReference%22%2C+%22PBXReferenceProxy%22%2C+%22PBXFileSystemSynchronizedRootGroup%22%5D%60%2C+owner+class%3A+%60PBXGroup%60%29+-+504EC3181FED79650016851F+%3CNanaimo%3A%3ADictionary+%7B%22isa%22+%3D%3E+%22XCBuildConfiguration%22%2C+%22name%22+%3D%3E+%22Release%22%2C+%22buildSettings%22+%3D%3E+%7B%22ASSETCATALOG_COMPILER_APPICON_NAME%22+%3D%3E+%22AppIcon%22%2C+%22CODE_SIGN_STYLE%22+%3D%3E+%22Automatic%22%2C+%22CURRENT_PROJECT_VERSION%22+%3D%3E+%221%22%2C+%22INFOPLIST_FILE%22+%3D%3E+%22App%2FInfo.plist%22%2C+%22IPHONEOS_DEPLOYMENT_TARGET%22+%3D%3E+%2214.0%22%2C+%22LD_RUNPATH_SEARCH_PATHS%22+%3D%3E+%22%24%28inherited%29+%40executable_path%2FFrameworks%22%2C+%22MARKETING_VERSION%22+%3D%3E+%221.0%22%2C+%22PRODUCT_BUNDLE_IDENTIFIER%22+%3D%3E+%22com.hotgirlhunt.app%22%2C+%22PRODUCT_NAME%22+%3D%3E+%22%24%28TARGET_NAME%29%22%2C+%22SWIFT_ACTIVE_COMPILATION_CONDITIONS%22+%3D%3E+%22%22%2C+%22SWIFT_VERSION%22+%3D%3E+%225.0%22%2C+%22TARGETED_DEVICE_FAMILY%22+%3D%3E+%221%2C2%22%7D%2C+%22baseConfigurationReference%22+%3D%3E+%23%3CNanaimo%3A%3AString%3A0x0000000121e9dde8+%40value%3D%22AF51FD2D460BCFE21FA515B2%22%2C+%40annotation%3D%22+Pods-App.release.xcconfig+%22%3E%7D%3E&type=Issues
+        
+        If none exists, create a ticket, with the template displayed above, on:
+        https://github.com/CocoaPods/CocoaPods/issues/new
+        
+        Be sure to first read the contributing guide for details on how to
+        properly submit a ticket:
+        https://github.com/CocoaPods/CocoaPods/blob/master/CONTRIBUTING.md
+        
+        Don't forget to anonymize any private data!
+        
+        Searching for inspections failed: undefined method 'map' for nil
+        Looking for related issues on cocoapods/cocoapods...
+        
+adamfenelon@Adams-MacBook-Air Socialiser-4 % cd ios/App
+adamfenelon@Adams-MacBook-Air App % pod install
+Analyzing dependencies
+
+――― MARKDOWN TEMPLATE ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+### Command
+
+```
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/bin/pod install
+```
+
+### Report
+
+* What did you do?
+
+* What did you expect to happen?
+
+* What happened instead?
+
+
+### Stack
+
+```
+   CocoaPods : 1.16.2
+        Ruby : ruby 3.4.5 (2025-07-16 revision 20cda200d3) +PRISM [arm64-darwin24]
+    RubyGems : 3.6.9
+        Host : macOS 15.6 (24G84)
+       Xcode : 16.4 (16F6)
+         Git : git version 2.39.5 (Apple Git-154)
+Ruby lib dir : /opt/homebrew/Cellar/ruby/3.4.5/lib
+Repositories : trunk - CDN - https://cdn.cocoapods.org/
+```
+
+### Plugins
+
+```
+cocoapods-deintegrate : 1.0.5
+cocoapods-plugins     : 1.0.0
+cocoapods-search      : 1.0.1
+cocoapods-trunk       : 1.6.0
+cocoapods-try         : 1.2.0
+```
+
+### Podfile
+
+```ruby
+require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
+
+platform :ios, '14.0'
+use_frameworks!
+
+# workaround to avoid Xcode caching of Pods that requires
+# Product -> Clean Build Folder after new Cordova plugins installed
+# Requires CocoaPods 1.6 or newer
+install! 'cocoapods', :disable_input_output_paths => true
+
+def capacitor_pods
+  pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
+  pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
+  pod 'CapacitorApp', :path => '../../node_modules/@capacitor/app'
+  pod 'CapacitorCamera', :path => '../../node_modules/@capacitor/camera'
+  pod 'CapacitorDevice', :path => '../../node_modules/@capacitor/device'
+  pod 'CapacitorGeolocation', :path => '../../node_modules/@capacitor/geolocation'
+  pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
+end
+
+target 'App' do
+  capacitor_pods
+  # Add your Pods here
+end
+
+post_install do |installer|
+  assertDeploymentTarget(installer)
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+    end
+  end
+end
+```
+
+### Error
+
+```
+RuntimeError - [Xcodeproj] Type checking error: got `XCBuildConfiguration` for attribute: Attribute `children` (type: `to_many`, classes: `["PBXGroup", "PBXFileReference", "PBXReferenceProxy", "PBXFileSystemSynchronizedRootGroup"]`, owner class: `PBXGroup`) - 504EC3181FED79650016851F <Nanaimo::Dictionary {"isa" => "XCBuildConfiguration", "name" => "Release", "buildSettings" => {"ASSETCATALOG_COMPILER_APPICON_NAME" => "AppIcon", "CODE_SIGN_STYLE" => "Automatic", "CURRENT_PROJECT_VERSION" => "1", "INFOPLIST_FILE" => "App/Info.plist", "IPHONEOS_DEPLOYMENT_TARGET" => "14.0", "LD_RUNPATH_SEARCH_PATHS" => "$(inherited) @executable_path/Frameworks", "MARKETING_VERSION" => "1.0", "PRODUCT_BUNDLE_IDENTIFIER" => "com.hotgirlhunt.app", "PRODUCT_NAME" => "$(TARGET_NAME)", "SWIFT_ACTIVE_COMPILATION_CONDITIONS" => "", "SWIFT_VERSION" => "5.0", "TARGETED_DEVICE_FAMILY" => "1,2"}, "baseConfigurationReference" => #<Nanaimo::String:0x0000000122bddff8 @value="AF51FD2D460BCFE21FA515B2", @annotation=" Pods-App.release.xcconfig ">}>
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object_attributes.rb:142:in 'Xcodeproj::Project::Object::AbstractObjectAttribute#validate_value'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object_list.rb:205:in 'block in Xcodeproj::Project::ObjectList#perform_additions_operations'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object_list.rb:202:in 'Array#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object_list.rb:202:in 'Xcodeproj::Project::ObjectList#perform_additions_operations'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object_list.rb:76:in 'Xcodeproj::Project::ObjectList#<<'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:301:in 'block (2 levels) in Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:299:in 'Array#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:299:in 'block in Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:296:in 'Array#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:296:in 'Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project.rb:272:in 'Xcodeproj::Project#new_from_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:350:in 'Xcodeproj::Project::Object::AbstractObject#object_with_uuid'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:300:in 'block (2 levels) in Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:299:in 'Array#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:299:in 'block in Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:296:in 'Array#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:296:in 'Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project.rb:272:in 'Xcodeproj::Project#new_from_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:350:in 'Xcodeproj::Project::Object::AbstractObject#object_with_uuid'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:290:in 'block in Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:287:in 'Array#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project/object.rb:287:in 'Xcodeproj::Project::Object::AbstractObject#configure_with_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project.rb:272:in 'Xcodeproj::Project#new_from_plist'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project.rb:213:in 'Xcodeproj::Project#initialize_from_file'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/xcodeproj-1.27.0/lib/xcodeproj/project.rb:113:in 'Xcodeproj::Project.open'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer/analyzer.rb:1194:in 'block (2 levels) in Pod::Installer::Analyzer#inspect_targets_to_integrate'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer/analyzer.rb:1193:in 'Hash#each'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer/analyzer.rb:1193:in 'block in Pod::Installer::Analyzer#inspect_targets_to_integrate'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/user_interface.rb:64:in 'Pod::UserInterface.section'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer/analyzer.rb:1188:in 'Pod::Installer::Analyzer#inspect_targets_to_integrate'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer/analyzer.rb:107:in 'Pod::Installer::Analyzer#analyze'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:422:in 'Pod::Installer#analyze'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:244:in 'block in Pod::Installer#resolve_dependencies'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/user_interface.rb:64:in 'Pod::UserInterface.section'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:243:in 'Pod::Installer#resolve_dependencies'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:162:in 'Pod::Installer#install!'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/command/install.rb:52:in 'Pod::Command::Install#run'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/claide-1.1.0/lib/claide/command.rb:334:in 'CLAide::Command.run'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:52:in 'Pod::Command.run'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/gems/cocoapods-1.16.2/bin/pod:55:in '<top (required)>'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/bin/pod:25:in 'Kernel#load'
+/opt/homebrew/Cellar/cocoapods/1.16.2_1/libexec/bin/pod:25:in '<main>'
+```
+
+――― TEMPLATE END ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+[!] Oh no, an error occurred.
+
+Search for existing GitHub issues similar to yours:
+https://github.com/CocoaPods/CocoaPods/search?q=%5BXcodeproj%5D+Type+checking+error%3A+got+%60XCBuildConfiguration%60+for+attribute%3A+Attribute+%60children%60+%28type%3A+%60to_many%60%2C+classes%3A+%60%5B%22PBXGroup%22%2C+%22PBXFileReference%22%2C+%22PBXReferenceProxy%22%2C+%22PBXFileSystemSynchronizedRootGroup%22%5D%60%2C+owner+class%3A+%60PBXGroup%60%29+-+504EC3181FED79650016851F+%3CNanaimo%3A%3ADictionary+%7B%22isa%22+%3D%3E+%22XCBuildConfiguration%22%2C+%22name%22+%3D%3E+%22Release%22%2C+%22buildSettings%22+%3D%3E+%7B%22ASSETCATALOG_COMPILER_APPICON_NAME%22+%3D%3E+%22AppIcon%22%2C+%22CODE_SIGN_STYLE%22+%3D%3E+%22Automatic%22%2C+%22CURRENT_PROJECT_VERSION%22+%3D%3E+%221%22%2C+%22INFOPLIST_FILE%22+%3D%3E+%22App%2FInfo.plist%22%2C+%22IPHONEOS_DEPLOYMENT_TARGET%22+%3D%3E+%2214.0%22%2C+%22LD_RUNPATH_SEARCH_PATHS%22+%3D%3E+%22%24%28inherited%29+%40executable_path%2FFrameworks%22%2C+%22MARKETING_VERSION%22+%3D%3E+%221.0%22%2C+%22PRODUCT_BUNDLE_IDENTIFIER%22+%3D%3E+%22com.hotgirlhunt.app%22%2C+%22PRODUCT_NAME%22+%3D%3E+%22%24%28TARGET_NAME%29%22%2C+%22SWIFT_ACTIVE_COMPILATION_CONDITIONS%22+%3D%3E+%22%22%2C+%22SWIFT_VERSION%22+%3D%3E+%225.0%22%2C+%22TARGETED_DEVICE_FAMILY%22+%3D%3E+%221%2C2%22%7D%2C+%22baseConfigurationReference%22+%3D%3E+%23%3CNanaimo%3A%3AString%3A0x0000000122bddff8+%40value%3D%22AF51FD2D460BCFE21FA515B2%22%2C+%40annotation%3D%22+Pods-App.release.xcconfig+%22%3E%7D%3E&type=Issues
+
+If none exists, create a ticket, with the template displayed above, on:
+https://github.com/CocoaPods/CocoaPods/issues/new
+
+Be sure to first read the contributing guide for details on how to properly submit a ticket:
+https://github.com/CocoaPods/CocoaPods/blob/master/CONTRIBUTING.md
+
+Don't forget to anonymize any private data!
+
+Looking for related issues on cocoapods/cocoapods...
+Searching for inspections failed: undefined method 'map' for nil
+adamfenelon@Adams-MacBook-Air App % 
