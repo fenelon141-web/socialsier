@@ -7,7 +7,7 @@ const isCapacitorIOS = (window as any).Capacitor?.isNativePlatform() &&
 
 const API_BASE_URL = isCapacitorIOS 
   ? 'https://hot-girl-hunt-fenelon141.replit.app'
-  : import.meta.env.DEV 
+  : (typeof window !== 'undefined' && window.location.hostname === 'localhost')
     ? 'http://localhost:5000'
     : 'https://hot-girl-hunt-fenelon141.replit.app';
 
