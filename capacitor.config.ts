@@ -3,13 +3,9 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.socialiser.app',
   appName: 'Socialiser',
-  webDir: 'dist/public',
-  server: {
-    androidScheme: 'https',
-    allowNavigation: ['https://hot-girl-hunt-fenelon141.replit.app'],
-    url: 'https://hot-girl-hunt-fenelon141.replit.app',
-    cleartext: true
-  },
+  webDir: 'dist/server/public',
+  // Remove server config to use local files instead
+  bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
