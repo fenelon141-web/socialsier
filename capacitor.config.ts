@@ -6,7 +6,9 @@ const config: CapacitorConfig = {
   webDir: 'dist/public',
   server: {
     androidScheme: 'https',
-    allowNavigation: ['https://hot-girl-hunt-fenelon141.replit.app']
+    allowNavigation: ['https://hot-girl-hunt-fenelon141.replit.app'],
+    url: 'https://hot-girl-hunt-fenelon141.replit.app',
+    cleartext: true
   },
   plugins: {
     SplashScreen: {
