@@ -24,7 +24,7 @@
     "server/**/*",
     "shared/**/*",
     "types/**/*",
-    "vite.config.ts"
+    "vite.config.js"
   ],
   "exclude": [
     "node_modules",
