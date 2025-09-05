@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotHunt - Find Your Aesthetic ✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'valley-pink': '#FF69B4',
+                    'valley-lavender': '#E6E6FA',
+                    'valley-gold': '#FFD700',
+                    'valley-peach': '#FFCBA4',
+                    'valley-mint': '#B5EAD7',
+                    'valley-coral': '#FF7F7F',
+                    'valley-rose-gold': '#F7CAC9'
+                },
+                fontFamily: {
+                    'valley': ['Rounded', 'system-ui', 'sans-serif']
+                },
+                animation: {
+                    'bounce-slow': 'bounce 2s infinite',
+                    'pulse-glow': 'pulse 1.5s ease-in-out infinite alternate'
+                }
+            }
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #FF69B4 0%, #E6E6FA 50%, #FFD700 100%); }
+        .card-gradient { background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(230,230,250,0.8) 100%); }
+        .glow-effect { box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); }
+        .spot-card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- @COMPONENT: AppContainer -->
+    <div class="max-w-md mx-auto bg-white shadow-2xl min-h-screen relative overflow-hidden">
+        
+        <!-- @COMPONENT: TopNavigation -->
+        <div class="bg-gradient-to-r from-valley-pink to-valley-lavender p-4 text-white relative">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-map-marker-alt text-2xl animate-bounce-slow"></i>
+                    <div>
+                        <h1 class="text-xl font-bold">SpotHunt ✨</h1>
+                        <p class="text-xs opacity-90">Beverly Hills, CA 📍</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-trophy text-valley-gold text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-valley-coral text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
+                    </div>
+                    <!-- Mock user avatar with aesthetic profile picture -->
+                    <img src="https://pixabay.com/get/ga9387dd12ea4d41680eea94c528c4a29c9e30348cde4393586f865b65ba667df57cf0d0c80c6069208b77f58e8644d610587a565251c746cd643df2c44a1ebcf_1280.jpg" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-white glow-effect" data-mock="true">
+                </div>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="flex justify-between mt-3 text-center">
+                <div class="bg-white bg-opacity-20 rounded-full px-3 py-1">
+                    <span class="text-xs font-semibold">💎 127 Spots</span>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-full px-3 py-1">
+                    <span class="text-xs font-semibold">🏆 Level 8</span>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-full px-3 py-1">
+                    <span class="text-xs font-semibold">✨ 2.3k Points</span>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: TopNavigation -->
+
+        <!-- @COMPONENT: DailyChallengeBar -->
+        <div class="bg-valley-peach p-3 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse"></div>
+            <p class="text-sm font-semibold text-gray-800">
+                💫 Daily Quest: Find 3 aesthetic matcha spots! (2/3) 
+            </p>
+            <div class="w-full bg-white bg-opacity-50 rounded-full h-2 mt-1">
+                <div class="bg-valley-pink h-2 rounded-full transition-all duration-500" style="width: 66%"></div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: DailyChallengeBar -->
+
+        <!-- @COMPONENT: MainContent -->
+        <div class="p-4 space-y-4">
+            
+            <!-- @COMPONENT: QuickActions -->
+            <div class="flex space-x-2">
+                <button class="flex-1 bg-gradient-to-r from-valley-pink to-valley-coral text-white py-3 rounded-2xl font-semibold text-sm shadow-lg glow-effect" data-event="click:openMap">
+                    🗺️ Explore Map
+                </button>
+                <button class="flex-1 bg-gradient-to-r from-valley-mint to-valley-lavender text-gray-800 py-3 rounded-2xl font-semibold text-sm shadow-lg" data-event="click:openCamera">
+                    📸 Check In
+                </button>
+            </div>
+            <!-- @END_COMPONENT: QuickActions -->
+
+            <!-- @COMPONENT: TrendingSpots -->
+            <div class="card-gradient rounded-2xl p-4 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-lg font-bold text-gray-800">Trending RN 🔥</h2>
+                    <span class="text-xs bg-valley-pink text-white px-2 py-1 rounded-full">Live</span>
+                </div>
+                
+                <!-- @MAP: trendingSpots.map(spot => ( -->
+                <div class="space-y-3">
+                    <!-- Trendy spot 1 -->
+                    <div class="spot-card bg-white rounded-xl p-3 shadow-md border border-valley-lavender" data-mock="true">
+                        <div class="flex items-center space-x-3">
+                            <!-- Aesthetic matcha cafe interior -->
+                            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" alt="Matcha cafe interior" class="w-16 h-16 rounded-xl object-cover" data-mock="true">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-1">
+                                    <h3 class="font-semibold text-gray-800 text-sm" data-bind="spot.name">Oat Milk Dreams ☁️</h3>
+                                    <span class="text-xs">✨</span>
+                                </div>
+                                <p class="text-xs text-gray-600" data-bind="spot.description">Literally the cutest matcha spot 💚</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">0.2 mi</span>
+                                    <span class="text-xs text-valley-gold">⭐ 4.9</span>
+                                    <span class="text-xs text-gray-500">127 hunts</span>
+                                </div>
+                            </div>
+                            <button class="bg-valley-pink text-white p-2 rounded-full shadow-lg" data-event="click:huntSpot">
+                                <i class="fas fa-crosshairs text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trendy spot 2 -->
+                    <div class="spot-card bg-white rounded-xl p-3 shadow-md border border-valley-lavender" data-mock="true">
+                        <div class="flex items-center space-x-3">
+                            <!-- Aesthetic acai bowl presentation -->
+                            <img src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" alt="Colorful acai bowl" class="w-16 h-16 rounded-xl object-cover" data-mock="true">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-1">
+                                    <h3 class="font-semibold text-gray-800 text-sm" data-bind="spot.name">Purple Vibes Bowls 🍇</h3>
+                                    <span class="text-xs">🔥</span>
+                                </div>
+                                <p class="text-xs text-gray-600" data-bind="spot.description">Obsessed with their lavender bowls!! 💜</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs bg-valley-coral text-white px-2 py-1 rounded-full">0.5 mi</span>
+                                    <span class="text-xs text-valley-gold">⭐ 4.8</span>
+                                    <span class="text-xs text-gray-500">89 hunts</span>
+                                </div>
+                            </div>
+                            <button class="bg-valley-pink text-white p-2 rounded-full shadow-lg" data-event="click:huntSpot">
+                                <i class="fas fa-crosshairs text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trendy spot 3 -->
+                    <div class="spot-card bg-white rounded-xl p-3 shadow-md border border-valley-lavender" data-mock="true">
+                        <div class="flex items-center space-x-3">
+                            <!-- Aesthetic coffee cart or mobile coffee setup -->
+                            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" alt="Aesthetic coffee setup" class="w-16 h-16 rounded-xl object-cover" data-mock="true">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-1">
+                                    <h3 class="font-semibold text-gray-800 text-sm" data-bind="spot.name">Golden Hour Coffee ☕</h3>
+                                    <span class="text-xs">✨</span>
+                                </div>
+                                <p class="text-xs text-gray-600" data-bind="spot.description">Pink lattes that taste like heaven 🌸</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full">0.8 mi</span>
+                                    <span class="text-xs text-valley-gold">⭐ 4.7</span>
+                                    <span class="text-xs text-gray-500">156 hunts</span>
+                                </div>
+                            </div>
+                            <button class="bg-valley-pink text-white p-2 rounded-full shadow-lg" data-event="click:huntSpot">
+                                <i class="fas fa-crosshairs text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+            <!-- @END_COMPONENT: TrendingSpots -->
+
+            <!-- @COMPONENT: RecentBadges -->
+            <div class="card-gradient rounded-2xl p-4 shadow-lg">
+                <h2 class="text-lg font-bold text-gray-800 mb-3">Latest Badges 🏆</h2>
+                <div class="flex space-x-3 overflow-x-auto pb-2">
+                    <!-- @MAP: recentBadges.map(badge => ( -->
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px]" data-mock="true">
+                        <div class="text-2xl mb-1">🧋</div>
+                        <p class="text-xs font-semibold text-gray-800">Boba Queen</p>
+                        <p class="text-xs text-gray-500">Today</p>
+                    </div>
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px]" data-mock="true">
+                        <div class="text-2xl mb-1">🥑</div>
+                        <p class="text-xs font-semibold text-gray-800">Avo Lover</p>
+                        <p class="text-xs text-gray-500">Yesterday</p>
+                    </div>
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px]" data-mock="true">
+                        <div class="text-2xl mb-1">🌸</div>
+                        <p class="text-xs font-semibold text-gray-800">Pink Vibes</p>
+                        <p class="text-xs text-gray-500">2 days ago</p>
+                    </div>
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-md min-w-[80px]" data-mock="true">
+                        <div class="text-2xl mb-1">☕</div>
+                        <p class="text-xs font-semibold text-gray-800">Latte Art</p>
+                        <p class="text-xs text-gray-500">3 days ago</p>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            <!-- @END_COMPONENT: RecentBadges -->
+
+            <!-- @COMPONENT: RewardsSection -->
+            <div class="card-gradient rounded-2xl p-4 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-lg font-bold text-gray-800">Rewards 🎁</h2>
+                    <span class="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full font-semibold">3 Available</span>
+                </div>
+                
+                <div class="space-y-2">
+                    <div class="bg-white rounded-xl p-3 border border-valley-gold shadow-sm" data-mock="true">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-valley-gold rounded-full flex items-center justify-center">
+                                    <span class="text-white font-bold">50%</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-sm text-gray-800">Oat Milk Dreams</p>
+                                    <p class="text-xs text-gray-600">50% off matcha lattes ✨</p>
+                                </div>
+                            </div>
+                            <button class="bg-valley-pink text-white px-3 py-1 rounded-full text-xs font-semibold" data-event="click:claimReward">
+                                Claim
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-3 border border-valley-coral shadow-sm" data-mock="true">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-valley-coral rounded-full flex items-center justify-center">
+                                    <span class="text-white font-bold text-xs">BOGO</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-sm text-gray-800">Purple Vibes Bowls</p>
+                                    <p class="text-xs text-gray-600">Buy one, get one free 🍇</p>
+                                </div>
+                            </div>
+                            <button class="bg-valley-pink text-white px-3 py-1 rounded-full text-xs font-semibold" data-event="click:claimReward">
+                                Claim
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: RewardsSection -->
+
+            <!-- @COMPONENT: FriendsActivity -->
+            <div class="card-gradient rounded-2xl p-4 shadow-lg">
+                <h2 class="text-lg font-bold text-gray-800 mb-3">Squad Activity 👯‍♀️</h2>
+                <div class="space-y-3">
+                    <!-- @MAP: friendsActivity.map(activity => ( -->
+                    <div class="flex items-center space-x-3" data-mock="true">
+                        <!-- Friend's profile photo showing millennial lifestyle -->
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" alt="Friend profile" class="w-10 h-10 rounded-full border-2 border-valley-pink" data-mock="true">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-800">
+                                <span class="font-semibold" data-bind="friend.name">Madison</span> 
+                                hunted a new spot! 💫
+                            </p>
+                            <p class="text-xs text-gray-600" data-bind="activity.timestamp">2 mins ago</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs bg-valley-mint text-gray-800 px-2 py-1 rounded-full">+50 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3" data-mock="true">
+                        <!-- Another friend's profile photo -->
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" alt="Friend profile" class="w-10 h-10 rounded-full border-2 border-valley-lavender" data-mock="true">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-800">
+                                <span class="font-semibold" data-bind="friend.name">Chloe</span> 
+                                earned the "Kombucha Queen" badge! 👑
+                            </p>
+                            <p class="text-xs text-gray-600" data-bind="activity.timestamp">15 mins ago</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs bg-valley-gold text-gray-800 px-2 py-1 rounded-full">🏆 Badge</div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            <!-- @END_COMPONENT: FriendsActivity -->
+
+        </div>
+        <!-- @END_COMPONENT: MainContent -->
+
+        <!-- @COMPONENT: BottomNavigation -->
+        <div class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 px-4 py-2">
+            <div class="flex justify-around items-center">
+                <button class="flex flex-col items-center space-y-1 p-2 text-valley-pink" data-event="click:navigateHome">
+                    <i class="fas fa-home text-lg"></i>
+                    <span class="text-xs font-medium">Hunt</span>
+                </button>
+                <button class="flex flex-col items-center space-y-1 p-2 text-gray-400" data-event="click:navigateMap">
+                    <i class="fas fa-map text-lg"></i>
+                    <span class="text-xs">Map</span>
+                </button>
+                <button class="flex flex-col items-center space-y-1 p-2 text-gray-400 relative" data-event="click:navigateCamera">
+                    <div class="bg-valley-pink text-white p-3 rounded-full shadow-lg glow-effect">
+                        <i class="fas fa-camera text-lg"></i>
+                    </div>
+                </button>
+                <button class="flex flex-col items-center space-y-1 p-2 text-gray-400" data-event="click:navigateBadges">
+                    <i class="fas fa-trophy text-lg"></i>
+                    <span class="text-xs">Badges</span>
+                </button>
+                <button class="flex flex-col items-center space-y-1 p-2 text-gray-400" data-event="click:navigateProfile">
+                    <i class="fas fa-user text-lg"></i>
+                    <span class="text-xs">Profile</span>
+                </button>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: BottomNavigation -->
+
+        <!-- @COMPONENT: FloatingNotification -->
+        <div class="fixed top-20 left-4 right-4 max-w-md mx-auto z-50 opacity-0 transition-all duration-500" id="notification" data-implementation="Show/hide based on app state">
+            <div class="bg-valley-mint border border-valley-lavender rounded-2xl p-3 shadow-lg">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-valley-gold rounded-full flex items-center justify-center animate-pulse-glow">
+                        <i class="fas fa-star text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-gray-800">New spot nearby! ✨</p>
+                        <p class="text-xs text-gray-600">Aesthetic smoothie bar just opened 🥤</p>
+                    </div>
+                    <button class="text-gray-400" data-event="click:closeNotification">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: FloatingNotification -->
+
+    </div>
+    <!-- @END_COMPONENT: AppContainer -->
+
+    <script>
+        // TODO: Implement actual app functionality, state management, and API integration
+        (function() {
+            // Mock notification system
+            let showNotification = false;
+            const notification = document.getElementById('notification');
+            
+            // Simulate random notifications (demo only)
+            setInterval(() => {
+                if (Math.random() > 0.7 && !showNotification) {
+                    notification.classList.remove('opacity-0');
+                    notification.classList.add('opacity-100');
+                    showNotification = true;
+                    
+                    setTimeout(() => {
+                        notification.classList.remove('opacity-100');
+                        notification.classList.add('opacity-0');
+                        showNotification = false;
+                    }, 4000);
+                }
+            }, 10000);
+
+            // Mock interactive elements
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('[data-event]');
+                if (target) {
+                    const action = target.getAttribute('data-event');
+                    console.log('Action triggered:', action);
+                    
+                    // Add visual feedback
+                    target.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        target.style.transform = '';
+                    }, 150);
+                }
+            });
+
+            // Close notification handler
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event="click:closeNotification"]')) {
+                    notification.classList.remove('opacity-100');
+                    notification.classList.add('opacity-0');
+                    showNotification = false;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

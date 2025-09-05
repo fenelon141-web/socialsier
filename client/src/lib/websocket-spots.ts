@@ -1,169 +1,139 @@
-// Dedicated WebSocket spots handler for iOS reliability
+// spots-websocket.ts
 let globalWebSocket: WebSocket | null = null;
 let connectionPromise: Promise<WebSocket> | null = null;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
 
+// ✅ Always production WebSocket endpoint
+const FLY_WS_URL = "wss://socialiser-4.fly.dev/ws";
+
 export function initializeWebSocket(): Promise<WebSocket> {
   if (globalWebSocket && globalWebSocket.readyState === WebSocket.OPEN) {
     return Promise.resolve(globalWebSocket);
   }
-  
+
   if (connectionPromise) return connectionPromise;
-  
+
   connectionPromise = new Promise((resolve, reject) => {
-    // Force production server for iOS to avoid "Load failed" errors
-    const isNative = (window as any).Capacitor?.isNativePlatform();
-    const fallbackUrl = 'wss://hot-girl-hunt-fenelon141.replit.app/ws';
-    
-    const wsUrl = isNative 
-      ? 'ws://localhost:5000/ws'  // iOS simulator can access localhost directly
-      : window.location.hostname.includes('replit') 
-        ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`
-        : fallbackUrl;
-    
-    
-    
-    const ws = new WebSocket(wsUrl);
-    
-    // Set a connection timeout
+    const ws = new WebSocket(FLY_WS_URL);
+
+    // Connection timeout
     const connectionTimeout = setTimeout(() => {
       if (ws.readyState === WebSocket.CONNECTING) {
         ws.close();
         connectionPromise = null;
-        reject(new Error('WebSocket connection timeout'));
+        reject(new Error("WebSocket connection timeout"));
       }
     }, 8000);
-    
+
     ws.onopen = () => {
       clearTimeout(connectionTimeout);
-      
       globalWebSocket = ws;
-      // Don't override the global window.webSocket to avoid conflicts
-      reconnectAttempts = 0; // Reset on successful connection
+      reconnectAttempts = 0; // reset after success
       resolve(ws);
     };
-    
+
     ws.onerror = (error) => {
       clearTimeout(connectionTimeout);
-      
       connectionPromise = null;
       reject(error);
     };
-    
+
     ws.onclose = () => {
       clearTimeout(connectionTimeout);
-      
       globalWebSocket = null;
       connectionPromise = null;
-      
-      // Exponential backoff reconnection
+
+      // Exponential backoff reconnect
       if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
         const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
         reconnectAttempts++;
-        
         setTimeout(() => initializeWebSocket(), delay);
       } else {
-        
-        reconnectAttempts = 0; // Reset for future attempts
+        reconnectAttempts = 0;
       }
     };
   });
-  
+
   return connectionPromise;
 }
 
 export async function fetchSpotsViaWebSocket(
-  latitude: number, 
-  longitude: number, 
+  latitude: number,
+  longitude: number,
   filters: any = {},
   retryCount = 0
 ): Promise<any[]> {
   const MAX_RETRIES = 3;
-  
+
   try {
-    // Ensure WebSocket is connected with retry logic
     const ws = await initializeWebSocket();
-    
-    // Check if WebSocket is actually ready
+
     if (ws.readyState !== WebSocket.OPEN) {
-      throw new Error('WebSocket not ready');
+      throw new Error("WebSocket not ready");
     }
-    
+
     return new Promise((resolve, reject) => {
-      const requestId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+      const requestId =
+        Date.now().toString() + Math.random().toString(36).substr(2, 9);
+
       const requestData = {
-        type: 'getSpotsNearby',
+        type: "getSpotsNearby",
         requestId,
         latitude,
         longitude,
-        radius: 1800, // 1.8km radius as requested
+        radius: 1800,
         limit: 25,
-        filters
+        filters,
       };
-      
-      
-      
+
       let responseReceived = false;
-      
-      // Set up response listener
+
       const messageHandler = (event: MessageEvent) => {
         try {
           const message = JSON.parse(event.data);
-          
-          
-          if (message.type === 'spotsNearbyResponse' && message.requestId === requestId) {
+
+          if (
+            message.type === "spotsNearbyResponse" &&
+            message.requestId === requestId
+          ) {
             responseReceived = true;
-            ws.removeEventListener('message', messageHandler);
-            
+            ws.removeEventListener("message", messageHandler);
+
             if (message.error) {
-              
               reject(new Error(message.error));
             } else {
-              
-              
               resolve(message.spots || []);
             }
-          } else {
-            
           }
-        } catch (error) {
-          
-          
+        } catch {
+          // Ignore parse errors
         }
       };
-      
-      ws.addEventListener('message', messageHandler);
-      
-      // Send request with error handling
+
+      ws.addEventListener("message", messageHandler);
+
       try {
         ws.send(JSON.stringify(requestData));
-      } catch (sendError) {
-        ws.removeEventListener('message', messageHandler);
-        reject(new Error('Failed to send WebSocket message'));
+      } catch {
+        ws.removeEventListener("message", messageHandler);
+        reject(new Error("Failed to send WebSocket message"));
         return;
       }
-      
-      // Set timeout with retry logic
+
       setTimeout(() => {
         if (!responseReceived) {
-          ws.removeEventListener('message', messageHandler);
-          reject(new Error('WebSocket request timeout'));
+          ws.removeEventListener("message", messageHandler);
+          reject(new Error("WebSocket request timeout"));
         }
-      }, 12000); // Reduced timeout for faster fallback
+      }, 12000);
     });
-    
   } catch (error) {
-    
-    
-    // Retry logic
     if (retryCount < MAX_RETRIES) {
-      const delay = 1000 * (retryCount + 1); // Progressive delay
-      
-      await new Promise(resolve => setTimeout(resolve, delay));
+      const delay = 1000 * (retryCount + 1);
+      await new Promise((resolve) => setTimeout(resolve, delay));
       return fetchSpotsViaWebSocket(latitude, longitude, filters, retryCount + 1);
     }
-    
     throw error;
   }
 }

@@ -1,15 +1,14 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// iOS detection and API URL configuration
-const isCapacitorIOS = (window as any).Capacitor?.isNativePlatform() && 
-                       ((window as any).Capacitor?.platform === 'ios' || 
-                        (window as any).Device?.info?.platform === 'ios');
+const HOSTNAME = "socialiser-4.fly.dev";
+const API_BASE_URL = `https://${HOSTNAME}`;  // ✅ always use Fly.io
+const WS_BASE_URL = `wss://${HOSTNAME}`;
 
-const API_BASE_URL = isCapacitorIOS 
-  ? 'https://hot-girl-hunt-fenelon141.replit.app'  // iOS must use production server
-  : (typeof window !== 'undefined' && window.location.hostname === 'localhost')
-    ? 'http://localhost:5000'
-    : 'https://hot-girl-hunt-fenelon141.replit.app';
+// iOS fallback helper
+async function getEmbeddedSpots() {
+  const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
+  return embeddedValleyGirlSpots;
+}
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -18,16 +17,10 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-// iOS fallback helper
-async function getEmbeddedSpots() {
-  const { embeddedValleyGirlSpots } = await import('../data/embedded-spots');
-  return embeddedValleyGirlSpots;
-}
-
 export async function apiRequest(
   method: string,
   url: string,
-  data?: unknown | undefined,
+  data?: unknown
 ): Promise<any> {
   try {
     const res = await fetch(`${API_BASE_URL}${url}`, {
@@ -36,16 +29,12 @@ export async function apiRequest(
       body: data ? JSON.stringify(data) : undefined,
       credentials: "include",
     });
-    
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`${res.status}: ${text || res.statusText}`);
-    }
-    
+
+    await throwIfResNotOk(res);
     return await res.json();
   } catch (error) {
-    // iOS fallback for spots endpoint
-    if (isCapacitorIOS && url.includes('/api/spots')) {
+    // fallback for spots if network fails
+    if (url.includes('/api/spots')) {
       return await getEmbeddedSpots();
     }
     throw error;
@@ -53,13 +42,15 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
+
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    const url = queryKey[0] as string;
     try {
-      const res = await fetch(`${API_BASE_URL}${queryKey[0] as string}`, {
+      const res = await fetch(`${API_BASE_URL}${url}`, {
         credentials: "include",
       });
 
@@ -70,8 +61,7 @@ export const getQueryFn: <T>(options: {
       await throwIfResNotOk(res);
       return await res.json();
     } catch (error) {
-      // iOS fallback for spots endpoint
-      if (isCapacitorIOS && (queryKey[0] as string).includes('/api/spots')) {
+      if (url.includes('/api/spots')) {
         return await getEmbeddedSpots() as any;
       }
       throw error;
@@ -84,14 +74,13 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes cache
+      staleTime: 5 * 60 * 1000,
       retry: (failureCount, error: Error) => {
-        // Don't retry iOS network errors
         if (error.message.includes('Load failed')) {
           return false;
         }
         return failureCount < 1;
-      }
+      },
     },
     mutations: {
       retry: false,

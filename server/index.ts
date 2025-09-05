@@ -1,113 +1,99 @@
 // ------------------------
 // External imports
 // ------------------------
+import 'dotenv/config'; // <-- ensures .env variables are loaded
 import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 // ------------------------
-// Local imports
+// Supabase setup
 // ------------------------
-import { registerRoutes } from "./routes.js";   // ✅ added .js
-import { setupVite, serveStatic, log } from "./vite.js";  // ✅ added .js
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://pjociaiucneerhcsqduy.supabase.co";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
+if (!SUPABASE_ANON_KEY) {
+  throw new Error("SUPABASE_ANON_KEY is missing in your environment variables");
+}
+
+export const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ------------------------
+// Express setup
+// ------------------------
 const app = express();
+const port = parseInt(process.env.PORT || "3000", 10); // Fly.io expects 3000
 
 // ------------------------
-// CORS setup
+// Middleware
 // ------------------------
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
 app.use(cors({
-  origin: '*', // Allow all origins for testing
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
   credentials: true
 }));
 
+// Simple CORS handling for OPTIONS
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
+  if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
 
-// ------------------------
-// Body parsing
-// ------------------------
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-// ------------------------
 // Request logging
-// ------------------------
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
-      log(logLine);
-    }
-  });
-
+app.use((req, _res, next) => {
+  console.log(`${req.method} ${req.path}`);
   next();
 });
 
 // ------------------------
-// Server setup
+// Health check
 // ------------------------
-(async () => {
-  const server = await registerRoutes(app);
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: Date.now() });
+});
 
-  // Fallback for missing endpoints
-  app.use((req, res, next) => {
-    if (req.path.startsWith('/upload-') || req.path.startsWith('/api/') || req.path.startsWith('/public-objects/')) {
-      console.log(`API route attempt: ${req.method} ${req.path}`);
-      if (!res.headersSent) {
-        return res.status(404).json({
-          error: 'API endpoint not found',
-          path: req.path,
-          method: req.method
-        });
-      }
-    }
-    next();
-  });
-
-  // Global error handler
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // Dev vs prod
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+// ------------------------
+// Supabase auth endpoints
+// ------------------------
+app.post("/api/signup", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    next(err);
   }
+});
 
-  // Port
-  const port = parseInt(process.env.PORT || "5000", 10);
-  server.listen(port, "0.0.0.0", () => {
-    log(`Server running on port ${port}`);
-  });
-})();
+app.post("/api/login", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ------------------------
+// Global error handler
+// ------------------------
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(status).json({ message });
+  console.error(err);
+});
+
+// ------------------------
+// Start server
+// ------------------------
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Backend running on port ${port}`);
+});
